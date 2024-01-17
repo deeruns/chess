@@ -5,6 +5,8 @@ package chess;
  * <p>
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
+ * my name is dee
+ *
  */
 public class ChessBoard {
 
