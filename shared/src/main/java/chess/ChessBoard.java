@@ -1,15 +1,16 @@
 package chess;
 
+import java.util.ArrayList;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
- * my name is dee
  *
  */
 public class ChessBoard {
-    private ChessPiece[][] squares = new ChessPiece[8][8];
+    private ChessPiece[][] boardDimension = new ChessPiece[8][8];
     public ChessBoard() {
         
     }
@@ -21,7 +22,11 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        squares[position.getRow()][position.getColumn()] = piece;
+        boardDimension[position.getRow()][position.getColumn()] = piece;
+//        int row = position.getRow();
+//        int col = position.getColumn();
+//        if (col <= 0 && col > 8 && row <= 0 && row > 8)
+//            boardDimension[row][col] = piece;
     }
 
     /**
@@ -32,7 +37,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return squares[position.getRow()][position.getColumn()];
+        return boardDimension[position.getRow()][position.getColumn()];
     }
 
     /**
