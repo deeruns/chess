@@ -18,6 +18,7 @@ public class ChessPiece {
         this.pieceColor = pieceColor;
     }
 
+
     /**
      * The various different chess piece options
      */
@@ -53,6 +54,70 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         //this wants the moves that the piece will make, but I won't implement that yet
-        return new ArrayList<>();
+       Collection<ChessMove> validMoves = new ArrayList<>();
+       // add moves to validMoves collection
+        switch (this.type){
+            case BISHOP ->  this.bishopMoves(validMoves, myPosition, board);
+            case KING -> this.kingMoves(validMoves, myPosition, board);
+            case KNIGHT -> this.knightMoves(validMoves, myPosition, board);
+            case PAWN -> this.pawnMoves(validMoves, myPosition, board);
+            case QUEEN ->  this.queenMoves(validMoves, myPosition, board);
+            case ROOK -> this.rookMoves(validMoves, myPosition, board);
+            default -> throw new UnsupportedOperationException("ERROR");
+        }
+        return validMoves;
+    }
+    private void bishopMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board) {
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        //moving diagonally right
+        for (int rowOne = row, colOne = col; rowOne < 8 && colOne < 8; rowOne++, colOne++) {
+            ChessPosition endPosition = new ChessPosition(rowOne, colOne);
+            //if there is no piece at endPosition then it is a valid move
+            if (board.getPiece(endPosition) == null) {
+                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+                validMoves.add(newBishopMove);
+            }
+            //taking the opposing players piece
+            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+                validMoves.add(newBishopMove);
+            }
+        }
+        //moving diagonally left
+        for (int rowOne = row, colOne = col; rowOne < 8 && colOne > 0; rowOne++, colOne--){
+            ChessPosition endPosition = new ChessPosition(rowOne, colOne);
+            //if there is no piece at endPosition then it is a valid move
+            if (board.getPiece(endPosition) == null) {
+                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+                validMoves.add(newBishopMove);
+            }
+            //taking the opposing players piece
+            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+                validMoves.add(newBishopMove);
+            }
+        }
+
+    }
+    private void kingMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
+        ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
+        validMoves.add(moveexample);
+    }
+    private void knightMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
+        ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
+        validMoves.add(moveexample);
+    }
+    private void pawnMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
+        ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
+        validMoves.add(moveexample);
+    }
+    private void queenMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
+        ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
+        validMoves.add(moveexample);
+    }
+    private void rookMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
+        ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
+        validMoves.add(moveexample);
     }
 }
