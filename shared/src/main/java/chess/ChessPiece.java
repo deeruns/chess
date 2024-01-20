@@ -184,25 +184,54 @@ public class ChessPiece {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
+
+            for (int rowNew = row + rowCount, colNew = col + colCount; rowNew > 0 && rowNew <= 8 && colNew > 0 && colNew <= 8; rowNew += rowCount, colNew += colCount){
+                ChessPosition endPosition = new ChessPosition(rowNew, colNew);
+
+                    if (board.getPiece(endPosition)==null){
+                        ChessMove newStraightMove = new ChessMove(myPosition, endPosition, null);
+                        validMoves.add(newStraightMove);
+                    }
+                    else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                        ChessMove newStraightMove = new ChessMove(myPosition, endPosition, null);
+                        validMoves.add(newStraightMove);
+                        break;
+                    }
+                    else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                        break;
+                    }
+                }
+
     }
     private void kingMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
         ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
         validMoves.add(moveexample);
     }
     private void knightMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
-        ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
-        validMoves.add(moveexample);
+        straightMoves(validMoves, myPosition, board, 2,1);
+        straightMoves(validMoves, myPosition, board, 1,2);
+        straightMoves(validMoves, myPosition, board, 2,-1);
+        straightMoves(validMoves, myPosition, board, 1,-2);
+        straightMoves(validMoves, myPosition, board, -2,1);
+        straightMoves(validMoves, myPosition, board, -2,-1);
+        straightMoves(validMoves, myPosition, board, -1,2);
+        straightMoves(validMoves, myPosition, board, -1,-2);
     }
     private void pawnMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
         ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
         validMoves.add(moveexample);
     }
     private void queenMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
-        ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
-        validMoves.add(moveexample);
+        straightMoves(validMoves, myPosition, board, 1,0);
+        straightMoves(validMoves, myPosition, board, 0,1);
+        straightMoves(validMoves, myPosition, board, -1,0);
+        straightMoves(validMoves, myPosition, board, 0,-1);
+        bishopMoves(validMoves, myPosition, board);
     }
     private void rookMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
-        ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
-        validMoves.add(moveexample);
+        straightMoves(validMoves, myPosition, board, 1,0);
+        straightMoves(validMoves, myPosition, board, 0,1);
+        straightMoves(validMoves, myPosition, board, -1,0);
+        straightMoves(validMoves, myPosition, board, 0,-1);
     }
 }
