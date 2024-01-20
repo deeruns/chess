@@ -1,0 +1,3 @@
+Chess notes
+the board is 8x8, but you index into it with index 0-7 to avoid out of bounds error
+when references the board use -1 to make sure it followed indexing rules 0-7 instead of 1-8, but you can't add the pieces into the collection unless it is in the 1-8 indexing pattern

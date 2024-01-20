@@ -3,6 +3,8 @@ package chess;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -18,6 +20,25 @@ public class ChessPiece {
         this.pieceColor = pieceColor;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return type == that.type && pieceColor == that.pieceColor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, pieceColor);
+    }
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "type=" + type +
+                ", pieceColor=" + pieceColor +
+                '}';
+    }
 
     /**
      * The various different chess piece options
@@ -54,7 +75,7 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         //this wants the moves that the piece will make, but I won't implement that yet
-       Collection<ChessMove> validMoves = new ArrayList<>();
+       Collection<ChessMove> validMoves = new HashSet<>();
        // add moves to validMoves collection
         switch (this.type){
             case BISHOP ->  this.bishopMoves(validMoves, myPosition, board);
@@ -67,11 +88,22 @@ public class ChessPiece {
         }
         return validMoves;
     }
+
+    /**
+     * bishop moves
+     * add new chess move if:
+     * it isn't out of bounds
+     * it isn't blocked by another piece of its own color
+     * if endPosition is null or occupied by the other team
+     * @param validMoves
+     * @param myPosition
+     * @param board
+     */
     private void bishopMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-        //moving diagonally right
-        for (int rowOne = row, colOne = col; rowOne < 8 && colOne < 8; rowOne++, colOne++) {
+        //moving up diagonally right
+        for (int rowOne = row + 1, colOne = col + 1; rowOne <= 8 && colOne <= 8; rowOne++, colOne++) {
             ChessPosition endPosition = new ChessPosition(rowOne, colOne);
             //if there is no piece at endPosition then it is a valid move
             if (board.getPiece(endPosition) == null) {
@@ -82,10 +114,15 @@ public class ChessPiece {
             else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
                 ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
                 validMoves.add(newBishopMove);
+                break;
+            }
+            //if a piece on your team is in the way break
+            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                break;
             }
         }
-        //moving diagonally left
-        for (int rowOne = row, colOne = col; rowOne < 8 && colOne > 0; rowOne++, colOne--){
+        //down diagonally right
+        for (int rowOne = row - 1, colOne = col + 1; rowOne > 0 && colOne <= 8; rowOne--, colOne++){
             ChessPosition endPosition = new ChessPosition(rowOne, colOne);
             //if there is no piece at endPosition then it is a valid move
             if (board.getPiece(endPosition) == null) {
@@ -96,8 +133,56 @@ public class ChessPiece {
             else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
                 ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
                 validMoves.add(newBishopMove);
+                break;
+            }
+            //if a piece on your team is in the way break
+            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                break;
             }
         }
+        //moving down diagonally left
+        for (int rowOne = row - 1, colOne = col - 1; rowOne > 0 && colOne > 0; rowOne--, colOne--){
+            ChessPosition endPosition = new ChessPosition(rowOne, colOne);
+            //if there is no piece at endPosition then it is a valid move
+            if (board.getPiece(endPosition) == null) {
+                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+                validMoves.add(newBishopMove);
+            }
+            //taking the opposing players piece
+            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+                validMoves.add(newBishopMove);
+                break;
+            }
+            //if a piece on your team is in the way break
+            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                break;
+            }
+        }
+        //moving up diagonally left
+        for (int rowOne = row + 1, colOne = col - 1; rowOne <= 8 && colOne > 0; rowOne++, colOne--){
+            ChessPosition endPosition = new ChessPosition(rowOne, colOne );
+            //if there is no piece at endPosition then it is a valid move
+            if (board.getPiece(endPosition) == null) {
+                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+                validMoves.add(newBishopMove);
+            }
+            //taking the opposing players piece
+            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+                validMoves.add(newBishopMove);
+                break;
+            }
+            //if a piece on your team is in the way break
+            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                break;
+            }
+        }
+
+    }
+    private void straightMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board, int rowCount, int colCount){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
 
     }
     private void kingMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
