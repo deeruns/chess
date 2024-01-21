@@ -250,7 +250,14 @@ public class ChessPiece {
     private void knightMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-
+        if (row <= 6 && col < 8){kingMovesCalc(validMoves, myPosition, board, 2,1);}
+        if (row <= 6 && col > 1){kingMovesCalc(validMoves, myPosition, board, 2,-1);}
+        if (row >= 3 && col < 8){kingMovesCalc(validMoves, myPosition, board, -2,1);}
+        if (row >= 3 && col > 1){kingMovesCalc(validMoves, myPosition, board, -2,-1);}
+        if (col <= 6 && row < 8){kingMovesCalc(validMoves, myPosition, board, 1,2);}
+        if (col <= 6 && row > 1){kingMovesCalc(validMoves, myPosition, board, -1,2);}
+        if (col >= 3 && row < 8){kingMovesCalc(validMoves, myPosition, board, 1,-2);}
+        if (col >= 3 && row > 1){kingMovesCalc(validMoves, myPosition, board, -1,-2);}
     }
     private void queenMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
         straightMoves(validMoves, myPosition, board, 1,0);
