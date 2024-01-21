@@ -213,7 +213,7 @@ public class ChessPiece {
                 }
 
     }
-    private void kingMovesCalc(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board, int rowCount, int colCount){
+    private void singleMovesCalc(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board, int rowCount, int colCount){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         ChessPosition endPosition = new ChessPosition(row+rowCount, col+colCount);
@@ -235,14 +235,14 @@ public class ChessPiece {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         if(row > 1 && row < 8 && col > 1 && col < 8){
-            kingMovesCalc(validMoves, myPosition, board, 1, 0);
-            kingMovesCalc(validMoves, myPosition, board, 0, 1);
-            kingMovesCalc(validMoves, myPosition, board, -1, 0);
-            kingMovesCalc(validMoves, myPosition, board, 0, -1);
-            kingMovesCalc(validMoves, myPosition, board, -1, -1);
-            kingMovesCalc(validMoves, myPosition, board, 1, 1);
-            kingMovesCalc(validMoves, myPosition, board, -1, 1);
-            kingMovesCalc(validMoves, myPosition, board, 1, -1);
+            singleMovesCalc(validMoves, myPosition, board, 1, 0);
+            singleMovesCalc(validMoves, myPosition, board, 0, 1);
+            singleMovesCalc(validMoves, myPosition, board, -1, 0);
+            singleMovesCalc(validMoves, myPosition, board, 0, -1);
+            singleMovesCalc(validMoves, myPosition, board, -1, -1);
+            singleMovesCalc(validMoves, myPosition, board, 1, 1);
+            singleMovesCalc(validMoves, myPosition, board, -1, 1);
+            singleMovesCalc(validMoves, myPosition, board, 1, -1);
 
         }
 
@@ -250,14 +250,14 @@ public class ChessPiece {
     private void knightMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-        if (row <= 6 && col < 8){kingMovesCalc(validMoves, myPosition, board, 2,1);}
-        if (row <= 6 && col > 1){kingMovesCalc(validMoves, myPosition, board, 2,-1);}
-        if (row >= 3 && col < 8){kingMovesCalc(validMoves, myPosition, board, -2,1);}
-        if (row >= 3 && col > 1){kingMovesCalc(validMoves, myPosition, board, -2,-1);}
-        if (col <= 6 && row < 8){kingMovesCalc(validMoves, myPosition, board, 1,2);}
-        if (col <= 6 && row > 1){kingMovesCalc(validMoves, myPosition, board, -1,2);}
-        if (col >= 3 && row < 8){kingMovesCalc(validMoves, myPosition, board, 1,-2);}
-        if (col >= 3 && row > 1){kingMovesCalc(validMoves, myPosition, board, -1,-2);}
+        if (row <= 6 && col < 8){singleMovesCalc(validMoves, myPosition, board, 2,1);}
+        if (row <= 6 && col > 1){singleMovesCalc(validMoves, myPosition, board, 2,-1);}
+        if (row >= 3 && col < 8){singleMovesCalc(validMoves, myPosition, board, -2,1);}
+        if (row >= 3 && col > 1){singleMovesCalc(validMoves, myPosition, board, -2,-1);}
+        if (col <= 6 && row < 8){singleMovesCalc(validMoves, myPosition, board, 1,2);}
+        if (col <= 6 && row > 1){singleMovesCalc(validMoves, myPosition, board, -1,2);}
+        if (col >= 3 && row < 8){singleMovesCalc(validMoves, myPosition, board, 1,-2);}
+        if (col >= 3 && row > 1){singleMovesCalc(validMoves, myPosition, board, -1,-2);}
     }
     private void queenMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
         straightMoves(validMoves, myPosition, board, 1,0);
@@ -279,21 +279,40 @@ public class ChessPiece {
 //        int pawnBlockBlack = myPosition.getRow() - 1;
         ChessPosition whiteBlockMove = new ChessPosition(row + 1, col);
         ChessPosition blackBlockMove = new ChessPosition(row - 1, col);
+        ChessPosition whiteTake1 = new ChessPosition(row + 1, col + 1);
+        ChessPosition whiteTake2 = new ChessPosition(row + 1, col - 1);
+        ChessPosition blackTake1 = new ChessPosition(row - 1, col + 1);
+        ChessPosition blackTake2 = new ChessPosition(row - 1, col - 1);
+
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE){
+            singleMovesCalc(validMoves, myPosition, board, 1, 0);
             if (row == 2){
-                kingMovesCalc(validMoves, myPosition, board, 1, 0);
                 //check to see if a piece is in front of the pawn at start position
                 if (board.getPiece(whiteBlockMove) == null)
-                    kingMovesCalc(validMoves, myPosition, board, 2, 0);
+                    singleMovesCalc(validMoves, myPosition, board, 2, 0);
+            }
+            //if a pawn can take a piece from the opposite team it moves diagonally
+            if (board.getPiece(whiteTake1).getTeamColor() == ChessGame.TeamColor.BLACK){
+                singleMovesCalc(validMoves, myPosition, board, 1,1);
+            }
+            if (board.getPiece(whiteTake2).getTeamColor() == ChessGame.TeamColor.BLACK){
+                singleMovesCalc(validMoves, myPosition, board, 1, -1);
             }
         }
 
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK){
+            singleMovesCalc(validMoves, myPosition, board, -1, 0);
             if (row == 7){
-                kingMovesCalc(validMoves, myPosition, board, -1, 0);
                 //check to see if a piece is in front of the pawn at start position
                 if (board.getPiece(blackBlockMove) == null)
-                    kingMovesCalc(validMoves, myPosition, board, -2, 0);
+                    singleMovesCalc(validMoves, myPosition, board, -2, 0);
+            }
+            //if a pawn can take a piece from the opposite team it moves diagonally
+            if (board.getPiece(blackTake1).getTeamColor() == ChessGame.TeamColor.WHITE){
+                singleMovesCalc(validMoves, myPosition, board, -1, 1);
+            }
+            if (board.getPiece(blackTake2).getTeamColor() == ChessGame.TeamColor.WHITE){
+                singleMovesCalc(validMoves, myPosition, board, -1, -1);
             }
         }
     }
