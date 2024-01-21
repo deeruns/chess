@@ -217,18 +217,44 @@ public class ChessPiece {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         ChessPosition endPosition = new ChessPosition(row+rowCount, col+colCount);
+
         if (board.getPiece(endPosition)==null){
-            ChessMove newKingMove = new ChessMove(myPosition, endPosition, null);
-            validMoves.add(newKingMove);
+            ChessMove newSingleMove = new ChessMove(myPosition, endPosition, null);
+            validMoves.add(newSingleMove);
         }
-//        if (board.getPiece(myPosition).getPieceType() == PieceType.PAWN){
-//            ChessPosition pawnBlock = new ChessPosition(row+1, col);
-//        }
+
         else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-            ChessMove newKingMove = new ChessMove(myPosition, endPosition, null);
-            validMoves.add(newKingMove);
+            ChessMove newSingleMove = new ChessMove(myPosition, endPosition, null);
+            validMoves.add(newSingleMove);
         }
     }
+
+    private void pawnMovesCalculator(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board, int rowCount, int colCount){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        ChessPosition endPosition = new ChessPosition(row+rowCount, col+colCount);
+        if (board.getPiece(myPosition).getPieceType() == PieceType.PAWN) {
+            if (board.getPiece(endPosition) == null) {
+
+                    ChessMove newSingleMove = new ChessMove(myPosition, endPosition, null);
+                    validMoves.add(newSingleMove);
+
+            }
+        }
+    }
+    private void pawnDiagCalc(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board, int rowCount, int colCount){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        ChessPosition endPosition = new ChessPosition(row+rowCount, col+colCount);
+        if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+
+
+                ChessMove newPawnMove = new ChessMove(myPosition, endPosition, null);
+                validMoves.add(newPawnMove);
+
+        }
+    }
+
 
 
     private void kingMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
@@ -277,6 +303,8 @@ public class ChessPiece {
         int col = myPosition.getColumn();
 //        int pawnBlockWhite = myPosition.getRow() + 1;
 //        int pawnBlockBlack = myPosition.getRow() - 1;
+//        ChessPosition whiteDoubleMove = new ChessPosition(row + 2, col);
+//        ChessPosition blackDoubleMove = new ChessPosition(row - 2, col);
         ChessPosition whiteBlockMove = new ChessPosition(row + 1, col);
         ChessPosition blackBlockMove = new ChessPosition(row - 1, col);
         ChessPosition whiteTake1 = new ChessPosition(row + 1, col + 1);
@@ -285,34 +313,36 @@ public class ChessPiece {
         ChessPosition blackTake2 = new ChessPosition(row - 1, col - 1);
 
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE){
-            singleMovesCalc(validMoves, myPosition, board, 1, 0);
+
+            pawnMovesCalculator(validMoves, myPosition, board, 1, 0);
             if (row == 2){
                 //check to see if a piece is in front of the pawn at start position
                 if (board.getPiece(whiteBlockMove) == null)
-                    singleMovesCalc(validMoves, myPosition, board, 2, 0);
+                    pawnMovesCalculator(validMoves, myPosition, board, 2, 0);
             }
             //if a pawn can take a piece from the opposite team it moves diagonally
-            if (board.getPiece(whiteTake1).getTeamColor() == ChessGame.TeamColor.BLACK){
-                singleMovesCalc(validMoves, myPosition, board, 1,1);
+            if (board.getPiece(whiteTake1) != null && board.getPiece(whiteTake1).getTeamColor() == ChessGame.TeamColor.BLACK){
+                pawnDiagCalc(validMoves, myPosition, board, 1,1);
             }
-            if (board.getPiece(whiteTake2).getTeamColor() == ChessGame.TeamColor.BLACK){
-                singleMovesCalc(validMoves, myPosition, board, 1, -1);
+            if (board.getPiece(whiteTake2) != null && board.getPiece(whiteTake2).getTeamColor() == ChessGame.TeamColor.BLACK){
+                pawnDiagCalc(validMoves, myPosition, board, 1, -1);
             }
         }
 
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK){
-            singleMovesCalc(validMoves, myPosition, board, -1, 0);
+            //single move forward
+            pawnMovesCalculator(validMoves, myPosition, board, -1, 0);
             if (row == 7){
-                //check to see if a piece is in front of the pawn at start position
+                //check to see if a piece is in front of the pawn at start position (double move)
                 if (board.getPiece(blackBlockMove) == null)
-                    singleMovesCalc(validMoves, myPosition, board, -2, 0);
+                    pawnMovesCalculator(validMoves, myPosition, board, -2, 0);
             }
             //if a pawn can take a piece from the opposite team it moves diagonally
-            if (board.getPiece(blackTake1).getTeamColor() == ChessGame.TeamColor.WHITE){
-                singleMovesCalc(validMoves, myPosition, board, -1, 1);
+            if (board.getPiece(blackTake1) != null && board.getPiece(blackTake1).getTeamColor() == ChessGame.TeamColor.WHITE){
+                pawnDiagCalc(validMoves, myPosition, board, -1, 1);
             }
-            if (board.getPiece(blackTake2).getTeamColor() == ChessGame.TeamColor.WHITE){
-                singleMovesCalc(validMoves, myPosition, board, -1, -1);
+            if (board.getPiece(blackTake2) != null && board.getPiece(blackTake2).getTeamColor() == ChessGame.TeamColor.WHITE){
+                pawnDiagCalc(validMoves, myPosition, board, -1, -1);
             }
         }
     }
