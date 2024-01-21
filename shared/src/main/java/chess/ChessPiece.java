@@ -249,8 +249,8 @@ public class ChessPiece {
         if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
 
 
-                ChessMove newPawnMove = new ChessMove(myPosition, endPosition, null);
-                validMoves.add(newPawnMove);
+            ChessMove newPawnMove = new ChessMove(myPosition, endPosition, null);
+            validMoves.add(newPawnMove);
 
         }
     }
