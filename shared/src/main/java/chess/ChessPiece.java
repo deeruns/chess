@@ -180,6 +180,16 @@ public class ChessPiece {
         }
 
     }
+
+    /**
+     * same as diagonal but I thought of a better way to implement it.
+     * calculates all moves a rook can make.
+     * @param validMoves
+     * @param myPosition
+     * @param board
+     * @param rowCount
+     * @param colCount
+     */
     private void straightMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board, int rowCount, int colCount){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
@@ -203,23 +213,44 @@ public class ChessPiece {
                 }
 
     }
+    private void kingMovesCalc(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board, int rowCount, int colCount){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        ChessPosition endPosition = new ChessPosition(row+rowCount, col+colCount);
+        if (board.getPiece(endPosition)==null){
+            ChessMove newKingMove = new ChessMove(myPosition, endPosition, null);
+            validMoves.add(newKingMove);
+        }
+//        if (board.getPiece(myPosition).getPieceType() == PieceType.PAWN){
+//            ChessPosition pawnBlock = new ChessPosition(row+1, col);
+//        }
+        else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+            ChessMove newKingMove = new ChessMove(myPosition, endPosition, null);
+            validMoves.add(newKingMove);
+        }
+    }
+
+
     private void kingMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
-        ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
-        validMoves.add(moveexample);
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        if(row > 1 && row < 8 && col > 1 && col < 8){
+            kingMovesCalc(validMoves, myPosition, board, 1, 0);
+            kingMovesCalc(validMoves, myPosition, board, 0, 1);
+            kingMovesCalc(validMoves, myPosition, board, -1, 0);
+            kingMovesCalc(validMoves, myPosition, board, 0, -1);
+            kingMovesCalc(validMoves, myPosition, board, -1, -1);
+            kingMovesCalc(validMoves, myPosition, board, 1, 1);
+            kingMovesCalc(validMoves, myPosition, board, -1, 1);
+            kingMovesCalc(validMoves, myPosition, board, 1, -1);
+
+        }
+
     }
     private void knightMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
-        straightMoves(validMoves, myPosition, board, 2,1);
-        straightMoves(validMoves, myPosition, board, 1,2);
-        straightMoves(validMoves, myPosition, board, 2,-1);
-        straightMoves(validMoves, myPosition, board, 1,-2);
-        straightMoves(validMoves, myPosition, board, -2,1);
-        straightMoves(validMoves, myPosition, board, -2,-1);
-        straightMoves(validMoves, myPosition, board, -1,2);
-        straightMoves(validMoves, myPosition, board, -1,-2);
-    }
-    private void pawnMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
-        ChessMove moveexample = new ChessMove(myPosition, new ChessPosition(1,1), null);
-        validMoves.add(moveexample);
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
     }
     private void queenMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
         straightMoves(validMoves, myPosition, board, 1,0);
@@ -233,5 +264,30 @@ public class ChessPiece {
         straightMoves(validMoves, myPosition, board, 0,1);
         straightMoves(validMoves, myPosition, board, -1,0);
         straightMoves(validMoves, myPosition, board, 0,-1);
+    }
+    private void pawnMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+//        int pawnBlockWhite = myPosition.getRow() + 1;
+//        int pawnBlockBlack = myPosition.getRow() - 1;
+        ChessPosition whiteBlockMove = new ChessPosition(row + 1, col);
+        ChessPosition blackBlockMove = new ChessPosition(row - 1, col);
+        if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE){
+            if (row == 2){
+                kingMovesCalc(validMoves, myPosition, board, 1, 0);
+                //check to see if a piece is in front of the pawn at start position
+                if (board.getPiece(whiteBlockMove) == null)
+                    kingMovesCalc(validMoves, myPosition, board, 2, 0);
+            }
+        }
+
+        if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK){
+            if (row == 7){
+                kingMovesCalc(validMoves, myPosition, board, -1, 0);
+                //check to see if a piece is in front of the pawn at start position
+                if (board.getPiece(blackBlockMove) == null)
+                    kingMovesCalc(validMoves, myPosition, board, -2, 0);
+            }
+        }
     }
 }
