@@ -210,8 +210,18 @@ public class ChessPiece {
                         break;
                     }
                 }
-
     }
+
+    /**
+     * this is for pieces with moves that don't loop. ie single moves for the knight and king
+     * doesn't work for pawn
+     * can move if endPosition is null or a piece of another color
+     * @param validMoves
+     * @param myPosition
+     * @param board
+     * @param rowCount
+     * @param colCount
+     */
     private void singleMovesCalc(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board, int rowCount, int colCount){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
@@ -228,6 +238,16 @@ public class ChessPiece {
         }
     }
 
+    /**
+     * calculates non-capture moves for pawns
+     * can move only if endPosition is null
+     * if endposition is in row 8 or 1 then pawn is promoted
+     * @param validMoves
+     * @param myPosition
+     * @param board
+     * @param rowCount
+     * @param colCount
+     */
     private void pawnMovesCalculator(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board, int rowCount, int colCount){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
@@ -253,6 +273,16 @@ public class ChessPiece {
             }
         }
     }
+
+    /**
+     * pawn capture moves
+     * promotion also included
+     * @param validMoves
+     * @param myPosition
+     * @param board
+     * @param rowCount
+     * @param colCount
+     */
     private void pawnDiagCalc(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board, int rowCount, int colCount){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
@@ -320,6 +350,15 @@ public class ChessPiece {
         straightMoves(validMoves, myPosition, board, -1,0);
         straightMoves(validMoves, myPosition, board, 0,-1);
     }
+
+    /**
+     * different if statements for black and white pawns
+     * if in starting position it can move up twice, but can't capture a piece moving straight
+     * can only move diagonally if it can capture a piece
+     * @param validMoves
+     * @param myPosition
+     * @param board
+     */
     private void pawnMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();

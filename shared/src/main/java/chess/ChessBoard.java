@@ -18,7 +18,7 @@ public class ChessBoard {
 
     /**
      * Adds a chess piece to the chessboard
-     *
+     * get piece and add piece minus 1 from the normal board dimension of 1-8 down to indexing notation on 0-7
      * @param position where to add the piece to
      * @param piece    the piece to add
      */
@@ -43,6 +43,7 @@ public class ChessBoard {
 
     /**
      * Sets the board to the default starting board
+     * 0 and 7
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
