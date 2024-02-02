@@ -103,82 +103,88 @@ public class ChessPiece {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         //moving up diagonally right
-        for (int rowOne = row + 1, colOne = col + 1; rowOne <= 8 && colOne <= 8; rowOne++, colOne++) {
-            ChessPosition endPosition = new ChessPosition(rowOne, colOne);
-            //if there is no piece at endPosition then it is a valid move
-            if (board.getPiece(endPosition) == null) {
-                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
-                validMoves.add(newBishopMove);
-            }
-            //taking the opposing players piece
-            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
-                validMoves.add(newBishopMove);
-                break;
-            }
-            //if a piece on your team is in the way break
-            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                break;
-            }
-        }
-        //down diagonally right
-        for (int rowOne = row - 1, colOne = col + 1; rowOne > 0 && colOne <= 8; rowOne--, colOne++){
-            ChessPosition endPosition = new ChessPosition(rowOne, colOne);
-            //if there is no piece at endPosition then it is a valid move
-            if (board.getPiece(endPosition) == null) {
-                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
-                validMoves.add(newBishopMove);
-            }
-            //taking the opposing players piece
-            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
-                validMoves.add(newBishopMove);
-                break;
-            }
-            //if a piece on your team is in the way break
-            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                break;
-            }
-        }
-        //moving down diagonally left
-        for (int rowOne = row - 1, colOne = col - 1; rowOne > 0 && colOne > 0; rowOne--, colOne--){
-            ChessPosition endPosition = new ChessPosition(rowOne, colOne);
-            //if there is no piece at endPosition then it is a valid move
-            if (board.getPiece(endPosition) == null) {
-                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
-                validMoves.add(newBishopMove);
-            }
-            //taking the opposing players piece
-            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
-                validMoves.add(newBishopMove);
-                break;
-            }
-            //if a piece on your team is in the way break
-            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                break;
-            }
-        }
-        //moving up diagonally left
-        for (int rowOne = row + 1, colOne = col - 1; rowOne <= 8 && colOne > 0; rowOne++, colOne--){
-            ChessPosition endPosition = new ChessPosition(rowOne, colOne );
-            //if there is no piece at endPosition then it is a valid move
-            if (board.getPiece(endPosition) == null) {
-                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
-                validMoves.add(newBishopMove);
-            }
-            //taking the opposing players piece
-            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
-                validMoves.add(newBishopMove);
-                break;
-            }
-            //if a piece on your team is in the way break
-            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                break;
-            }
-        }
+        straightMoves(validMoves, myPosition, board, 1, 1);
+        straightMoves(validMoves, myPosition, board, 1, -1);
+        straightMoves(validMoves, myPosition, board, -1, 1);
+        straightMoves(validMoves, myPosition, board, -1, -1);
 
+
+//        for (int rowOne = row + 1, colOne = col + 1; rowOne <= 8 && colOne <= 8; rowOne++, colOne++) {
+//            ChessPosition endPosition = new ChessPosition(rowOne, colOne);
+//            //if there is no piece at endPosition then it is a valid move
+//            if (board.getPiece(endPosition) == null) {
+//                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+//                validMoves.add(newBishopMove);
+//            }
+//            //taking the opposing players piece
+//            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+//                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+//                validMoves.add(newBishopMove);
+//                break;
+//            }
+//            //if a piece on your team is in the way break
+//            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+//                break;
+//            }
+//        }
+//        //down diagonally right
+//        for (int rowOne = row - 1, colOne = col + 1; rowOne > 0 && colOne <= 8; rowOne--, colOne++){
+//            ChessPosition endPosition = new ChessPosition(rowOne, colOne);
+//            //if there is no piece at endPosition then it is a valid move
+//            if (board.getPiece(endPosition) == null) {
+//                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+//                validMoves.add(newBishopMove);
+//            }
+//            //taking the opposing players piece
+//            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+//                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+//                validMoves.add(newBishopMove);
+//                break;
+//            }
+//            //if a piece on your team is in the way break
+//            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+//                break;
+//            }
+//        }
+//        //moving down diagonally left
+//        for (int rowOne = row - 1, colOne = col - 1; rowOne > 0 && colOne > 0; rowOne--, colOne--){
+//            ChessPosition endPosition = new ChessPosition(rowOne, colOne);
+//            //if there is no piece at endPosition then it is a valid move
+//            if (board.getPiece(endPosition) == null) {
+//                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+//                validMoves.add(newBishopMove);
+//            }
+//            //taking the opposing players piece
+//            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+//                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+//                validMoves.add(newBishopMove);
+//                break;
+//            }
+//            //if a piece on your team is in the way break
+//            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+//                break;
+//            }
+//        }
+//        //moving up diagonally left
+//        for (int rowOne = row + 1, colOne = col - 1; rowOne <= 8 && colOne > 0; rowOne++, colOne--){
+//            ChessPosition endPosition = new ChessPosition(rowOne, colOne );
+//            //if there is no piece at endPosition then it is a valid move
+//            if (board.getPiece(endPosition) == null) {
+//                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+//                validMoves.add(newBishopMove);
+//            }
+//            //taking the opposing players piece
+//            else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+//                ChessMove newBishopMove = new ChessMove(myPosition, endPosition, null);
+//                validMoves.add(newBishopMove);
+//                break;
+//            }
+//            //if a piece on your team is in the way break
+//            else if (board.getPiece(endPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+//                break;
+//            }
+//        }
+//
     }
 
     /**
