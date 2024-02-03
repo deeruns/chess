@@ -82,7 +82,31 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         //make a clone of the board
         BoardCopy(currentBoard);
+        //Collection<ChessMove> kingValidMoves = new ChessPiece.pieceMoves(currentBoard, kingLocation);
+        //find the position of the king and get its validMoves
+        ChessPosition kingLocation = FindKingPiece(teamColor);
+        Collection<ChessMove> kingValidMoves = boardClone[kingLocation.getRow()][kingLocation.getColumn()].pieceMoves(currentBoard, kingLocation);
 
+
+
+        return true;
+    }
+
+    public ChessPosition FindKingPiece(TeamColor teamColor){
+        //does this check a different board than is in check?
+        //find the position of the king and get its validMoves
+        for (int col = 1; col > 0 && col < 8; col++){
+            //ChessPosition position = new ChessPosition(row, col);
+            for(int row = 1;row > 0 && row < 8;row++){
+                //find the king
+                if (boardClone[row][col] != null){
+                    if (boardClone[row][col].getTeamColor() == teamColor && boardClone[row][col].getPieceType() == ChessPiece.PieceType.KING){
+                        return new ChessPosition(row, col);
+                    }
+
+            }
+            }
+        }
     }
 
     /**
@@ -125,10 +149,10 @@ public class ChessGame {
     }
     private void BoardCopy(ChessBoard board){
         boardClone = new ChessPiece[8][8];
-        for (int col = 0; col <= 8; col++)
-        {
-            for (int row = 0; row <= 8; row++)
-            {
+        for (int col = 0; col <= 7; col++){
+
+            for (int row = 0; row <= 7; row++){
+
                 boardClone[col][row] = board.boardDimension[col][row];
             }
         }
