@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -9,16 +10,19 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    ChessBoard currentBoard;
+    TeamColor playerTurn;
+    ChessPiece[][] boardClone;
 
     public ChessGame() {
-
+        currentBoard = new ChessBoard();
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return playerTurn;
     }
 
     /**
@@ -27,7 +31,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        playerTurn = team;
     }
 
     /**
@@ -46,7 +50,17 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        if (currentBoard.getPiece(startPosition) == null){
+            return null;
+        }
+
+        HashSet<ChessMove> validMoves;
+        //ChessPiece holdingPiece = new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        ChessPiece currentPiece = currentBoard.getPiece(startPosition);
+
+        validMoves = (HashSet<ChessMove>) currentPiece.pieceMoves(currentBoard, startPosition);
+
+        return validMoves;
     }
 
     /**
@@ -66,7 +80,9 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //make a clone of the board
+        BoardCopy(currentBoard);
+
     }
 
     /**
@@ -96,7 +112,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        currentBoard = board;
     }
 
     /**
@@ -105,6 +121,17 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return currentBoard;
+    }
+    private void BoardCopy(ChessBoard board){
+        boardClone = new ChessPiece[8][8];
+        for (int col = 0; col <= 8; col++)
+        {
+            for (int row = 0; row <= 8; row++)
+            {
+                boardClone[col][row] = board.boardDimension[col][row];
+            }
+        }
     }
 }
+
