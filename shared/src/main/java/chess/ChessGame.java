@@ -13,6 +13,7 @@ public class ChessGame {
     ChessBoard currentBoard;
     TeamColor playerTurn;
     ChessPiece[][] boardClone;
+    //If i am referencing the board by indexing, I need to do -1 to get intp 0,7 format. but if get.row is called it isn't necessary?
 
     public ChessGame() {
         currentBoard = new ChessBoard();
@@ -82,31 +83,52 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         //make a clone of the board
         BoardCopy(currentBoard);
-        //Collection<ChessMove> kingValidMoves = new ChessPiece.pieceMoves(currentBoard, kingLocation);
+        //all possible moves of the other team
+        Collection<ChessMove> opponentPieceMoves = opponentPieceMoves(teamColor);
         //find the position of the king and get its validMoves
         ChessPosition kingLocation = FindKingPiece(teamColor);
-        Collection<ChessMove> kingValidMoves = boardClone[kingLocation.getRow()][kingLocation.getColumn()].pieceMoves(currentBoard, kingLocation);
-
-
-
-        return true;
+        Collection<ChessMove> kingValidMoves = boardClone[kingLocation.getRow()-1][kingLocation.getColumn()-1].pieceMoves(currentBoard, kingLocation);
+        //check if the opponent moves can put my king in check
+        for (ChessMove move : opponentPieceMoves) {
+            if (move.getEndPosition().equals(kingLocation)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public ChessPosition FindKingPiece(TeamColor teamColor){
         //does this check a different board than is in check?
         //find the position of the king and get its validMoves
-        for (int col = 1; col > 0 && col < 8; col++){
+        for (int col = 1; col > 0 && col <= 8; col++){
             //ChessPosition position = new ChessPosition(row, col);
-            for(int row = 1;row > 0 && row < 8;row++){
+            for(int row = 1; row > 0 && row <= 8;row++){
                 //find the king
-                if (boardClone[row][col] != null){
-                    if (boardClone[row][col].getTeamColor() == teamColor && boardClone[row][col].getPieceType() == ChessPiece.PieceType.KING){
+                if (boardClone[row-1][col-1] != null) {
+                    if (boardClone[row-1][col-1].getTeamColor() == teamColor && boardClone[row-1][col-1].getPieceType() == ChessPiece.PieceType.KING) {
                         return new ChessPosition(row, col);
                     }
-
-            }
+                }
             }
         }
+        return null;
+    }
+    public Collection<ChessMove> opponentPieceMoves(TeamColor teamColor){
+        //does this check a different board than is in check?
+        //find the position of the king and get its validMoves
+        Collection<ChessMove> opponentPieceMoves = new HashSet<>();
+        for (int col = 1; col > 0 && col <= 8; col++){
+            //ChessPosition position = new ChessPosition(row, col);
+            for(int row = 1;row > 0 && row <= 8;row++){
+                //find the king
+                if (boardClone[row-1][col-1] != null) {
+                    if (boardClone[row-1][col-1].getTeamColor() != teamColor) {
+                        opponentPieceMoves.addAll(boardClone[row-1][col-1].pieceMoves(currentBoard, new ChessPosition(row, col)));
+                    }
+                }
+            }
+        }
+        return opponentPieceMoves;
     }
 
     /**

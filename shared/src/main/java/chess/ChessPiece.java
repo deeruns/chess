@@ -238,9 +238,11 @@ public class ChessPiece {
             validMoves.add(newSingleMove);
         }
 
-        else if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-            ChessMove newSingleMove = new ChessMove(myPosition, endPosition, null);
-            validMoves.add(newSingleMove);
+        else if (board.getPiece(endPosition) != null){
+                if (board.getPiece(endPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    ChessMove newSingleMove = new ChessMove(myPosition, endPosition, null);
+                    validMoves.add(newSingleMove);
+                }
         }
     }
 
