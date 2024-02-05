@@ -320,17 +320,17 @@ public class ChessPiece {
     private void kingMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-        if(row > 1 && row < 8 && col > 1 && col < 8){
-            singleMovesCalc(validMoves, myPosition, board, 1, 0);
-            singleMovesCalc(validMoves, myPosition, board, 0, 1);
-            singleMovesCalc(validMoves, myPosition, board, -1, 0);
-            singleMovesCalc(validMoves, myPosition, board, 0, -1);
-            singleMovesCalc(validMoves, myPosition, board, -1, -1);
-            singleMovesCalc(validMoves, myPosition, board, 1, 1);
-            singleMovesCalc(validMoves, myPosition, board, -1, 1);
-            singleMovesCalc(validMoves, myPosition, board, 1, -1);
 
-        }
+            if(row < 8){singleMovesCalc(validMoves, myPosition, board, 1, 0);}
+            if(col < 8){singleMovesCalc(validMoves, myPosition, board, 0, 1);}
+            if(row > 1){singleMovesCalc(validMoves, myPosition, board, -1, 0);}
+            if(col > 1){singleMovesCalc(validMoves, myPosition, board, 0, -1);}
+            if(col>1 && row>1){singleMovesCalc(validMoves, myPosition, board, -1, -1);}
+            if(col<8 && row<8){singleMovesCalc(validMoves, myPosition, board, 1, 1);}
+            if(row>1 && col < 8){singleMovesCalc(validMoves, myPosition, board, -1, 1);}
+            if(col>1 && row < 8){singleMovesCalc(validMoves, myPosition, board, 1, -1);}
+
+
 
     }
     private void knightMoves(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessBoard board){
