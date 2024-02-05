@@ -165,8 +165,8 @@ public class ChessGame {
         //        BoardCopy(currentBoard);
 //        //compare opponent moves to kingmoves and if any match up, then remove that move
         ChessPosition kingLocation = FindKingPiece(teamColor);
-        Collection<ChessMove> kingValidMoves = currentBoard.getPiece(new ChessPosition(kingLocation.getRow(), kingLocation.getColumn())).pieceMoves(currentBoard, kingLocation);
-        Collection<ChessMove> opponentPieceMoves = opponentPieceMoves(teamColor);
+        //Collection<ChessMove> kingValidMoves = currentBoard.getPiece(new ChessPosition(kingLocation.getRow(), kingLocation.getColumn())).pieceMoves(currentBoard, kingLocation);
+        //Collection<ChessMove> opponentPieceMoves = opponentPieceMoves(teamColor);
         if (!isInCheck(teamColor)){
             //can't be in checkmate if it isn't in check
             return false;
@@ -178,27 +178,27 @@ public class ChessGame {
             }
         }
         return false;
-        Iterator<ChessMove> kingMovesIter = kingValidMoves.iterator();
-        while(kingMovesIter.hasNext()){
-            ChessMove kingMove = kingMovesIter.next();
-            ChessPosition kingMoveEnd = kingMove.endPosition;
-
-            for (ChessMove oppMove: opponentPieceMoves){
-                //for(ChessMove kingMove: kingValidMoves){
-                ChessPosition oppMoveEnd = oppMove.endPosition;
-                //ChessPosition kingMoveEnd = kingMove.endPosition;
-
-                if(oppMoveEnd == kingMoveEnd){
-                    kingMovesIter.remove();
-                    break;
-                }
-            }
-        }
-        if (kingValidMoves.isEmpty()){
-            return true;
-        }
-        return false;
-        return kingValidMoves.isEmpty();
+//        Iterator<ChessMove> kingMovesIter = kingValidMoves.iterator();
+//        while(kingMovesIter.hasNext()){
+//            ChessMove kingMove = kingMovesIter.next();
+//            ChessPosition kingMoveEnd = kingMove.endPosition;
+//
+//            for (ChessMove oppMove: opponentPieceMoves){
+//                //for(ChessMove kingMove: kingValidMoves){
+//                ChessPosition oppMoveEnd = oppMove.endPosition;
+//                //ChessPosition kingMoveEnd = kingMove.endPosition;
+//
+//                if(oppMoveEnd == kingMoveEnd){
+//                    kingMovesIter.remove();
+//                    break;
+//                }
+//            }
+//        }
+//        if (kingValidMoves.isEmpty()){
+//            return true;
+//        }
+//        return false;
+//        return kingValidMoves.isEmpty();
     }
 
     /**
