@@ -71,7 +71,6 @@ public class ChessGame {
             ChessPosition end = move.getEndPosition();
             ChessPosition start = move.getStartPosition();
 
-            //ChessPiece clonedBoard = boardClone[move.endPosition.getRow()-1][move.endPosition.getColumn()-1];
             //move the actual piece on the board
             currentBoard.addPiece(end, currentPiece);
             currentBoard.addPiece(start, null);
@@ -83,7 +82,7 @@ public class ChessGame {
             currentBoard = cloneBoard;
         }
         //this.currentBoard = cloneBoard;
-        return validMoves;
+        return validMovesFinal;
     }
 
     /**
