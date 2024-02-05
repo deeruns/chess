@@ -163,7 +163,43 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
+        //        BoardCopy(currentBoard);
+//        //compare opponent moves to kingmoves and if any match up, then remove that move
+        ChessPosition kingLocation = FindKingPiece(teamColor);
+        Collection<ChessMove> kingValidMoves = currentBoard.getPiece(new ChessPosition(kingLocation.getRow(), kingLocation.getColumn())).pieceMoves(currentBoard, kingLocation);
+        Collection<ChessMove> opponentPieceMoves = opponentPieceMoves(teamColor);
+        if (!isInCheck(teamColor)){
+            //can't be in checkmate if it isn't in check
+            return false;
+        }
+        if(isInCheck(teamColor)) {
+            //if the king can't make any valid moves it is in checkmate
+            if (validMoves(kingLocation).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+        Iterator<ChessMove> kingMovesIter = kingValidMoves.iterator();
+        while(kingMovesIter.hasNext()){
+            ChessMove kingMove = kingMovesIter.next();
+            ChessPosition kingMoveEnd = kingMove.endPosition;
 
+            for (ChessMove oppMove: opponentPieceMoves){
+                //for(ChessMove kingMove: kingValidMoves){
+                ChessPosition oppMoveEnd = oppMove.endPosition;
+                //ChessPosition kingMoveEnd = kingMove.endPosition;
+
+                if(oppMoveEnd == kingMoveEnd){
+                    kingMovesIter.remove();
+                    break;
+                }
+            }
+        }
+        if (kingValidMoves.isEmpty()){
+            return true;
+        }
+        return false;
+        return kingValidMoves.isEmpty();
     }
 
     /**
