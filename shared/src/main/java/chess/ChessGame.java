@@ -59,9 +59,30 @@ public class ChessGame {
         HashSet<ChessMove> validMoves;
         //ChessPiece holdingPiece = new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         ChessPiece currentPiece = currentBoard.getPiece(startPosition);
-
         validMoves = (HashSet<ChessMove>) currentPiece.pieceMoves(currentBoard, startPosition);
+        TeamColor team = currentPiece.getTeamColor();
+        HashSet<ChessMove> validMovesFinal = new HashSet<>();
 
+        Iterator<ChessMove> validMovesIter = validMoves.iterator();
+        while(validMovesIter.hasNext()){
+            //reset the board to the original
+            ChessBoard cloneBoard = BoardCopy2(currentBoard);
+            ChessMove move = validMovesIter.next();
+            ChessPosition end = move.getEndPosition();
+            ChessPosition start = move.getStartPosition();
+
+            //ChessPiece clonedBoard = boardClone[move.endPosition.getRow()-1][move.endPosition.getColumn()-1];
+            //move the actual piece on the board
+            currentBoard.addPiece(end, currentPiece);
+            currentBoard.addPiece(start, null);
+            //if the piece does not leave you in check, then the move is valid
+            if(!(isInCheck(currentPiece.getTeamColor()))){
+                validMovesFinal.add(move);
+            }
+            //reset the board to the original
+            currentBoard = cloneBoard;
+        }
+        //this.currentBoard = cloneBoard;
         return validMoves;
     }
 
@@ -88,7 +109,10 @@ public class ChessGame {
         Collection<ChessMove> opponentPieceMoves = opponentPieceMoves(teamColor);
         //find the position of the king and get its validMoves
         ChessPosition kingLocation = FindKingPiece(teamColor);
-        Collection<ChessMove> kingValidMoves = boardClone[kingLocation.getRow()-1][kingLocation.getColumn()-1].pieceMoves(currentBoard, kingLocation);
+        if (kingLocation == null){
+            return true;
+        }
+        Collection<ChessMove> kingValidMoves = currentBoard.getPiece(new ChessPosition(kingLocation.getRow(), kingLocation.getColumn())).pieceMoves(currentBoard, kingLocation);
         //check if the opponent moves can put my king in check
         for (ChessMove move : opponentPieceMoves) {
             if (move.getEndPosition().equals(kingLocation)){
@@ -105,8 +129,8 @@ public class ChessGame {
             //ChessPosition position = new ChessPosition(row, col);
             for(int row = 1; row > 0 && row <= 8;row++){
                 //find the king
-                if (boardClone[row-1][col-1] != null) {
-                    if (boardClone[row-1][col-1].getTeamColor() == teamColor && boardClone[row-1][col-1].getPieceType() == ChessPiece.PieceType.KING) {
+                if (currentBoard.getPiece(new ChessPosition(row, col)) != null) {
+                    if (currentBoard.getPiece(new ChessPosition(row, col)).getTeamColor() == teamColor && currentBoard.getPiece(new ChessPosition(row, col)).getPieceType() == ChessPiece.PieceType.KING) {
                         return new ChessPosition(row, col);
                     }
                 }
@@ -122,9 +146,9 @@ public class ChessGame {
             //ChessPosition position = new ChessPosition(row, col);
             for(int row = 1; row > 0 && row <= 8; row++){
                 //find the king
-                if (boardClone[row-1][col-1] != null) {
-                    if (boardClone[row-1][col-1].getTeamColor() != teamColor) {
-                        opponentPieceMoves.addAll(boardClone[row-1][col-1].pieceMoves(currentBoard, new ChessPosition(row, col)));
+                if (currentBoard.getPiece(new ChessPosition(row, col)) != null) {
+                    if (currentBoard.getPiece(new ChessPosition(row, col)).getTeamColor() != teamColor) {
+                        opponentPieceMoves.addAll(currentBoard.getPiece(new ChessPosition(row, col)).pieceMoves(currentBoard, new ChessPosition(row, col)));
                     }
                 }
             }
@@ -139,36 +163,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        BoardCopy(currentBoard);
-        //compare opponent moves to kingmoves and if any match up, then remove that move
-        ChessPosition kingLocation = FindKingPiece(teamColor);
-        Collection<ChessMove> kingValidMoves = boardClone[kingLocation.getRow()-1][kingLocation.getColumn()-1].pieceMoves(currentBoard, kingLocation);
-        Collection<ChessMove> opponentPieceMoves = opponentPieceMoves(teamColor);
-        if (!isInCheck(teamColor)){
-            //can't be in checkmate if it isn't in check
-            return false;
-        }
-        Iterator<ChessMove> kingMovesIter = kingValidMoves.iterator();
-        while(kingMovesIter.hasNext()){
-            ChessMove kingMove = kingMovesIter.next();
-            ChessPosition kingMoveEnd = kingMove.endPosition;
 
-            for (ChessMove oppMove: opponentPieceMoves){
-                //for(ChessMove kingMove: kingValidMoves){
-                ChessPosition oppMoveEnd = oppMove.endPosition;
-                //ChessPosition kingMoveEnd = kingMove.endPosition;
-
-                if(oppMoveEnd == kingMoveEnd){
-                    kingMovesIter.remove();
-                    break;
-                }
-            }
-        }
-//        if (kingValidMoves == null){
-//            return true;
-//        }
-//        return false;
-        return kingValidMoves.isEmpty();
     }
 
     /**
@@ -179,11 +174,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        if (isInCheck(teamColor)){
-            //can't be in stalemate if king is in check
-            return false;
-        }
-        return true;
+
     }
 
     /**
@@ -213,5 +204,18 @@ public class ChessGame {
             }
         }
     }
+
+    private ChessBoard BoardCopy2(ChessBoard board){
+        ChessBoard cloneBoard = new ChessBoard();
+        for (int col = 1; col <= 8; col++){
+            for (int row = 1; row <= 8; row++){
+                ChessPosition newspot = new ChessPosition(row, col);
+                if (board.getPiece(newspot) != null)
+                    cloneBoard.addPiece(newspot, board.getPiece(newspot));
+            }
+        }
+        return cloneBoard;
+    }
+
 }
 
