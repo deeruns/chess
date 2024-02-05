@@ -209,7 +209,18 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-
+        ChessPosition kingLocation = FindKingPiece(teamColor);
+        if (!isInCheck(teamColor)){
+            // if the king can't make a valid move
+            if (validMoves(kingLocation).isEmpty()){
+                //if the king is in start position and can't make any moves, we don't want it to also be in stalemate
+                if(currentBoard.getPiece(kingLocation).pieceMoves(currentBoard, kingLocation).isEmpty()) {
+                    return false;
+                }
+                else{return true;}
+            }
+        }
+        return false;
     }
 
     /**
