@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -119,7 +120,7 @@ public class ChessGame {
         Collection<ChessMove> opponentPieceMoves = new HashSet<>();
         for (int col = 1; col > 0 && col <= 8; col++){
             //ChessPosition position = new ChessPosition(row, col);
-            for(int row = 1;row > 0 && row <= 8;row++){
+            for(int row = 1; row > 0 && row <= 8; row++){
                 //find the king
                 if (boardClone[row-1][col-1] != null) {
                     if (boardClone[row-1][col-1].getTeamColor() != teamColor) {
@@ -138,7 +139,36 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        BoardCopy(currentBoard);
+        //compare opponent moves to kingmoves and if any match up, then remove that move
+        ChessPosition kingLocation = FindKingPiece(teamColor);
+        Collection<ChessMove> kingValidMoves = boardClone[kingLocation.getRow()-1][kingLocation.getColumn()-1].pieceMoves(currentBoard, kingLocation);
+        Collection<ChessMove> opponentPieceMoves = opponentPieceMoves(teamColor);
+        if (!isInCheck(teamColor)){
+            //can't be in checkmate if it isn't in check
+            return false;
+        }
+        Iterator<ChessMove> kingMovesIter = kingValidMoves.iterator();
+        while(kingMovesIter.hasNext()){
+            ChessMove kingMove = kingMovesIter.next();
+            ChessPosition kingMoveEnd = kingMove.endPosition;
+
+            for (ChessMove oppMove: opponentPieceMoves){
+                //for(ChessMove kingMove: kingValidMoves){
+                ChessPosition oppMoveEnd = oppMove.endPosition;
+                //ChessPosition kingMoveEnd = kingMove.endPosition;
+
+                if(oppMoveEnd == kingMoveEnd){
+                    kingMovesIter.remove();
+                    break;
+                }
+            }
+        }
+//        if (kingValidMoves == null){
+//            return true;
+//        }
+//        return false;
+        return kingValidMoves.isEmpty();
     }
 
     /**
@@ -149,7 +179,11 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor)){
+            //can't be in stalemate if king is in check
+            return false;
+        }
+        return true;
     }
 
     /**

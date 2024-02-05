@@ -376,10 +376,7 @@ public class ChessPiece {
 //        ChessPosition blackDoubleMove = new ChessPosition(row - 2, col);
         ChessPosition whiteBlockMove = new ChessPosition(row + 1, col);
         ChessPosition blackBlockMove = new ChessPosition(row - 1, col);
-        ChessPosition whiteTake1 = new ChessPosition(row + 1, col + 1);
-        ChessPosition whiteTake2 = new ChessPosition(row + 1, col - 1);
-        ChessPosition blackTake1 = new ChessPosition(row - 1, col + 1);
-        ChessPosition blackTake2 = new ChessPosition(row - 1, col - 1);
+
 
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE){
 
@@ -390,11 +387,15 @@ public class ChessPiece {
                     pawnMovesCalculator(validMoves, myPosition, board, 2, 0);
             }
             //if a pawn can take a piece from the opposite team it moves diagonally
-            if (board.getPiece(whiteTake1) != null && board.getPiece(whiteTake1).getTeamColor() == ChessGame.TeamColor.BLACK){
-                pawnDiagCalc(validMoves, myPosition, board, 1,1);
-            }
-            if (board.getPiece(whiteTake2) != null && board.getPiece(whiteTake2).getTeamColor() == ChessGame.TeamColor.BLACK){
-                pawnDiagCalc(validMoves, myPosition, board, 1, -1);
+            if(row > 1 && row < 8 && col > 1 && col < 8) {
+                ChessPosition whiteTake1 = new ChessPosition(row + 1, col + 1);
+                ChessPosition whiteTake2 = new ChessPosition(row + 1, col - 1);
+                if (board.getPiece(whiteTake1) != null && board.getPiece(whiteTake1).getTeamColor() == ChessGame.TeamColor.BLACK) {
+                    pawnDiagCalc(validMoves, myPosition, board, 1, 1);
+                }
+                if (board.getPiece(whiteTake2) != null && board.getPiece(whiteTake2).getTeamColor() == ChessGame.TeamColor.BLACK) {
+                    pawnDiagCalc(validMoves, myPosition, board, 1, -1);
+                }
             }
         }
 
@@ -407,11 +408,15 @@ public class ChessPiece {
                     pawnMovesCalculator(validMoves, myPosition, board, -2, 0);
             }
             //if a pawn can take a piece from the opposite team it moves diagonally
-            if (board.getPiece(blackTake1) != null && board.getPiece(blackTake1).getTeamColor() == ChessGame.TeamColor.WHITE){
-                pawnDiagCalc(validMoves, myPosition, board, -1, 1);
-            }
-            if (board.getPiece(blackTake2) != null && board.getPiece(blackTake2).getTeamColor() == ChessGame.TeamColor.WHITE){
-                pawnDiagCalc(validMoves, myPosition, board, -1, -1);
+            if(row > 1 && row < 8 && col > 1 && col < 8) {
+                ChessPosition blackTake1 = new ChessPosition(row - 1, col + 1);
+                ChessPosition blackTake2 = new ChessPosition(row - 1, col - 1);
+                if (board.getPiece(blackTake1) != null && board.getPiece(blackTake1).getTeamColor() == ChessGame.TeamColor.WHITE) {
+                    pawnDiagCalc(validMoves, myPosition, board, -1, 1);
+                }
+                if (board.getPiece(blackTake2) != null && board.getPiece(blackTake2).getTeamColor() == ChessGame.TeamColor.WHITE) {
+                    pawnDiagCalc(validMoves, myPosition, board, -1, -1);
+                }
             }
         }
     }
