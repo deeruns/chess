@@ -1,3 +1,57 @@
 Chess notes
 the board is 8x8, but you index into it with index 0-7 to avoid out of bounds error
 when references the board use -1 to make sure it followed indexing rules 0-7 instead of 1-8, but you can't add the pieces into the collection unless it is in the 1-8 indexing pattern
+
+stalemate
+ChessPosition kingLocation = FindKingPiece(teamColor);
+        if (!isInCheck(teamColor)){
+            // if the king can't make a valid move
+            if (validMoves(kingLocation).isEmpty()){
+                //if the king is in start position and can't make any moves, we don't want it to also be in stalemate
+                if(currentBoard.getPiece(kingLocation).pieceMoves(currentBoard, kingLocation).isEmpty()) {
+                    return false;
+                }
+                else{return true;}
+            }
+        }
+        return false;
+
+
+isincheckmate
+//        BoardCopy(currentBoard);
+//        //compare opponent moves to kingmoves and if any match up, then remove that move
+        ChessPosition kingLocation = FindKingPiece(teamColor);
+        //Collection<ChessMove> kingValidMoves = currentBoard.getPiece(new ChessPosition(kingLocation.getRow(), kingLocation.getColumn())).pieceMoves(currentBoard, kingLocation);
+        //Collection<ChessMove> opponentPieceMoves = opponentPieceMoves(teamColor);
+        if (!isInCheck(teamColor)){
+            //can't be in checkmate if it isn't in check
+            return false;
+        }
+        if(isInCheck(teamColor)) {
+            //if the king can't make any valid moves it is in checkmate
+            if (validMoves(kingLocation).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+//        Iterator<ChessMove> kingMovesIter = kingValidMoves.iterator();
+//        while(kingMovesIter.hasNext()){
+//            ChessMove kingMove = kingMovesIter.next();
+//            ChessPosition kingMoveEnd = kingMove.endPosition;
+//
+//            for (ChessMove oppMove: opponentPieceMoves){
+//                //for(ChessMove kingMove: kingValidMoves){
+//                ChessPosition oppMoveEnd = oppMove.endPosition;
+//                //ChessPosition kingMoveEnd = kingMove.endPosition;
+//
+//                if(oppMoveEnd == kingMoveEnd){
+//                    kingMovesIter.remove();
+//                    break;
+//                }
+//            }
+//        }
+//        if (kingValidMoves.isEmpty()){
+//            return true;
+//        }
+//        return false;
+        //return kingValidMoves.isEmpty();

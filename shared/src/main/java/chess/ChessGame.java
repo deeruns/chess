@@ -97,14 +97,43 @@ public class ChessGame {
         ChessPiece.PieceType pawnPromo = move.getPromotionPiece();
         ChessPiece currentPiece = currentBoard.getPiece(startPosition);
         TeamColor currentPieceColor = currentBoard.getPiece(startPosition).getTeamColor();
-        if (pawnPromo == null) {
-            currentBoard.addPiece(endPosition, currentPiece);
-            currentBoard.addPiece(startPosition, null);
+        Collection<ChessMove> currPieceMoves = currentBoard.getPiece(startPosition).pieceMoves(currentBoard, startPosition);
+        if (currentPiece.getTeamColor() == playerTurn) {
+            //if move is a validMove
+            if(!validMoves(startPosition).contains(move)){
+                throw new InvalidMoveException();
+            }
+            for (ChessMove validmoves : validMoves(startPosition)) {
+                if (move.equals(validmoves)) {
+                    if (pawnPromo == null) {
+                        currentBoard.addPiece(startPosition, null);
+                        //add normal piece
+                        currentBoard.addPiece(endPosition, currentPiece);
+                        if (playerTurn == TeamColor.WHITE) {
+                            setTeamTurn(TeamColor.BLACK);
+                        } else {
+                            setTeamTurn(TeamColor.WHITE);
+                        }
+                    } else {
+                        currentBoard.addPiece(startPosition, null);
+                        //add promo piece
+                        currentBoard.addPiece(endPosition, new ChessPiece(currentPieceColor, pawnPromo));
+                        if (playerTurn == TeamColor.WHITE) {
+                            setTeamTurn(TeamColor.BLACK);
+                        } else {
+                            setTeamTurn(TeamColor.WHITE);
+                        }
+                        //change turn
+                        //playerTurn = playerTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+                    }
+                }
+            }
+//            if(!validMoves(startPosition).contains(move)){
+//                throw new InvalidMoveException();
+//            }
+            //throw new InvalidMoveException();
         }
-        if (pawnPromo != null){
-            ChessPiece newPawn = new ChessPiece(currentPieceColor, pawnPromo);
-            currentBoard.addPiece(endPosition, newPawn);
-        }
+        else{throw new InvalidMoveException();}
     }
 
     /**
@@ -121,7 +150,7 @@ public class ChessGame {
         //find the position of the king and get its validMoves
         ChessPosition kingLocation = FindKingPiece(teamColor);
         if (kingLocation == null){
-            return true;
+            return false;
         }
         Collection<ChessMove> kingValidMoves = currentBoard.getPiece(new ChessPosition(kingLocation.getRow(), kingLocation.getColumn())).pieceMoves(currentBoard, kingLocation);
         //check if the opponent moves can put my king in check
