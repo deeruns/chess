@@ -1,9 +1,9 @@
 package dataAccess;
 
+import Models.UserData;
+
 public interface UserDAO {
-//    UserDAO dao = new MemoryUserDAO();
-//    public void clearCall() throws DataAccessException {
-//        UserDAO daoClear = new MemoryUserDAO().clear();
-//    }
     void clear() throws DataAccessException;
+    public void createUser(UserData user) throws DataAccessException;
+    public UserData getUser(UserData user) throws DataAccessException;
 }
