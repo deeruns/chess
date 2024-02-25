@@ -2,8 +2,6 @@ package dataAccess;
 
 import Models.AuthTokenData;
 import Models.UserData;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
