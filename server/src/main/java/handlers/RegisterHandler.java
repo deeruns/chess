@@ -1,15 +1,13 @@
 package handlers;
 
 import Models.AuthTokenData;
-import Models.UserData;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.MemoryUserDAO;
 import requests.RegisterRequest;
-import response.RegisterResponse;
-import service.ClearService;
+import response.ResponseRecord;
 import service.RegisterService;
 import spark.Request;
 import spark.Response;
@@ -27,7 +25,7 @@ public class RegisterHandler {
         Gson gson = new Gson();
         RegisterRequest regRequest = serializeRequest(request.body());
         RegisterService service = new RegisterService(new MemoryAuthDAO(), new MemoryGameDAO(), new MemoryUserDAO());
-        RegisterResponse registerResponse = new RegisterResponse();
+        //RegisterResponse registerResponse = new RegisterResponse();
         String finalMessage = "";
         try {
             AuthTokenData authData = service.registerUser(regRequest.getUsername(), regRequest.getPassword(), regRequest.getEmail());
@@ -37,16 +35,18 @@ public class RegisterHandler {
         catch (DataAccessException exception){
             if (Objects.equals(exception.getMessage(), "Error: bad request")){
                 response.status(400);
-                registerResponse.setMessage(exception.getMessage());
-                finalMessage = gson.toJson(registerResponse.getMessage());
+                ResponseRecord responseRecord = new ResponseRecord(exception.getMessage());
+                finalMessage = gson.toJson(responseRecord);
             }
             else if (Objects.equals(exception.getMessage(), "Error: already taken")){
                 response.status(403);
-                finalMessage = gson.toJson(exception.getMessage());
+                ResponseRecord responseRecord = new ResponseRecord(exception.getMessage());
+                finalMessage = gson.toJson(responseRecord);
             }
             else{
                 response.status(500);
-                finalMessage = gson.toJson(exception.getMessage());
+                ResponseRecord responseRecord = new ResponseRecord(exception.getMessage());
+                finalMessage = gson.toJson(responseRecord);
             }
         }
         return finalMessage;
