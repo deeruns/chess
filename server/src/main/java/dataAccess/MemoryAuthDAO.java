@@ -3,6 +3,7 @@ package dataAccess;
 import Models.AuthTokenData;
 import Models.UserData;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO {
@@ -17,13 +18,19 @@ public class MemoryAuthDAO implements AuthDAO {
     }
 
 
-    public AuthTokenData createAuthToken(UserData user){
-        if (currAuth.containsKey(user.username())){
-            currAuth.remove(user.username());
-            //user only has one authToken
+    public void oneAuthTokenPerPlayer(AuthTokenData authData){
+//        if (currAuth.containsValue(authData.username())){
+//            currAuth.remove(authData.authToken());
+//            //user only has one authToken
+//        }
+        //if a user already has an auth, delete it and still return their new one
+        String username = authData.username();
+        for (Map.Entry<String, AuthTokenData> entry : currAuth.entrySet()) {
+            AuthTokenData authTokenData = entry.getValue();
+            if (authTokenData.username().equals(username)) {
+                currAuth.remove(authData.authToken());
+            }
         }
-        UUID auth = UUID.randomUUID();
-        return new AuthTokenData(auth.toString(), user.username());
     }
 
     public void createMemory(AuthTokenData authData) throws DataAccessException {

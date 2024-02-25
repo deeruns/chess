@@ -18,13 +18,13 @@ public class MemoryUserDAO implements UserDAO{
         }
     }
     @Override
-    public UserData getUser(UserData user) throws DataAccessException{
-        if (!userDataArray.containsKey(user.username())){
+    public UserData getUser(String username) throws DataAccessException{
+        if (!userDataArray.containsKey(username)){
             throw new DataAccessException("Error: Data Access Exception");
         }
         //return userDataArray.getOrdefault(user.username(), null);
         else{
-            return userDataArray.get(user.username());
+            return userDataArray.get(username);
         }
     }
 

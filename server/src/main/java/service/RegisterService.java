@@ -11,12 +11,11 @@ import java.util.UUID;
 
 public class RegisterService {
     private final AuthDAO authDAO;
-    private final GameDAO gameDAO;
+
     private final UserDAO userDAO;
 
-    public RegisterService(AuthDAO authDAO, GameDAO gameDAO, UserDAO userDAO) {
+    public RegisterService(AuthDAO authDAO, UserDAO userDAO) {
         this.authDAO = authDAO;
-        this.gameDAO = gameDAO;
         this.userDAO = userDAO;
     }
 
