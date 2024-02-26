@@ -42,7 +42,7 @@ public class MemoryGameDAO implements GameDAO{
             if (gameDataHash.containsKey(gameID)){
                 throw new DataAccessException("Error: bad request");
             }
-            GameData game = new GameData(gameID, null, null, gameName, new ChessGame());
+            GameData game = new GameData(gameID, "", "", gameName, new ChessGame());
             gameDataHash.put(game.gameID(), game);
             //do i need to return game?
             return game;

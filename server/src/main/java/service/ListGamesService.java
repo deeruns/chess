@@ -6,6 +6,8 @@ import dataAccess.DataAccessException;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 
+import java.util.Collection;
+
 public class ListGamesService extends ParentService{
     private final AuthDAO authDAO;
     private final GameDAO gameDAO;
@@ -15,8 +17,8 @@ public class ListGamesService extends ParentService{
         this.gameDAO = gameDAO;
     }
 
-    public void listGames(String authToken) throws DataAccessException{
+    public Collection<GameData> listGames(String authToken) throws DataAccessException{
         authorizeUser(authDAO, authToken);
-        gameDAO.listGames();
+        return gameDAO.listGames();
     }
 }
