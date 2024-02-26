@@ -3,14 +3,11 @@ package dataAccess;
 import Models.GameData;
 import chess.ChessGame;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.sql.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
-    private int countID = 1;
+//    private int countID = 1;
     private static HashMap<Integer, GameData> gameDataHash = new HashMap<>();
 
     public Collection<GameData> listGames(){
@@ -20,7 +17,7 @@ public class MemoryGameDAO implements GameDAO{
 
     public GameData getGame(int gameID) throws DataAccessException {
         if (!gameDataHash.containsKey(gameID)){
-            throw new DataAccessException("Game does not exist");
+            throw new DataAccessException("Error: bad request");
         }
         else{
             return gameDataHash.get(gameID);
@@ -36,12 +33,16 @@ public class MemoryGameDAO implements GameDAO{
         }
         return null;
     }
-    public GameData createGame(GameData game) throws DataAccessException{
-        if (getGameName(game.gameName()) != null){
-            throw new DataAccessException("Game name taken");
+    public GameData createGame(String gameName) throws DataAccessException{
+        if (getGameName(gameName) != null){
+            throw new DataAccessException("Error: bad request");
         }
         else {
-            game = new GameData(countID++, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
+            int gameID = gameIDGenerator();
+            if (gameDataHash.containsKey(gameID)){
+                throw new DataAccessException("Error: bad request");
+            }
+            GameData game = new GameData(gameID, null, null, gameName, new ChessGame());
             gameDataHash.put(game.gameID(), game);
             //do i need to return game?
             return game;
@@ -52,11 +53,11 @@ public class MemoryGameDAO implements GameDAO{
     public void addUser(int gameID, String username, ChessGame.TeamColor userColor) throws DataAccessException{
         GameData game = getGame(gameID);
         if (game == null){
-            throw new DataAccessException("Game doesn't exist");
+            throw new DataAccessException("Error: Data Access Exception");
         }
         if (userColor == ChessGame.TeamColor.WHITE && game.whiteUsername() != null ||
                 userColor == ChessGame.TeamColor.BLACK && game.blackUsername() != null){
-            throw new DataAccessException("player color already taken");
+            throw new DataAccessException("Error: bad request");
         }
 
         GameData newGame = null;
@@ -70,11 +71,16 @@ public class MemoryGameDAO implements GameDAO{
     }
     public void deleteGame(int gameID) throws DataAccessException{
         if (!gameDataHash.containsKey(gameID)){
-            throw new DataAccessException("game doesn't exist");
+            throw new DataAccessException("Error: bad request");
         }
         gameDataHash.remove(gameID);
     }
     public void clear() throws DataAccessException{
         gameDataHash.clear();
+    }
+    public static int gameIDGenerator(){
+        Random random = new Random();
+        int gameID = random.nextInt(9000)+1000;
+        return gameID;
     }
 }

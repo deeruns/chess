@@ -12,7 +12,7 @@ public class MemoryAuthDAO implements AuthDAO {
     //getauth
     public AuthTokenData getUser(String authToken) throws DataAccessException{
         if(!currAuth.containsKey(authToken)){
-            throw new DataAccessException("invalid auth token");
+            throw new DataAccessException("Error: Unauthorized");
         }
         return currAuth.get(authToken);
     }
@@ -35,7 +35,7 @@ public class MemoryAuthDAO implements AuthDAO {
 
     public void createMemory(AuthTokenData authData) throws DataAccessException {
         if (currAuth.containsKey(authData.authToken())){
-            throw new DataAccessException("Auth token already exists");
+            throw new DataAccessException("Error: bad request");
         }
 
         currAuth.put(authData.authToken(), authData);
