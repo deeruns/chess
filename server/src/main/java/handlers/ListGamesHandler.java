@@ -16,6 +16,7 @@ public class ListGamesHandler extends ParentHandler {
         try {
             service.listGames(authToken);
             response.status(200);
+
         } catch (DataAccessException exception) {
             finalResponse = errorMessageGenerator(exception, response);
         }
