@@ -20,7 +20,6 @@ public class JoinGameHandler extends ParentHandler {
         JoinGameService service = new JoinGameService(new MemoryAuthDAO(), new MemoryGameDAO(), new MemoryUserDAO());
         JoinGameRequest joinGameRequest = serializeRequest(request.body());
         String finalResponse = "{}";
-        //check if gameID is null and spectator
         errorHandling(request);
         try{
             if (joinGameRequest.playerColor() == null){

@@ -16,7 +16,6 @@ public class ListGamesService extends ParentService{
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
     }
-
     public Collection<GameData> listGames(String authToken) throws DataAccessException{
         authorizeUser(authDAO, authToken);
         return gameDAO.listGames();

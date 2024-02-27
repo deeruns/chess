@@ -28,21 +28,9 @@ public class LoginHandler extends ParentHandler {
         finalMessage =  deserializeResponse(authData);
     }
         catch (DataAccessException exception){
-//        if (Objects.equals(exception.getMessage(), "Error: Unauthorized")){
-//            response.status(401);
-//            ResponseRecord responseRecord = new ResponseRecord(exception.getMessage());
-//            finalMessage = gson.toJson(responseRecord);
-//        }
-//        else{
-//            response.status(500);
-//            ResponseRecord responseRecord = new ResponseRecord(exception.getMessage());
-//            finalMessage = gson.toJson(responseRecord);
-//        }
-            //from parent class
             finalMessage = errorMessageGenerator(exception, response);
     }
         return finalMessage;
-    //return deserializeResponse(authData);
 }
 
         private LoginRequest serializeRequest(String request){

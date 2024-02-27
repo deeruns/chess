@@ -22,9 +22,6 @@ public class JoinGameService extends ParentService{
         AuthTokenData authData = authDAO.getUser(authToken);
         String username = authData.username();
         gameDAO.addUser(gameID, username, teamColor);
-        //getuser(username)
-        //adduser
-
     }
     public void spectatorJoin(int gameID, String authToken) throws DataAccessException{
         authorizeUser(authDAO, authToken);

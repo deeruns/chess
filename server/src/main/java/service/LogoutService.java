@@ -15,13 +15,4 @@ public class LogoutService extends ParentService{
         authorizeUser(authDAO, authToken);
         authDAO.deleteAuth(authToken);
     }
-//    public AuthTokenData authorizeUser(String authToken) throws DataAccessException{
-//        AuthTokenData authData = authDAO.getUser(authToken);
-//        if (authData == null){
-//            throw new DataAccessException("Error: Unauthorized");
-//        }
-//        else {
-//            return authData;
-//        }
-//    }
 }

@@ -14,15 +14,10 @@ public class ClearService {
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
         this.userDAO = userDAO;
-//        this.authDAO = new MemoryAuthDAO();
-//        this.gameDAO = new MemoryGameDAO();
-//        this.userDAO = new MemoryUserDAO();
-
     }
     public void clearData() throws DataAccessException {
             userDAO.clear();
             authDAO.clear();
             gameDAO.clear();
-
     }
 }

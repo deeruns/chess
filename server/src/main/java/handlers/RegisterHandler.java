@@ -16,16 +16,9 @@ import java.util.Objects;
 
 public class RegisterHandler extends ParentHandler{
     public Object reqHandle(Request request, Response response) throws Exception{
-
-        // call service class
-        //get result object and send it back
-        //authenticate auth code
-        //ClearService gameData = new ClearService(new AuthDAO(),new GameDAO(), new UserDAO());
-        //parse json string
         Gson gson = new Gson();
         RegisterRequest regRequest = serializeRequest(request.body());
         RegisterService service = new RegisterService(new MemoryAuthDAO(), new MemoryUserDAO());
-        //RegisterResponse registerResponse = new RegisterResponse();
         String finalMessage = "";
         try {
             AuthTokenData authData = service.registerUser(regRequest.getUsername(), regRequest.getPassword(), regRequest.getEmail());
@@ -33,25 +26,9 @@ public class RegisterHandler extends ParentHandler{
             finalMessage =  deserializeResponse(authData);
         }
         catch (DataAccessException exception){
-//            if (Objects.equals(exception.getMessage(), "Error: bad request")){
-//                response.status(400);
-//                ResponseRecord responseRecord = new ResponseRecord(exception.getMessage());
-//                finalMessage = gson.toJson(responseRecord);
-//            }
-//            else if (Objects.equals(exception.getMessage(), "Error: already taken")){
-//                response.status(403);
-//                ResponseRecord responseRecord = new ResponseRecord(exception.getMessage());
-//                finalMessage = gson.toJson(responseRecord);
-//            }
-//            else{
-//                response.status(500);
-//                ResponseRecord responseRecord = new ResponseRecord(exception.getMessage());
-//                finalMessage = gson.toJson(responseRecord);
-//            }
             finalMessage = errorMessageGenerator(exception, response);
         }
         return finalMessage;
-        //return deserializeResponse(authData);
     }
 
     private RegisterRequest serializeRequest(String request){

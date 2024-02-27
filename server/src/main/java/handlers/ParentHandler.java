@@ -34,10 +34,4 @@ public class ParentHandler {
         }
         return finalMessage;
     }
-//    public RegisterRequest serializeRequest(String request){
-//        Gson gson = new Gson();
-//        RegisterRequest regRequest = (RegisterRequest)gson.fromJson(request, RegisterRequest.class);
-//        return regRequest;
-//    }
-
 }
