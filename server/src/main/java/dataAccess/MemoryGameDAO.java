@@ -50,24 +50,25 @@ public class MemoryGameDAO implements GameDAO{
 
     }
 
-    public void addUser(int gameID, String username, String userColor) throws DataAccessException{
+    public void addUser(int gameID, String username, String teamColor) throws DataAccessException{
         GameData game = getGame(gameID);
         if (game == null){
-            throw new DataAccessException("Error: Data Access Exception");
-        }
-        if (userColor == "WHITE" && game.whiteUsername() != null ||
-                userColor == ChessGame.TeamColor.BLACK && game.blackUsername() != null){
             throw new DataAccessException("Error: bad request");
         }
+        if (Objects.equals(teamColor, "WHITE") && game.whiteUsername() != null ||
+                Objects.equals(teamColor, "BLACK") && game.blackUsername() != null){
+            throw new DataAccessException("Error: already taken");
+        }
 
-        GameData newGame = null;
-        if (userColor == ChessGame.TeamColor.WHITE){
-            newGame = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+        //GameData newGame = null;
+        if (Objects.equals(teamColor, "WHITE")){
+            GameData newGame = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+            gameDataHash.replace(gameID, newGame);
         }
-        else if (userColor == ChessGame.TeamColor.BLACK){
-            newGame = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+        else if (Objects.equals(teamColor, "BLACK")){
+            GameData newGame = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+            gameDataHash.replace(gameID, newGame);
         }
-        gameDataHash.replace(gameID, newGame);
     }
     public void deleteGame(int gameID) throws DataAccessException{
         if (!gameDataHash.containsKey(gameID)){

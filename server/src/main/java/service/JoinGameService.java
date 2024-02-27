@@ -18,10 +18,6 @@ public class JoinGameService extends ParentService{
         this.userDAO = userDAO;
     }
     public void joinGame(String teamColor, int gameID, String authToken) throws DataAccessException {
-        if (teamColor == null) {
-            //add spectator
-            throw new DataAccessException("Error: bad request");
-        }
         authorizeUser(authDAO, authToken);
         AuthTokenData authData = authDAO.getUser(authToken);
         String username = authData.username();

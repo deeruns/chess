@@ -20,7 +20,7 @@ public class MemoryUserDAO implements UserDAO{
     @Override
     public UserData getUser(String username) throws DataAccessException{
         if (!userDataArray.containsKey(username)){
-            throw new DataAccessException("Error: Data Access Exception");
+            throw new DataAccessException("Error: Unauthorized");
         }
         //return userDataArray.getOrdefault(user.username(), null);
         else{

@@ -19,14 +19,14 @@ public class JoinGameHandler extends ParentHandler {
         String authToken = request.headers("authorization");
         JoinGameService service = new JoinGameService(new MemoryAuthDAO(), new MemoryGameDAO(), new MemoryUserDAO());
         JoinGameRequest joinGameRequest = serializeRequest(request.body());
-        String finalResponse = "";
+        String finalResponse = "{}";
         //check if gameID is null and spectator
         errorHandling(request);
         try{
-            if (joinGameRequest.teamColor() == null){
+            if (joinGameRequest.playerColor() == null){
                 service.spectatorJoin(joinGameRequest.gameID(), authToken);
             }
-            service.joinGame(joinGameRequest.teamColor(), joinGameRequest.gameID(), authToken);
+            service.joinGame(joinGameRequest.playerColor(), joinGameRequest.gameID(), authToken);
             response.status(200);
         }
         catch (DataAccessException exception){
@@ -41,7 +41,7 @@ public class JoinGameHandler extends ParentHandler {
     }
     private void errorHandling(Request request) throws DataAccessException{
         JsonObject json = JsonParser.parseString(request.body()).getAsJsonObject();
-        if (!json.has("gameID") || json.get("gameID").isJsonNull()) {
+        if (!json.has("gameID") && json.get("gameID").isJsonNull()) {
             throw new DataAccessException("Error: bad request");
         }
     }
