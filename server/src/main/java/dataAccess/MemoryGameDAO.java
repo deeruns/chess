@@ -42,7 +42,7 @@ public class MemoryGameDAO implements GameDAO{
             if (gameDataHash.containsKey(gameID)){
                 throw new DataAccessException("Error: bad request");
             }
-            GameData game = new GameData(gameID, "", "", gameName, new ChessGame());
+            GameData game = new GameData(gameID, null, null, gameName, new ChessGame());
             gameDataHash.put(game.gameID(), game);
             //do i need to return game?
             return game;
@@ -50,12 +50,12 @@ public class MemoryGameDAO implements GameDAO{
 
     }
 
-    public void addUser(int gameID, String username, ChessGame.TeamColor userColor) throws DataAccessException{
+    public void addUser(int gameID, String username, String userColor) throws DataAccessException{
         GameData game = getGame(gameID);
         if (game == null){
             throw new DataAccessException("Error: Data Access Exception");
         }
-        if (userColor == ChessGame.TeamColor.WHITE && game.whiteUsername() != null ||
+        if (userColor == "WHITE" && game.whiteUsername() != null ||
                 userColor == ChessGame.TeamColor.BLACK && game.blackUsername() != null){
             throw new DataAccessException("Error: bad request");
         }
