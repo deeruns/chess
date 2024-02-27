@@ -13,7 +13,6 @@ import java.util.Arrays;
 public class ChessBoard {
     public ChessPiece[][] boardDimension =  new ChessPiece[8][8];
     public ChessBoard() {
-        
     }
 
     /**
@@ -24,10 +23,6 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         boardDimension[position.getRow()-1][position.getColumn()-1] = piece;
-//        int row = position.getRow();
-//        int col = position.getColumn();
-//        if (col <= 0 && col > 8 && row <= 0 && row > 8)
-//            boardDimension[row][col] = piece;
     }
 
     /**

@@ -57,7 +57,6 @@ public class ChessGame {
         }
 
         HashSet<ChessMove> validMoves;
-        //ChessPiece holdingPiece = new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         ChessPiece currentPiece = currentBoard.getPiece(startPosition);
         validMoves = (HashSet<ChessMove>) currentPiece.pieceMoves(currentBoard, startPosition);
         TeamColor team = currentPiece.getTeamColor();
@@ -81,7 +80,6 @@ public class ChessGame {
             //reset the board to the original
             currentBoard = cloneBoard;
         }
-        //this.currentBoard = cloneBoard;
         return validMovesFinal;
     }
 
@@ -123,15 +121,9 @@ public class ChessGame {
                         } else {
                             setTeamTurn(TeamColor.WHITE);
                         }
-                        //change turn
-                        //playerTurn = playerTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
                     }
                 }
             }
-//            if(!validMoves(startPosition).contains(move)){
-//                throw new InvalidMoveException();
-//            }
-            //throw new InvalidMoveException();
         }
         else{throw new InvalidMoveException();}
     }
@@ -163,10 +155,8 @@ public class ChessGame {
     }
 
     public ChessPosition FindKingPiece(TeamColor teamColor){
-        //does this check a different board than is in check?
         //find the position of the king and get its validMoves
         for (int col = 1; col > 0 && col <= 8; col++){
-            //ChessPosition position = new ChessPosition(row, col);
             for(int row = 1; row > 0 && row <= 8;row++){
                 //find the king
                 if (currentBoard.getPiece(new ChessPosition(row, col)) != null) {
@@ -179,7 +169,6 @@ public class ChessGame {
         return null;
     }
     public Collection<ChessMove> opponentPieceMoves(TeamColor teamColor){
-        //does this check a different board than is in check?
         //find the position of the king and get its validMoves
         Collection<ChessMove> opponentPieceMoves = new HashSet<>();
         for (int col = 1; col > 0 && col <= 8; col++){
@@ -203,11 +192,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        //        BoardCopy(currentBoard);
-//        //compare opponent moves to kingmoves and if any match up, then remove that move
+        //compare opponent moves to kingmoves and if any match up, then remove that move
         ChessPosition kingLocation = FindKingPiece(teamColor);
-        //Collection<ChessMove> kingValidMoves = currentBoard.getPiece(new ChessPosition(kingLocation.getRow(), kingLocation.getColumn())).pieceMoves(currentBoard, kingLocation);
-        //Collection<ChessMove> opponentPieceMoves = opponentPieceMoves(teamColor);
         if (!isInCheck(teamColor)){
             //can't be in checkmate if it isn't in check
             return false;
@@ -219,27 +205,6 @@ public class ChessGame {
             }
         }
         return false;
-//        Iterator<ChessMove> kingMovesIter = kingValidMoves.iterator();
-//        while(kingMovesIter.hasNext()){
-//            ChessMove kingMove = kingMovesIter.next();
-//            ChessPosition kingMoveEnd = kingMove.endPosition;
-//
-//            for (ChessMove oppMove: opponentPieceMoves){
-//                //for(ChessMove kingMove: kingValidMoves){
-//                ChessPosition oppMoveEnd = oppMove.endPosition;
-//                //ChessPosition kingMoveEnd = kingMove.endPosition;
-//
-//                if(oppMoveEnd == kingMoveEnd){
-//                    kingMovesIter.remove();
-//                    break;
-//                }
-//            }
-//        }
-//        if (kingValidMoves.isEmpty()){
-//            return true;
-//        }
-//        return false;
-//        return kingValidMoves.isEmpty();
     }
 
     /**
