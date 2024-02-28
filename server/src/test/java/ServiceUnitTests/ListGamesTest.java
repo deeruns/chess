@@ -15,10 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ListGamesTest {
     private static ClearService clearService;
     private static CreateGameService createGameService;
-    private static JoinGameService joinGameService;
     private static service.ListGamesService listGamesService;
-    private static LoginService loginService;
-    private static LogoutService logoutService;
     private static RegisterService registerService;
     private static MemoryAuthDAO authDAO;
     private static MemoryGameDAO gameDAO;
@@ -34,10 +31,7 @@ public class ListGamesTest {
         userDAO = new MemoryUserDAO();
         clearService = new ClearService(authDAO,gameDAO,userDAO);
         createGameService = new CreateGameService(authDAO, gameDAO);
-        joinGameService = new JoinGameService(authDAO, gameDAO, userDAO);
         listGamesService = new service.ListGamesService(authDAO, gameDAO);
-        loginService = new LoginService(authDAO, userDAO);
-        logoutService = new LogoutService(authDAO);
         registerService = new RegisterService(authDAO, userDAO);
         userData = new UserData("NapoleonDynamite","cannedheat","decrodedPieceOfCrap@uncleRico.com");
 

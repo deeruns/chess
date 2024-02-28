@@ -3,10 +3,7 @@ package ServiceUnitTests;
 import Models.AuthTokenData;
 import Models.GameData;
 import Models.UserData;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
-import dataAccess.MemoryUserDAO;
+import dataAccess.*;
 import org.junit.jupiter.api.*;
 import service.*;
 import service.ListGamesService;
@@ -19,6 +16,8 @@ public class LogoutTest {
     private static LogoutService logoutService;
     private static RegisterService registerService;
     private static MemoryAuthDAO authDAO;
+    private static MemoryGameDAO gameDAO;
+    private static MemoryUserDAO userDAO;
     private static UserData userData;
     private static GameData gameData;
     private static AuthTokenData authTokenData;
@@ -26,9 +25,13 @@ public class LogoutTest {
     @BeforeAll
     public static void InitializeData() {
         authDAO = new MemoryAuthDAO();
+        gameDAO = new MemoryGameDAO();
+        userDAO = new MemoryUserDAO();
+        clearService = new ClearService(authDAO,gameDAO,userDAO);
+        createGameService = new CreateGameService(authDAO, gameDAO);
         logoutService = new LogoutService(authDAO);
+        registerService = new RegisterService(authDAO, userDAO);
         userData = new UserData("NapoleonDynamite","cannedheat","decrodedPieceOfCrap@uncleRico.com");
-        //authWrong = null;
     }
 
     @BeforeEach

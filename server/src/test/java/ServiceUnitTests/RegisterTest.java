@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RegisterTest {
     private static ClearService clearService;
     private static CreateGameService createGameService;
+    private static LogoutService logoutService;
     private static RegisterService registerService;
     private static MemoryAuthDAO authDAO;
     private static MemoryGameDAO gameDAO;
@@ -27,9 +28,11 @@ public class RegisterTest {
         authDAO = new MemoryAuthDAO();
         gameDAO = new MemoryGameDAO();
         userDAO = new MemoryUserDAO();
+        clearService = new ClearService(authDAO,gameDAO,userDAO);
+        createGameService = new CreateGameService(authDAO, gameDAO);
+        logoutService = new LogoutService(authDAO);
         registerService = new RegisterService(authDAO, userDAO);
         userData = new UserData("NapoleonDynamite","cannedheat","decrodedPieceOfCrap@uncleRico.com");
-        //authWrong = null;
     }
 
     @BeforeEach
