@@ -19,7 +19,7 @@ public class JoinGameHandler extends ParentHandler {
         String authToken = request.headers("authorization");
         JoinGameService service = new JoinGameService(new MemoryAuthDAO(), new MemoryGameDAO(), new MemoryUserDAO());
         JoinGameRequest joinGameRequest = serializeRequest(request.body());
-        String finalResponse = "{}";
+        String finalResponse = "";
         errorHandling(request);
         try{
             if (joinGameRequest.playerColor() == null){
