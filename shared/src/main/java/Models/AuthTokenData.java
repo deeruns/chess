@@ -1,3 +1,5 @@
 package Models;
 
-public record AuthTokenData (String authToken, String username){ }
+public record AuthTokenData (String authToken, String username){
+
+}
