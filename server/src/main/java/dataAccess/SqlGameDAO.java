@@ -125,39 +125,50 @@ public class SqlGameDAO implements GameDAO{
                 prepStatement.setInt(1, gameID);
 
                 try(var rs = prepStatement.executeQuery()) {
-                    if ("WHITE".equals(userColor)) {
-                        if (rs.getString("whiteUsername") != null) {
-                            throw new DataAccessException("Error: already taken");
-                        }
-                     else {
-                            var whiteStatement = "UPDATE games SET whiteUsername=? WHERE gameID=?";
-                            try (var setWhiteUser = conn.prepareStatement(whiteStatement)) {
-                                setWhiteUser.setString(1, username);
-                                setWhiteUser.setInt(2, gameID);
+                    if (rs.next()) {
+                        if ("WHITE".equals(userColor)) {
+                            String whiteUsername = rs.getString("whiteUsername");
+                            if (whiteUsername != null) {
+                                throw new DataAccessException("Error: already taken");
+                            } else {
+                                var whiteStatement = "UPDATE games SET whiteUsername=? WHERE gameID=?";
+                                try (var setWhiteUser = conn.prepareStatement(whiteStatement)) {
+                                    setWhiteUser.setString(1, username);
+                                    setWhiteUser.setInt(2, gameID);
 
-                                setWhiteUser.executeUpdate();
+                                    setWhiteUser.executeUpdate();
+                                }
+                            }
+                        } else if ("BLACK".equals(userColor)) {
+                            String blackUsername = rs.getString("blackUsername");
+                            if (blackUsername != null) {
+                                throw new DataAccessException("Error: already taken");
+                            } else {
+                                var blackStatement = "UPDATE games SET blackUsername=? WHERE gameID=?";
+                                try (var setBlackUser = conn.prepareStatement(blackStatement)) {
+                                    setBlackUser.setString(1, username);
+                                    setBlackUser.setInt(2, gameID);
+
+                                    setBlackUser.executeUpdate();
+                                }
                             }
                         }
                     }
-                    else if ("BLACK".equals(userColor)){
-                        if(rs.getString("blackUsername") != null){
-                            throw new DataAccessException("Error: already taken");
-                        } else {
-                            var blackStatement = "UPDATE games SET blackUsername=? WHERE gameID=?";
-                            try (var setBlackUser = conn.prepareStatement(blackStatement)){
-                                setBlackUser.setString(1, username);
-                                setBlackUser.setInt(2, gameID);
-
-                                setBlackUser.executeUpdate();
-                            }
-                        }
-                        }
-                    }
+                }
                 }
             }
         catch(SQLException exception){
             throw new DataAccessException("Error: already taken");
         }
+    }
+
+    public void addWhiteUser(int gameID, String username) throws DataAccessException {
+        var statement = "UPDATE game SET whiteUsername = ? WHERE gameID = ?";
+        DatabaseManager.executeUpdate(statement, username, gameID);
+    }
+    public void addBlackUser(int gameID, String username) throws DataAccessException {
+        var statement = "UPDATE game SET blackUsername = ? WHERE gameID = ?";
+        DatabaseManager.executeUpdate(statement, username, gameID);
     }
 
 

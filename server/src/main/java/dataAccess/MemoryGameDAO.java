@@ -85,6 +85,23 @@ public class MemoryGameDAO implements GameDAO{
     public void clear() throws DataAccessException{
         gameDataHash.clear();
     }
+
+    @Override
+    public void addBlackUser(int gameID, String username) throws DataAccessException {
+        if (!gameDataHash.containsKey(gameID)){
+            throw new DataAccessException("Error: bad request");
+        }
+        gameDataHash.remove(gameID);
+    }
+
+    @Override
+    public void addWhiteUser(int gameID, String username) throws DataAccessException {
+        if (!gameDataHash.containsKey(gameID)){
+            throw new DataAccessException("Error: bad request");
+        }
+        gameDataHash.remove(gameID);
+    }
+
     public static int gameIDGenerator(){
         Random random = new Random();
         int gameID = random.nextInt(9000)+1000;

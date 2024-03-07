@@ -27,16 +27,20 @@ public class JoinGameService extends ParentService{
         authorizeUser(authDAO, authToken);
         AuthTokenData authData = authDAO.getUser(authToken);
         String username = authData.username();
-        if(teamColor == "WHITE"){
-            if(!(gameData.whiteUsername() == null)){
-                throw new DataAccessException("Error: already taken");
-            }
-        }
-        if(teamColor == "BLACK"){
-            if(!(gameData.blackUsername() == null)){
-                throw new DataAccessException("Error: already taken");
-            }
-        }
+//        if(teamColor == "WHITE"){
+//            if(!(gameData.whiteUsername() == null)){
+//                throw new DataAccessException("Error: already taken");
+//            }
+//            gameDAO.addWhiteUser(gameID, username);
+//
+//        }
+//        if(teamColor == "BLACK"){
+//            if(!(gameData.blackUsername() == null)){
+//                throw new DataAccessException("Error: already taken");
+//            }
+//            gameDAO.addBlackUser(gameID, username);
+//            gameData.blackUsername() = username;
+//        }
         gameDAO.addUser(gameID, username, teamColor);
     }
     public void spectatorJoin(int gameID, String authToken) throws DataAccessException{
