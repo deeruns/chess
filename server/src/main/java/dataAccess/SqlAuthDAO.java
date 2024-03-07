@@ -1,6 +1,7 @@
 package dataAccess;
 
 import Models.AuthTokenData;
+import chess.ChessGame;
 import com.google.gson.Gson;
 
 import java.sql.ResultSet;
@@ -22,7 +23,7 @@ public class SqlAuthDAO implements AuthDAO{
                 prepStatement.setString(1, authToken);
                 try(var rs = prepStatement.executeQuery()){
                     if (rs.next()){
-                        return new AuthTokenData(rs.getString(authToken), rs.getString("username"));
+                        return new AuthTokenData(rs.getString("authToken"), rs.getString("username"));
                     }
                     return null;
                 }
@@ -62,8 +63,19 @@ public class SqlAuthDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-        var statement = "DELETE FROM authTokenTable WHERE authToken=?";
-        DatabaseManager.executeUpdate(statement, authToken);
+//        var statement = "DELETE FROM authTokenTable WHERE authToken=?";
+//        DatabaseManager.executeUpdate(statement, authToken);
+            try (var conn = DatabaseManager.getConnection()) {
+                var statement = "DELETE FROM authTokenTable WHERE authToken=?";
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.setString(1, authToken);
+                    preparedStatement.executeUpdate();
+            }
+                //throw new DataAccessException("Error: already taken");
+            }
+            catch (SQLException exception) {
+                throw new DataAccessException("Error: cannot log out");
+        }
     }
 
     @Override
