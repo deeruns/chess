@@ -2,10 +2,7 @@ package handlers;
 
 import Models.AuthTokenData;
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
-import dataAccess.MemoryUserDAO;
+import dataAccess.*;
 import requests.RegisterRequest;
 import response.ResponseRecord;
 import service.RegisterService;
@@ -18,7 +15,7 @@ public class RegisterHandler extends ParentHandler{
     public Object reqHandle(Request request, Response response) throws Exception{
         Gson gson = new Gson();
         RegisterRequest regRequest = serializeRequest(request.body());
-        RegisterService service = new RegisterService(new MemoryAuthDAO(), new MemoryUserDAO());
+        RegisterService service = new RegisterService(new SqlAuthDAO(), new SqlUserDAO());
         String finalMessage = "";
         try {
             AuthTokenData authData = service.registerUser(regRequest.getUsername(), regRequest.getPassword(), regRequest.getEmail());

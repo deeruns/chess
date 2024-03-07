@@ -34,7 +34,7 @@ public class LoginService {
     public AuthTokenData createAuthToken(String username) throws DataAccessException{
         UUID auth = UUID.randomUUID();
         AuthTokenData authData =  new AuthTokenData(auth.toString(), username);
-        authDAO.oneAuthTokenPerPlayer(authData);
+        //authDAO.oneAuthTokenPerPlayer(authData);
         authDAO.createMemory(authData);
         return authData;
     }

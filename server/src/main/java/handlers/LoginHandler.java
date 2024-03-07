@@ -2,10 +2,7 @@ package handlers;
 
 import Models.AuthTokenData;
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
-import dataAccess.MemoryUserDAO;
+import dataAccess.*;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import response.ResponseRecord;
@@ -20,7 +17,7 @@ public class LoginHandler extends ParentHandler {
     public Object reqHandle(Request request, Response response) throws Exception{
     Gson gson = new Gson();
     LoginRequest loginRequest = serializeRequest(request.body());
-    LoginService service = new LoginService(new MemoryAuthDAO(),new MemoryUserDAO());
+    LoginService service = new LoginService(new SqlAuthDAO(),new SqlUserDAO());
     String finalMessage = "";
         try {
         AuthTokenData authData = service.loginUser(loginRequest.getUsername(), loginRequest.getPassword());

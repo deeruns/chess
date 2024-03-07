@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryUserDAO;
+import dataAccess.SqlAuthDAO;
 import org.eclipse.jetty.http.MetaData;
 import requests.RegisterRequest;
 import service.LogoutService;
@@ -13,7 +14,7 @@ import spark.Request;
 public class LogoutHandler extends ParentHandler{
     public Object reqHandle(Request request, Response response) throws DataAccessException {
         String authToken = request.headers("authorization");
-        LogoutService service = new LogoutService(new MemoryAuthDAO());
+        LogoutService service = new LogoutService(new SqlAuthDAO());
         String finalResponse = "";
         try{
             service.logoutUser(authToken);
