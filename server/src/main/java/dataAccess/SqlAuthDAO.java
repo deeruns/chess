@@ -17,67 +17,95 @@ public class SqlAuthDAO implements AuthDAO{
     public AuthTokenData getUser(String authToken) throws DataAccessException {
         //returns AuthTokenData
         try (var conn = DatabaseManager.getConnection()){
-            var statement = "SELECT authToken, json FROM auths WHERE authToken=?";
+            var statement = "SELECT authToken, username FROM authTokenTable WHERE authToken=?";
             try(var prepStatement = conn.prepareStatement(statement)){
-
+                prepStatement.setString(1, authToken);
+                try(var rs = prepStatement.executeQuery()){
+                    if (rs.next()){
+                        return new AuthTokenData(rs.getString(authToken), rs.getString("username"));
+                    }
+                    return null;
+                }
             }
+
+        }
+        catch(SQLException exception){
+            throw new DataAccessException("Error: Unauthorized");
         }
     }
 
     @Override
-    public void oneAuthTokenPerPlayer(AuthTokenData authData) {
-
+    public void oneAuthTokenPerPlayer(AuthTokenData authData) throws DataAccessException {
+        try(var conn = DatabaseManager.getConnection()){
+            var statement = "SELECT * FROM authTokenTable WHERE authToken = ?";
+            try(var prepStatememt = conn.prepareStatement(statement)){
+                prepStatememt.setString(1, authData.authToken());
+                try(var rs = prepStatememt.executeQuery()){
+                    if(rs.next()){
+                        deleteAuth(authData.authToken());
+                    }
+                }
+            }
+        }
+        catch (SQLException exception) {
+            throw new DataAccessException("Data Access Exception");
+        }
     }
 
     @Override
     public void createMemory(AuthTokenData authData) throws DataAccessException {
-
+        //put auth into database
+        var statement = "INSERT INTO authTokenTable (authToken, username) VALUES (?,?)";
+        //var userJson = new Gson().toJson(user);
+        DatabaseManager.executeUpdate(statement, authData.authToken(), authData.username());
     }
 
     @Override
-    public void deleteAuth(String authToken) {
-
+    public void deleteAuth(String authToken) throws DataAccessException {
+        var statement = "DELETE FROM authTokenTable WHERE authToken=?";
+        DatabaseManager.executeUpdate(statement, authToken);
     }
 
     @Override
     public void clear() throws DataAccessException {
-
+        var statement = "TRUNCATE TABLE authTokenTable";
+        DatabaseManager.executeUpdate(statement);
     }
     private AuthTokenData readAuths(ResultSet rs) throws SQLException {
-        var id = rs.getInt("id");
-        var json = rs.getString("username");
-        var AuthData = new Gson().fromJson(json, AuthTokenData.class);
-        return AuthData.setId(id);
+        var authToken = rs.getString("authToken");
+        var username= rs.getString("username");
+        AuthTokenData authData = new AuthTokenData(authToken, username);
+        return new Gson().fromJson(String.valueOf(authData), AuthTokenData.class);
     }
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof AuthTokenData auth) ps.setString(i + 1, auth.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-
-                return 0;
-            }
-        } catch (SQLException exception) {
-            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, exception.getMessage()));
-        }
-    }
+//    private int executeUpdate(String statement, Object... params) throws DataAccessException {
+//        try (var conn = DatabaseManager.getConnection()) {
+//            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+//                for (var i = 0; i < params.length; i++) {
+//                    var param = params[i];
+//                    if (param instanceof String p) ps.setString(i + 1, p);
+//                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
+//                    else if (param instanceof AuthTokenData auth) ps.setString(i + 1, auth.toString());
+//                    else if (param == null) ps.setNull(i + 1, NULL);
+//                }
+//                ps.executeUpdate();
+//
+//                var rs = ps.getGeneratedKeys();
+//                if (rs.next()) {
+//                    return rs.getInt(1);
+//                }
+//
+//                return 0;
+//            }
+//        } catch (SQLException exception) {
+//            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, exception.getMessage()));
+//            //throw new DataAccessException("Error: already taken");
+//        }
+//    }
     private final String[] createStatements = {
             """
-            CREATE TABLE IF NOT EXISTS auths (
-            'authToken' VARCHAR(255) NOT NULL PRIMARY KEY,
-            'username' VARCHAR(255) NOT NULL,
-            FOREIGN KEY (username) REFERENCES users(username)
+            CREATE TABLE IF NOT EXISTS authTokenTable (
+            `authToken` VARCHAR(255) NOT NULL PRIMARY KEY,
+            `username` VARCHAR(255) NOT NULL
             )
             """
     };
