@@ -3,10 +3,7 @@ package handlers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
-import dataAccess.MemoryUserDAO;
+import dataAccess.*;
 import requests.CreateGameRequest;
 import requests.JoinGameRequest;
 import service.JoinGameService;
@@ -17,7 +14,7 @@ import spark.Request;
 public class JoinGameHandler extends ParentHandler {
     public Object reqHandle(Request request, Response response)throws DataAccessException{
         String authToken = request.headers("authorization");
-        JoinGameService service = new JoinGameService(new MemoryAuthDAO(), new MemoryGameDAO(), new MemoryUserDAO());
+        JoinGameService service = new JoinGameService(new SqlAuthDAO(), new SqlGameDAO(), new SqlUserDAO());
         JoinGameRequest joinGameRequest = serializeRequest(request.body());
         String finalResponse = "";
         errorHandling(request);

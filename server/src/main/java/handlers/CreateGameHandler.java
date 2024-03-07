@@ -3,10 +3,7 @@ package handlers;
 import Models.AuthTokenData;
 import Models.GameData;
 import com.google.gson.Gson;
-import dataAccess.AuthDAO;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
+import dataAccess.*;
 import requests.CreateGameRequest;
 import requests.LoginRequest;
 import response.CreateGameResponse;
@@ -17,7 +14,7 @@ import spark.Request;
 public class CreateGameHandler extends ParentHandler{
     public Object reqHandle(Request request, Response response) throws DataAccessException {
         String authToken = request.headers("authorization");
-        CreateGameService service = new CreateGameService(new MemoryAuthDAO(), new MemoryGameDAO());
+        CreateGameService service = new CreateGameService(new SqlAuthDAO(), new SqlGameDAO());
         CreateGameRequest createGameRequest = serializeRequest(request.body());
         String finalResponse = "";
         try{

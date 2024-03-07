@@ -2,10 +2,7 @@ package handlers;
 
 import Models.GameData;
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
-import dataAccess.MemoryUserDAO;
+import dataAccess.*;
 import response.CreateGameResponse;
 import response.ListGamesResponse;
 import service.ListGamesService;
@@ -17,7 +14,7 @@ import java.util.Collection;
 public class ListGamesHandler extends ParentHandler {
     public Object reqHandle(Request request, Response response) throws DataAccessException {
         String authToken = request.headers("authorization");
-        ListGamesService service = new ListGamesService(new MemoryAuthDAO(), new MemoryGameDAO());
+        ListGamesService service = new ListGamesService(new SqlAuthDAO(), new SqlGameDAO());
         String finalResponse = "";
         try {
             Collection<GameData> gamedata = service.listGames(authToken);
