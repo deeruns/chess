@@ -11,6 +11,6 @@ public class ClearHandler {
         gameData.clearData();
 
         response.status(200);
-        return "{}";
+        return "";
     }
 }

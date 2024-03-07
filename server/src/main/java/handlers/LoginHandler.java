@@ -18,7 +18,7 @@ public class LoginHandler extends ParentHandler {
     Gson gson = new Gson();
     LoginRequest loginRequest = serializeRequest(request.body());
     LoginService service = new LoginService(new SqlAuthDAO(),new SqlUserDAO());
-    String finalMessage = "";
+    String finalMessage = "{}";
         try {
         AuthTokenData authData = service.loginUser(loginRequest.getUsername(), loginRequest.getPassword());
         response.status(200);
