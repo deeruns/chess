@@ -1,6 +1,7 @@
 package dataAccess;
 
 import Models.AuthTokenData;
+import chess.ChessGame;
 
 import java.sql.*;
 import java.util.Properties;
@@ -80,6 +81,7 @@ public class DatabaseManager {
                     if (param instanceof String p) ps.setString(i + 1, p);
                     else if (param instanceof Integer p) ps.setInt(i + 1, p);
                     else if (param instanceof AuthTokenData auth) ps.setString(i + 1, auth.toString());
+                    else if (param instanceof ChessGame game) ps.setString(i+1, game.toString());
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
                 ps.executeUpdate();

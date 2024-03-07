@@ -25,6 +25,9 @@ public class LoginService {
             throw new DataAccessException("Error: bad request");
         }
         UserData userData = userDAO.getUser(username);
+        if (userData == null){
+            throw new DataAccessException("Error: Unauthorized");
+        }
         if (!Objects.equals(userData.password(), password)){
             //wrong password
             throw new DataAccessException("Error: Unauthorized");
