@@ -17,7 +17,7 @@ public class JoinGameHandler extends ParentHandler {
         JoinGameService service = new JoinGameService(new SqlAuthDAO(), new SqlGameDAO(), new SqlUserDAO());
         JoinGameRequest joinGameRequest = serializeRequest(request.body());
         String finalResponse = "";
-        errorHandling(request);
+        //errorHandling(request);
         try{
             if (joinGameRequest.playerColor() == null){
                 service.spectatorJoin(joinGameRequest.gameID(), authToken);
@@ -35,10 +35,21 @@ public class JoinGameHandler extends ParentHandler {
         JoinGameRequest joinGameRequest = (JoinGameRequest) gson.fromJson(request, JoinGameRequest.class);
         return joinGameRequest;
     }
-    private void errorHandling(Request request) throws DataAccessException{
-        JsonObject json = JsonParser.parseString(request.body()).getAsJsonObject();
-        if (!json.has("gameID") && json.get("gameID").isJsonNull()) {
-            throw new DataAccessException("Error: bad request");
-        }
-    }
+//    private void errorHandling(Request request) throws DataAccessException{
+//        JsonObject json = JsonParser.parseString(request.body()).getAsJsonObject();
+//        if (!json.has("gameID") && json.get("gameID").isJsonNull()) {
+//            throw new DataAccessException("Error: bad request");
+//        }
+//    }
+//    private void errorHandling(Request request) throws DataAccessException {
+//        JsonObject json = JsonParser.parseString(request.body()).getAsJsonObject();
+//        if (!json.has("gameID")) {
+//            throw new DataAccessException("Error: bad request");
+//        }
+//        // Check if the value associated with the key "gameID" is null
+//        if (json.get("gameID").isJsonNull()) {
+//            throw new DataAccessException("Error: bad request");
+//        }
+//    }
+
 }

@@ -1,6 +1,7 @@
 package service;
 
 import Models.AuthTokenData;
+import Models.GameData;
 import chess.ChessGame;
 import dataAccess.AuthDAO;
 import dataAccess.DataAccessException;
@@ -18,9 +19,24 @@ public class JoinGameService extends ParentService{
         this.userDAO = userDAO;
     }
     public void joinGame(String teamColor, int gameID, String authToken) throws DataAccessException {
+        Integer newGameID = gameID;
+        if(newGameID == null){
+            throw new DataAccessException("Error: bad request");
+        }
+        GameData gameData = gameDAO.getGame(gameID);
         authorizeUser(authDAO, authToken);
         AuthTokenData authData = authDAO.getUser(authToken);
         String username = authData.username();
+        if(teamColor == "WHITE"){
+            if(!(gameData.whiteUsername() == null)){
+                throw new DataAccessException("Error: already taken");
+            }
+        }
+        if(teamColor == "BLACK"){
+            if(!(gameData.blackUsername() == null)){
+                throw new DataAccessException("Error: already taken");
+            }
+        }
         gameDAO.addUser(gameID, username, teamColor);
     }
     public void spectatorJoin(int gameID, String authToken) throws DataAccessException{
