@@ -63,24 +63,25 @@ public class SqlGameDAO implements GameDAO{
 
     @Override
     public GameData getGameName(String gameName) throws DataAccessException {
-        try(var conn = DatabaseManager.getConnection()){
+        try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM games WHERE gameName=?";
-            try(var prepStatement = conn.prepareStatement(statement)){
-                prepStatement.setString(1, String.valueOf(gameName));
-                try(var rs = prepStatement.executeQuery()){
-                    if(rs.next()){
+            try (var prepStatement = conn.prepareStatement(statement)) {
+                prepStatement.setString(1, gameName);
+                try (var rs = prepStatement.executeQuery()) {
+                    if (rs.next()) {
                         ChessGame chessGame = new Gson().fromJson(rs.getString("game"), ChessGame.class);
-                        return new GameData(Integer.parseInt(rs.getString("gameID")), rs.getString("whiteUsername"), rs.getString("blackUsername"), rs.getString("gameName"), chessGame);
+                        return new GameData(rs.getInt("gameID"), rs.getString("whiteUsername"), rs.getString("blackUsername"), rs.getString("gameName"), chessGame);
+                    } else {
+                        // Game with the specified gameName doesn't exist
+                        throw new DataAccessException("Error: Game with name '" + gameName + "' does not exist");
                     }
                 }
             }
+        } catch (SQLException exception) {
+            throw new DataAccessException("Error: Database error occurred: " + exception.getMessage());
         }
-        catch(SQLException exception){
-            //game doesn't exist
-            throw new DataAccessException("Error: bad request");
-        }
-        return null;
     }
+
 
 
     @Override

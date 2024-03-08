@@ -25,7 +25,9 @@ public class SqlAuthDAO implements AuthDAO{
                     if (rs.next()){
                         return new AuthTokenData(rs.getString("authToken"), rs.getString("username"));
                     }
-                    return null;
+                    else {
+                        throw new DataAccessException("Error: Unauthorized");
+                    }
                 }
             }
 
@@ -63,20 +65,37 @@ public class SqlAuthDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-//        var statement = "DELETE FROM authTokenTable WHERE authToken=?";
-//        DatabaseManager.executeUpdate(statement, authToken);
-            try (var conn = DatabaseManager.getConnection()) {
-                var statement = "DELETE FROM authTokenTable WHERE authToken=?";
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.setString(1, authToken);
-                    preparedStatement.executeUpdate();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "DELETE FROM authTokenTable WHERE authToken=?";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, authToken);
+                int rowCount = preparedStatement.executeUpdate();
+                if (rowCount == 0) {
+                    throw new DataAccessException("Error: bad request");
+                }
             }
-                //throw new DataAccessException("Error: already taken");
-            }
-            catch (SQLException exception) {
-                throw new DataAccessException("Error: cannot log out");
+        } catch (SQLException exception) {
+            throw new DataAccessException("Error: bad request");
         }
     }
+
+
+//    @Override
+//    public void deleteAuth(String authToken) throws DataAccessException {
+////        var statement = "DELETE FROM authTokenTable WHERE authToken=?";
+////        DatabaseManager.executeUpdate(statement, authToken);
+//            try (var conn = DatabaseManager.getConnection()) {
+//                var statement = "DELETE FROM authTokenTable WHERE authToken=?";
+//                try (var preparedStatement = conn.prepareStatement(statement)) {
+//                    preparedStatement.setString(1, authToken);
+//                    preparedStatement.executeUpdate();
+//            }
+//                //throw new DataAccessException("Error: already taken");
+//            }
+//            catch (SQLException exception) {
+//                throw new DataAccessException("Error: cannot log out");
+//        }
+//    }
 
     @Override
     public void clear() throws DataAccessException {
