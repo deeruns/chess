@@ -9,7 +9,7 @@ import static java.sql.Types.NULL;
 public class SqlUserDAO implements UserDAO{
 
     public SqlUserDAO() throws DataAccessException{
-        configureDatabase();
+        DatabaseManager.configureDatabase(createStatements);
     }
     @Override
     public void clear() throws DataAccessException {
@@ -32,8 +32,6 @@ public class SqlUserDAO implements UserDAO{
         catch(SQLException exception){
             throw new DataAccessException("Error: already taken");
         }
-        //var userJson = new Gson().toJson(user);
-        //DatabaseManager.executeUpdate(statement, user.username(), user.password(), user.email());
     }
 
     @Override
@@ -56,20 +54,6 @@ public class SqlUserDAO implements UserDAO{
             throw new DataAccessException("Error: Unauthorized");
         }
     }
-//    private void executeUpdate(String statement, Object... params) throws DataAccessException {
-//        try (var conn = DatabaseManager.getConnection();
-//             var prepStatement = conn.prepareStatement(statement)) {
-//            for (var i = 0; i < params.length; i++) {
-//                var param = params[i];
-//                if (param instanceof String p) prepStatement.setString(i + 1, p);
-//                else if (param == null) prepStatement.setNull(i + 1, NULL);
-//            }
-//            prepStatement.executeUpdate(); // Return the result of executeUpdate directly
-//        } catch (SQLException exception) {
-//            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, exception.getMessage()));
-//            //throw new DataAccessException("Error: already taken");
-//        }
-//    }
 
     private final String[] createStatements = {
             """
@@ -80,18 +64,4 @@ public class SqlUserDAO implements UserDAO{
             )
             """
     };
-    private void configureDatabase() throws DataAccessException{
-        DatabaseManager.createDatabase();
-        try(var conn = DatabaseManager.getConnection()){
-            for(var statement: createStatements){
-                try(var preparedStatement = conn.prepareStatement(statement)){
-                    preparedStatement.executeUpdate();
-                }
-            }
-
-        }
-        catch (SQLException exception){
-            throw new DataAccessException(String.format("Unable to configure database: %s", exception.getMessage()));
-        }
-    }
 }

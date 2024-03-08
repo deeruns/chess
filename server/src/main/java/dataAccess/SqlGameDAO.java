@@ -15,7 +15,7 @@ import java.util.HashSet;
 public class SqlGameDAO implements GameDAO{
     //add database and tables if they don't exist
     public SqlGameDAO() throws DataAccessException{
-        configureDatabase();
+        DatabaseManager.configureDatabase(createStatements);
     }
     @Override
     public Collection<GameData> listGames() throws DataAccessException {
@@ -121,39 +121,6 @@ public class SqlGameDAO implements GameDAO{
         return null;
     }
 
-//    public GameData createGame(String gameName) throws DataAccessException {
-//        try(var conn = DatabaseManager.getConnection()){
-//            //no gameID because it is auto generated
-//            var statement =  "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
-//            try(var prepStatement = conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS)){
-//                ChessGame game = new ChessGame();
-//                String jsongame = new Gson().toJson(game);
-//                prepStatement.setString(1, null);
-//                prepStatement.setString(2, null);
-//                prepStatement.setString(3, gameName);
-//                prepStatement.setString(4, jsongame);
-//                prepStatement.executeUpdate();
-//                var rs = prepStatement.getGeneratedKeys();
-//                if (rs.next()) {
-//                    GameData gameData = new GameData(rs.getInt(1), null, null, gameName, game);
-//                    return gameData;
-//                }
-//            }
-//
-//        }
-//        catch(SQLException exception){
-//            throw new DataAccessException("Error: bad request");
-//        }
-////        try{
-////           var statement =  "INSERT INTO game (gameID,whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
-////           DatabaseManager.executeUpdate(statement, gameName);
-////        }
-////        catch(DataAccessException exception){
-////            throw new DataAccessException("Error: bad request");
-////        }
-//        return null;
-//    }
-
     @Override
     public void addUser(int gameID, String username, String userColor) throws DataAccessException {
         getGame(gameID);
@@ -210,22 +177,6 @@ public class SqlGameDAO implements GameDAO{
     }
 
 
-//    @Override
-//    public void deleteGame(int gameID) throws DataAccessException {
-//        try(var conn = DatabaseManager.getConnection()){
-//            var statement = "DELETE FROM games WHERE gameID=?";
-//            try(var prepStatement = conn.prepareStatement(statement)){
-//                prepStatement.setInt(1, gameID);
-//                prepStatement.executeUpdate();
-//            }
-//        }
-//        catch(SQLException exception){
-//            throw new DataAccessException("Error: bad request");
-//        }
-////        var statement = "DELETE FROM games WHERE gameID=?";
-////        DatabaseManager.executeUpdate(statement, gameID);
-//    }
-
     @Override
     public void clear() throws DataAccessException {
         var statement = "TRUNCATE TABLE games";
@@ -242,18 +193,4 @@ public class SqlGameDAO implements GameDAO{
             )
             """
     };
-    private void configureDatabase() throws DataAccessException{
-        DatabaseManager.createDatabase();
-        try(var conn = DatabaseManager.getConnection()){
-            for(var statement: createStatements){
-                try(var preparedStatement = conn.prepareStatement(statement)){
-                    preparedStatement.executeUpdate();
-                }
-            }
-
-        }
-        catch (SQLException exception){
-            throw new DataAccessException(String.format("Unable to configure database: %s", exception.getMessage()));
-        }
-    }
 }

@@ -20,9 +20,9 @@ public class GameDAOTests {
     private static SqlGameDAO gameDAO;
     private static SqlUserDAO userDAO;
     UserData userData = new UserData("NapoleonDynamite", "cannedheat", "decrodedPieceOfCrap@uncleRico.com");
-    GameData gameOne = new GameData(1,null,null,"game", new ChessGame());
-    GameData gameTwo = new GameData(2,null,null,"game", new ChessGame());
-    GameData gameThree = new GameData(3,null,null,"game", new ChessGame());
+    GameData gameOne = new GameData(1,null,null,"game1", new ChessGame());
+    GameData gameTwo = new GameData(2,null,null,"game2", new ChessGame());
+    GameData gameThree = new GameData(3,null,null,"game3", new ChessGame());
     @BeforeEach
     public void setup() throws DataAccessException{
         gameDAO.clear();

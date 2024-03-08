@@ -12,7 +12,7 @@ import static java.sql.Types.NULL;
 
 public class SqlAuthDAO implements AuthDAO{
     public SqlAuthDAO() throws DataAccessException{
-        configureDatabase();
+        DatabaseManager.configureDatabase(createStatements);
     }
     @Override
     public AuthTokenData getUser(String authToken) throws DataAccessException {
@@ -80,58 +80,11 @@ public class SqlAuthDAO implements AuthDAO{
     }
 
 
-//    @Override
-//    public void deleteAuth(String authToken) throws DataAccessException {
-////        var statement = "DELETE FROM authTokenTable WHERE authToken=?";
-////        DatabaseManager.executeUpdate(statement, authToken);
-//            try (var conn = DatabaseManager.getConnection()) {
-//                var statement = "DELETE FROM authTokenTable WHERE authToken=?";
-//                try (var preparedStatement = conn.prepareStatement(statement)) {
-//                    preparedStatement.setString(1, authToken);
-//                    preparedStatement.executeUpdate();
-//            }
-//                //throw new DataAccessException("Error: already taken");
-//            }
-//            catch (SQLException exception) {
-//                throw new DataAccessException("Error: cannot log out");
-//        }
-//    }
-
     @Override
     public void clear() throws DataAccessException {
         var statement = "TRUNCATE TABLE authTokenTable";
         DatabaseManager.executeUpdate(statement);
     }
-    private AuthTokenData readAuths(ResultSet rs) throws SQLException {
-        var authToken = rs.getString("authToken");
-        var username= rs.getString("username");
-        AuthTokenData authData = new AuthTokenData(authToken, username);
-        return new Gson().fromJson(String.valueOf(authData), AuthTokenData.class);
-    }
-//    private int executeUpdate(String statement, Object... params) throws DataAccessException {
-//        try (var conn = DatabaseManager.getConnection()) {
-//            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-//                for (var i = 0; i < params.length; i++) {
-//                    var param = params[i];
-//                    if (param instanceof String p) ps.setString(i + 1, p);
-//                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-//                    else if (param instanceof AuthTokenData auth) ps.setString(i + 1, auth.toString());
-//                    else if (param == null) ps.setNull(i + 1, NULL);
-//                }
-//                ps.executeUpdate();
-//
-//                var rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    return rs.getInt(1);
-//                }
-//
-//                return 0;
-//            }
-//        } catch (SQLException exception) {
-//            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, exception.getMessage()));
-//            //throw new DataAccessException("Error: already taken");
-//        }
-//    }
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS authTokenTable (
@@ -140,18 +93,5 @@ public class SqlAuthDAO implements AuthDAO{
             )
             """
     };
-    private void configureDatabase() throws DataAccessException{
-        DatabaseManager.createDatabase();
-        try(var conn = DatabaseManager.getConnection()){
-            for(var statement: createStatements){
-                try(var preparedStatement = conn.prepareStatement(statement)){
-                    preparedStatement.executeUpdate();
-                }
-            }
 
-        }
-        catch (SQLException exception){
-            throw new DataAccessException(String.format("Unable to configure database: %s", exception.getMessage()));
-        }
-    }
 }
