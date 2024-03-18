@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets;
 
 public class DrawChessBoard {
     private static final int NUM_OF_SQUARES = 8;
-    private static final int SQUARE_SIZE = 6;
+    private static final int SQUARE_SIZE = 3;
     private static final int BORDER_WIDTH = 1;
     private static final String EMPTY = " ";
     private static final String ROOK = " R ";
@@ -29,12 +29,16 @@ public class DrawChessBoard {
     public static void drawBoard(PrintStream out){
         boolean initialColor = color;
         for (int row = 0; row < NUM_OF_SQUARES; row++){
-            for(int thick = 0; thick < 2; thick++) {
-                drawRows(out);
-            }
-            //drawRows(out);
+//            for(int thick = 0; thick < 2; thick++) {
+//                drawRows(out);
+//            }
+            drawSideHeaders(out, row+1);
+            drawRows(out);
+            drawSideHeaders(out, row+1);
+            out.println();
             color = !color;
         }
+        drawHeaders(out);
         color = initialColor;
     }
 
@@ -54,13 +58,14 @@ public class DrawChessBoard {
                         out.print(EMPTY);
                     }
             }
+       // drawSideHeaders(out, row+1);
         setBackgroundDarkGrey(out);
-        out.println();
+            //out.println();
     }
 
     public static void drawHeaders(PrintStream out){
         setBackgroundGrey(out);
-        String[] topHeaders = {" a ", " b ", " c ", " d ", " e ", " f ", " g ", " i "};
+        String[] topHeaders = {"    a ", " b ", " c ", " d ", " e ", " f ", " g ", " i    "};
         //print left header
         for (int col = 0; col < NUM_OF_SQUARES; col++){
             singleHeader(out, topHeaders[col]);
@@ -70,9 +75,7 @@ public class DrawChessBoard {
     }
 
     public static void singleHeader(PrintStream out, String colNum){
-        out.print(EMPTY);
         printHeaderText(out, colNum);
-        out.print(EMPTY);
     }
     public static void printHeaderText(PrintStream out, String colNum){
         out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
@@ -80,8 +83,11 @@ public class DrawChessBoard {
         out.print(colNum);
         setBackgroundGrey(out);
     }
-    public static void drawsquares(){
-
+    public static void drawSideHeaders(PrintStream out, int row){
+        setBackgroundGrey(out);
+        out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
+        out.print(" " + (row) + " ");
+        setBackgroundDarkGrey(out);
     }
     //draw header
     //draw left header
@@ -118,3 +124,4 @@ public class DrawChessBoard {
     }
 
 }
+
