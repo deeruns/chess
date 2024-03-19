@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 
 public class ConsoleUI {
+    UserLoginStatus status = UserLoginStatus.SIGNEDOUT;
     Scanner scanner = new Scanner(System.in);
     DrawChessBoard DrawBoard = new DrawChessBoard();
     public String evalInput(String input){
@@ -24,13 +25,32 @@ public class ConsoleUI {
                 case "list games" -> clientListGame();
                 case "clear" -> clear();
                 case "quit" -> "Go eat a decroded piece of crap";
-                case "help" -> "type out the action you wish to take";
+                case "help" -> clientHelp();
                 default -> "not very cash money, your input is invalid brah";
             };
         }
         catch (Exception exception) {
             return exception.getMessage();
         }
+    }
+
+    private String clientHelp() {
+        if (status == UserLoginStatus.SIGNEDOUT) {
+            return """
+                    1. Sign in <username, password>
+                    2. Register <username, password, email>
+                    3. quit
+                    4. Help
+                    """;
+        }
+        return """
+                1. List Games
+                2. Create Game
+                3. Join Game
+                4. Join Observer
+                5. Log Out
+                6. Help
+                """;
     }
 
     private String clear() {
@@ -62,5 +82,6 @@ public class ConsoleUI {
         else if (inputParams.length < 2){
             throw new ResponseException(400, "enter username and password");
         }
+
     }
 }
