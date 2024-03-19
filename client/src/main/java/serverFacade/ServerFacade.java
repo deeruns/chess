@@ -28,24 +28,31 @@ public class ServerFacade {
     }
     public void clear() throws ResponseException {
         var path = "/db";
+        this.makeRequest("DELETE", path, null , ResponseRecord.class);
     }
     public ResponseRecord register(RegisterRequest request) throws ResponseException {
-        var path = "/session";
+        var path = "/user";
+        return this.makeRequest("POST", path, request, ResponseRecord.class);
     }
     public ResponseRecord login(LoginRequest request) throws ResponseException {
-
+        var path = "/session";
+        return this.makeRequest("POST", path, request, ResponseRecord.class);
     }
     public ListGamesResponse listGames(Request request) throws ResponseException {
-
+        var path = "/game";
+        return this.makeRequest("GET", path, request, ListGamesResponse.class);
     }
      public ResponseRecord logout(Request request) throws ResponseException{
-
+         var path = "/session";
+         return this.makeRequest("DELETE", path, request, ResponseRecord.class);
      }
      public CreateGameResponse createGame(CreateGameRequest request) throws ResponseException{
-
+         var path = "/session";
+         return this.makeRequest("POST", path, request, CreateGameResponse.class);
      }
      public ResponseRecord joinGame(JoinGameRequest request)throws ResponseException{
-
+         var path = "/session";
+         return this.makeRequest("PUT", path, request, ResponseRecord.class);
      }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
