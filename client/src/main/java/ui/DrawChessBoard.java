@@ -22,9 +22,9 @@ public class DrawChessBoard {
     private static  boolean color;
 
     public static void main(String[] args) {
-        DrawChessBoard();
+        drawChessBoard();
     }
-    public static void DrawChessBoard(){
+    public static void drawChessBoard(){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         ChessPiece[][] board = new ChessGame().getBoard().getBoard();
         ChessPiece[][] blackBoard = upsideDownBoard(board);
