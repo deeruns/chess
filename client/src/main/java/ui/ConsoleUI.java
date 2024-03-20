@@ -1,7 +1,9 @@
 package ui;
 
 import Models.AuthTokenData;
+import Models.GameData;
 import ResponseException.ResponseException;
+import dataAccess.DataAccessException;
 import requests.*;
 import response.CreateGameResponse;
 import response.ListGamesResponse;
@@ -28,8 +30,8 @@ public class ConsoleUI {
                 case "8" -> clientObserveGame();
                 case "5" -> clientListGame();
                 case "10" -> clear();
-                case "3" -> "Go eat a decroded piece of crap";
-                case "4" -> clientHelp();
+                case "3" -> ";)";
+                case "4" -> "enter the number for the action you wish to take";
                 default -> "not very cash money, your input is invalid brah";
             };
         }
@@ -42,14 +44,15 @@ public class ConsoleUI {
         if (status == UserLoginStatus.SIGNEDOUT) {
             return """
                     Enter the Number of the action you wish to take:
-                    1. Login <username, password>
-                    2. Register <username, password, email>
+                    1. Login
+                    2. Register
                     3. quit
                     4. Help
                     """;
         }
         return """
                 Enter the Number of the action you wish to take:
+                3. quit
                 4. Help
                 5. List Games
                 6. Create Game
@@ -60,17 +63,17 @@ public class ConsoleUI {
                 """;
     }
 
-    private String clear() {
+    private String clear() throws DataAccessException {
         try{
             serverFacade.clear();
             //out.println(clientHelp());
             return "Database has been cleared";
-        } catch (ResponseException exception) {
+        } catch (DataAccessException exception) {
             return exception.getMessage();
         }
     }
 
-    private String clientRegister() throws ResponseException {
+    private String clientRegister() throws DataAccessException {
         try{
             out.print("Username: ");
             String username = scanner.next();
@@ -82,16 +85,16 @@ public class ConsoleUI {
             authToken = authTokenData.authToken();
             status = UserLoginStatus.SIGNEDIN;
             //System.out.println(clientHelp());
-            return "Successful Registered" + username;
+            return "Successful Registered " + username;
 
         }
-        catch(ResponseException exception){
+        catch(DataAccessException exception){
             return exception.getMessage();
         }
 
     }
 
-    private String clientLogout() throws ResponseException{
+    private String clientLogout() throws DataAccessException{
         try{
             //authorize
             serverFacade.logout(new LogoutRequest(authToken));
@@ -100,12 +103,12 @@ public class ConsoleUI {
             //out.println(clientHelp());
             return "Successful Logout";
         }
-        catch(ResponseException exception){
+        catch(DataAccessException exception){
             return exception.getMessage();
         }
     }
 
-    private String clientCreateGame() throws ResponseException {
+    private String clientCreateGame() throws DataAccessException {
         try{
             out.print("Enter Game name: ");
             String gameName = scanner.next();
@@ -113,28 +116,28 @@ public class ConsoleUI {
             CreateGameResponse response = serverFacade.createGame(new CreateGameRequest(gameName, authToken));
             return "Game" + gameName + "Created Successfully";
         }
-        catch(ResponseException exception){
+        catch(DataAccessException exception){
             return exception.getMessage();
         }
     }
 
-    private String clientJoinGame() throws ResponseException {
+    private String clientJoinGame() throws DataAccessException {
         try{
             out.print("Enter GameID: ");
             int gameID = Integer.parseInt(scanner.next());
             out.print("Enter team color WHITE or BLACK: ");
-            String color = scanner.next();
+            String color = scanner.next().toLowerCase();
             //authorize
             ResponseRecord response = serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
             DrawChessBoard.drawChessBoard();
             return "Succcessfully Joined Game " + gameID + "as " + color;
         }
-        catch(ResponseException exception){
+        catch(DataAccessException exception){
             return exception.getMessage();
         }
     }
 
-    private String clientObserveGame() throws ResponseException {
+    private String clientObserveGame() throws DataAccessException {
         try{
             out.print("Enter GameID: ");
             int gameID = Integer.parseInt(scanner.next());
@@ -145,23 +148,26 @@ public class ConsoleUI {
             DrawChessBoard.drawChessBoard();
             return "Succcessfully Joined Game " + gameID + "as an Observer";
         }
-        catch(ResponseException exception){
+        catch(DataAccessException exception){
             return exception.getMessage();
         }
     }
 
-    private String clientListGame() throws ResponseException{
+    private String clientListGame() throws DataAccessException{
         try{
             //authorize
             ListGamesResponse response = serverFacade.listGames(new ListGamesRequest(authToken));
-            return "Games: \n" + response;
+            for (GameData game: response.games()){
+                return "Game Name: " + game.gameName() + ", White: " + game.whiteUsername() + ", Black: " + game.blackUsername() + ", Game ID: " + game.gameID();
+            }
         }
-        catch (ResponseException exception){
+        catch (DataAccessException exception){
             return exception.getMessage();
         }
+        return "No Games";
     }
 
-    private String clientLogin() throws ResponseException {
+    private String clientLogin() throws DataAccessException {
         try{
             out.print("Username: ");
             String username = scanner.next();
@@ -171,9 +177,9 @@ public class ConsoleUI {
             authToken = authTokenData.authToken();
             status = UserLoginStatus.SIGNEDIN;
             //System.out.println(clientHelp());
-            return "Welcome" + username;
+            return "Welcome " + username;
         }
-        catch(ResponseException exception){
+        catch(DataAccessException exception){
             return exception.getMessage();
         }
 

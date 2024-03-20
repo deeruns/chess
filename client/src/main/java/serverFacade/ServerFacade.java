@@ -5,6 +5,7 @@ import ResponseException.ResponseException;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.sun.net.httpserver.Request;
+import dataAccess.DataAccessException;
 import requests.*;
 import response.CreateGameResponse;
 import response.ListGamesResponse;
@@ -26,36 +27,36 @@ public class ServerFacade {
     public ServerFacade(String uRl) {
         servUrl = uRl;
     }
-    public void clear() throws ResponseException {
+    public void clear() throws DataAccessException {
         var path = "/db";
         this.makeRequest("DELETE", path, null , ResponseRecord.class, null);
     }
-    public AuthTokenData register(RegisterRequest request) throws ResponseException {
+    public AuthTokenData register(RegisterRequest request) throws DataAccessException {
         var path = "/user";
         return this.makeRequest("POST", path, request, AuthTokenData.class, null);
     }
-    public AuthTokenData login(LoginRequest request) throws ResponseException {
+    public AuthTokenData login(LoginRequest request) throws DataAccessException {
         var path = "/session";
         return this.makeRequest("POST", path, request, AuthTokenData.class, null);
     }
-    public ListGamesResponse listGames(ListGamesRequest request) throws ResponseException {
+    public ListGamesResponse listGames(ListGamesRequest request) throws DataAccessException {
         var path = "/game";
         return this.makeRequest("GET", path, request, ListGamesResponse.class, request.getAuth());
     }
-     public void logout(LogoutRequest request) throws ResponseException{
+     public void logout(LogoutRequest request) throws DataAccessException{
          var path = "/session";
          this.makeRequest("DELETE", path, request, null, request.getAuth());
      }
-     public CreateGameResponse createGame(CreateGameRequest request) throws ResponseException{
+     public CreateGameResponse createGame(CreateGameRequest request) throws DataAccessException{
          var path = "/session";
          return this.makeRequest("POST", path, request, CreateGameResponse.class, request.getAuth());
      }
-     public ResponseRecord joinGame(JoinGameRequest request)throws ResponseException{
+     public ResponseRecord joinGame(JoinGameRequest request)throws DataAccessException{
          var path = "/session";
          return this.makeRequest("PUT", path, request, ResponseRecord.class, request.getAuth());
      }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String auth) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String auth) throws DataAccessException {
         try {
             URL url = (new URI(servUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -70,20 +71,29 @@ public class ServerFacade {
                 writeBody(request, http);
             }
 
-            writeBody(request, http);
+            //writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);
             return readbody(http, responseClass);
 
         } catch (Exception exception) {
-            throw new ResponseException(500, exception.getMessage());
+            throw new DataAccessException(exception.getMessage());
         }
     }
 
-    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
+    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException, DataAccessException {
         var status = http.getResponseCode();
+//        if (!isSuccessful(status)) {
+//            throw new ResponseException(status, "failure: " + status);
+//        }
         if (!isSuccessful(status)) {
-            throw new ResponseException(status, "failure: " + status);
+            try (InputStream respBody = http.getErrorStream()) {
+                InputStreamReader reader = new InputStreamReader(respBody);
+
+                ResponseRecord response = new Gson().fromJson(reader, ResponseRecord.class);
+                throw new DataAccessException("failure: " + response.message());
+            }
+
         }
     }
 
