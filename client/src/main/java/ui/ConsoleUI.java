@@ -5,27 +5,27 @@ import ResponseException.ResponseException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import static java.lang.System.out;
+
 
 public class ConsoleUI {
+    private String authToken = null;
     UserLoginStatus status = UserLoginStatus.SIGNEDOUT;
     Scanner scanner = new Scanner(System.in);
     DrawChessBoard DrawBoard = new DrawChessBoard();
     public String evalInput(String input){
         try{
-            var inputTokens = input.toLowerCase().split(" ");
-            var cmd = (inputTokens.length > 0) ? inputTokens[0] : "help";
-            var inputParams = Arrays.copyOfRange(inputTokens, 1, inputTokens.length);
-            return switch (cmd){
-                case "login" -> clientLogin(inputParams);
-                case "register" -> clientRegister(inputParams);
-                case "logout" -> clientLogout();
-                case "create game" -> clientCreateGame();
-                case "join game" -> clientJoinGame();
-                case "observe game" -> clientObserveGame();
-                case "list games" -> clientListGame();
-                case "clear" -> clear();
-                case "quit" -> "Go eat a decroded piece of crap";
-                case "help" -> clientHelp();
+            return switch (input){
+                case "1" -> clientLogin();
+                case "2" -> clientRegister();
+                case "9" -> clientLogout();
+                case "6" -> clientCreateGame();
+                case "7" -> clientJoinGame();
+                case "8" -> clientObserveGame();
+                case "5" -> clientListGame();
+                case "10" -> clear();
+                case "3" -> "Go eat a decroded piece of crap";
+                case "4" -> clientHelp();
                 default -> "not very cash money, your input is invalid brah";
             };
         }
@@ -37,19 +37,22 @@ public class ConsoleUI {
     private String clientHelp() {
         if (status == UserLoginStatus.SIGNEDOUT) {
             return """
-                    1. Sign in <username, password>
+                    Enter the Number of the action you wish to take:
+                    1. Login <username, password>
                     2. Register <username, password, email>
                     3. quit
                     4. Help
                     """;
         }
         return """
-                1. List Games
-                2. Create Game
-                3. Join Game
-                4. Join Observer
-                5. Log Out
-                6. Help
+                Enter the Number of the action you wish to take:
+                4. Help
+                5. List Games
+                6. Create Game
+                7. Join Game
+                8. Join Observer
+                9. Log Out
+                10. Clear
                 """;
     }
 
@@ -57,31 +60,43 @@ public class ConsoleUI {
 
     }
 
-    private String clientRegister(String[] inputParams) {
+    private String clientRegister() {
+        out.print("Username: ");
+        String username = scanner.next();
+        out.print("Password: ");
+        String password = scanner.next();
+        out.print("Email: ");
+        String email = scanner.next();
     }
 
     private String clientLogout() {
     }
 
     private String clientCreateGame() {
+        out.print("Enter Game name: ");
     }
 
     private String clientJoinGame() {
+        out.print("Enter GameID: ");
+        int gameID = Integer.parseInt(scanner.next());
+        out.print("Enter team color WHITE or BLACK: ");
+        String username = scanner.next();
     }
 
     private String clientObserveGame() {
+        out.print("Enter GameID: ");
+        int gameID = Integer.parseInt(scanner.next());
     }
 
     private String clientListGame() {
     }
 
-    private String clientLogin(String[] inputParams) throws ResponseException {
-        if (inputParams.length > 2){
-            throw new ResponseException(400, "too many arguments");
-        }
-        else if (inputParams.length < 2){
-            throw new ResponseException(400, "enter username and password");
-        }
+    private String clientLogin() throws ResponseException {
+        out.print("Username: ");
+        String username = scanner.next();
+        out.print("Password: ");
+        String password = scanner.next();
+
 
     }
 }
