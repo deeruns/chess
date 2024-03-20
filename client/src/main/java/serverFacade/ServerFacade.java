@@ -1,5 +1,6 @@
 package serverFacade;
 
+import Models.AuthTokenData;
 import ResponseException.ResponseException;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.Request;
@@ -30,21 +31,21 @@ public class ServerFacade {
         var path = "/db";
         this.makeRequest("DELETE", path, null , ResponseRecord.class);
     }
-    public ResponseRecord register(RegisterRequest request) throws ResponseException {
+    public AuthTokenData register(RegisterRequest request) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, request, ResponseRecord.class);
+        return this.makeRequest("POST", path, request, AuthTokenData.class);
     }
-    public ResponseRecord login(LoginRequest request) throws ResponseException {
+    public AuthTokenData login(LoginRequest request) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, request, ResponseRecord.class);
+        return this.makeRequest("POST", path, request, AuthTokenData.class);
     }
     public ListGamesResponse listGames(Request request) throws ResponseException {
         var path = "/game";
         return this.makeRequest("GET", path, request, ListGamesResponse.class);
     }
-     public ResponseRecord logout(Request request) throws ResponseException{
+     public void logout(Request request) throws ResponseException{
          var path = "/session";
-         return this.makeRequest("DELETE", path, request, ResponseRecord.class);
+         this.makeRequest("DELETE", path, request, null);
      }
      public CreateGameResponse createGame(CreateGameRequest request) throws ResponseException{
          var path = "/session";
