@@ -2,10 +2,7 @@ package ui;
 
 import Models.AuthTokenData;
 import ResponseException.ResponseException;
-import requests.CreateGameRequest;
-import requests.JoinGameRequest;
-import requests.LoginRequest;
-import requests.RegisterRequest;
+import requests.*;
 import response.CreateGameResponse;
 import response.ListGamesResponse;
 import response.ResponseRecord;
@@ -93,7 +90,7 @@ public class ConsoleUI {
     private String clientLogout() throws ResponseException{
         try{
             //authorize
-            ResponseRecord response = serverFacade.logout(request);
+            serverFacade.logout(new LogoutRequest(authToken));
             status = UserLoginStatus.SIGNEDOUT;
         }
         catch(ResponseException exception){
@@ -106,7 +103,7 @@ public class ConsoleUI {
             out.print("Enter Game name: ");
             String gameName = scanner.next();
             //authorize?
-            CreateGameResponse response = serverFacade.createGame(new CreateGameRequest(gameName));
+            CreateGameResponse response = serverFacade.createGame(new CreateGameRequest(gameName, authToken));
             return "Game Created Successfully";
         }
         catch(ResponseException exception){
@@ -121,7 +118,7 @@ public class ConsoleUI {
             out.print("Enter team color WHITE or BLACK: ");
             String color = scanner.next();
             //authorize
-            ResponseRecord response = serverFacade.joinGame(new JoinGameRequest(color, gameID));
+            ResponseRecord response = serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
             return "Succcessfully Joined Game " + gameID + "as " + color;
         }
         catch(ResponseException exception){
@@ -136,7 +133,7 @@ public class ConsoleUI {
             out.print("Enter team color WHITE or BLACK: ");
             String color = scanner.next();
             //authorize
-            ResponseRecord response = serverFacade.joinGame(new JoinGameRequest(color, gameID));
+            ResponseRecord response = serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
             return "Succcessfully Joined Game " + gameID + "as an Observer";
         }
         catch(ResponseException exception){
@@ -147,7 +144,7 @@ public class ConsoleUI {
     private String clientListGame() throws ResponseException{
         try{
             //authorize
-            ListGamesResponse response = serverFacade.listGames();
+            ListGamesResponse response = serverFacade.listGames(new ListGamesRequest(authToken));
         }
         catch (ResponseException exception){
             return exception.getMessage();
