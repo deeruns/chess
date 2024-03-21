@@ -34,15 +34,15 @@ public class DrawChessBoard {
         out.println();
         drawHeadersBlack(out);
         drawBlackBoard(out, blackBoard);
+        out.println("Successfully Joined Game");
+        //setBackgroundBlack(out);
     }
     //draw board
     public static void drawWhiteBoard(PrintStream out, ChessPiece[][] board){
         boolean initialColor = color;
         drawSideHeaders(out, 8);
         drawRowsWhite(out, board);
-        //drawSideHeaders(out, row+1);
         out.println();
-        //color = !color;
         drawHeaders(out);
         color = initialColor;
     }
@@ -50,43 +50,11 @@ public class DrawChessBoard {
         boolean initialColor = color;
         drawSideHeaders(out, 1);
         drawRowsBlack(out, board);
-        //drawSideHeaders(out, row+1);
         out.println();
-        //color = !color;
         drawHeadersBlack(out);
         color = initialColor;
     }
 
-//    public static void  drawRows(PrintStream out, ChessPiece[][] board) {
-//        //drawHeaders(out);
-//
-//            for (int col = 0; col < NUM_OF_SQUARES; col++) {
-//                setBackgroundBlack(out);
-//                    if (color == true) {
-//                        //print white square
-//                        setBackgroundWhite(out);
-//                        color = false;
-//                    } else {
-//                        color = true;
-//                    }
-//                    for(int i = 0; i < board.length; i++){
-//                        for (int j = 0; j < board.length; i++){
-//                            if (board[i][j] != null){
-//                                printPiece(out, board[i][j].getPieceType(), board[i][j].getTeamColor());
-//                            }
-//                            else{
-//                                out.print(EMPTY);
-//                            }
-//                        }
-//                    }
-//                    for (int i = 0; i < SQUARE_SIZE; i++) {
-//                        out.print(EMPTY);
-//                    }
-//            }
-//       // drawSideHeaders(out, row+1);
-//        setBackgroundDarkGrey(out);
-//            //out.println();
-//    }
 public static void  drawRowsBlack(PrintStream out, ChessPiece[][] board) {
     //drawHeaders(out);
     for(int i = 0; i < board.length; i++){
@@ -172,10 +140,6 @@ public static void  drawRowsBlack(PrintStream out, ChessPiece[][] board) {
         out.print(" " + (row) + " ");
         setBackgroundDarkGrey(out);
     }
-    //draw header
-    //draw left header
-    //draw right header
-    //draw bottom header
 
     //set colors
     private static void setBackgroundWhite(PrintStream out) {

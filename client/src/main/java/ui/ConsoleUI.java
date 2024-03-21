@@ -31,7 +31,7 @@ public class ConsoleUI {
                 case "5" -> clientListGame();
                 case "10" -> clear();
                 case "3" -> ";)";
-                case "4" -> "enter the number for the action you wish to take";
+                case "4" -> "Enter 1 to login, Enter 2 to register, Enter 3 to quit, Enter 4 for help. After logging in, Enter 5 to list all games, Enter 6 to create a new game, Enter 7 to Join a game, Enter 8 to join as an observer with your color set as \"\", Enter 9 to logout, and Enter 10 to clear";
                 default -> "not very cash money, your input is invalid brah";
             };
         }
@@ -130,11 +130,12 @@ public class ConsoleUI {
             //authorize
             serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
             DrawChessBoard.drawChessBoard();
-            return "Succcessfully Joined Game " + gameID + "as " + color;
+            //return "Succcessfully Joined Game " + gameID + "as " + color;
         }
         catch(DataAccessException exception){
             return exception.getMessage();
         }
+        return "Succcessfully Joined Game";
     }
 
     private String clientObserveGame() throws DataAccessException {

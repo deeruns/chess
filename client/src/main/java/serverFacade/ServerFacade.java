@@ -3,14 +3,11 @@ package serverFacade;
 import Models.AuthTokenData;
 import ResponseException.ResponseException;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.sun.net.httpserver.Request;
 import dataAccess.DataAccessException;
 import requests.*;
 import response.CreateGameResponse;
 import response.ListGamesResponse;
 import response.ResponseRecord;
-import service.RegisterService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,10 +68,7 @@ public class ServerFacade {
                 http.setDoOutput(true);
                 writeBody(request, http);
             }
-
-            //writeBody(request, http);
             http.connect();
-            // join game errors right here
             throwIfNotSuccessful(http);
             return readbody(http, responseClass);
 
@@ -85,9 +79,6 @@ public class ServerFacade {
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException, DataAccessException {
         var status = http.getResponseCode();
-//        if (!isSuccessful(status)) {
-//            throw new ResponseException(status, "failure: " + status);
-//        }
         if (!isSuccessful(status)) {
             try (InputStream respBody = http.getErrorStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
