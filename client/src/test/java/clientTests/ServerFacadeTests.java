@@ -30,10 +30,10 @@ public class ServerFacadeTests {
     static void stopServer() {
         server.stop();
     }
-    @AfterAll
-    static void clearDB() throws DataAccessException {
-        facade.clear();
-    }
+//    @AfterAll
+//    static void clearDB() throws DataAccessException {
+//        facade.clear();
+//    }
     @BeforeAll
     public static void clear() throws DataAccessException {
         facade.clear();
