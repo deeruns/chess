@@ -48,11 +48,11 @@ public class ServerFacade {
          this.makeRequest("DELETE", path, request, null, request.getAuth());
      }
      public CreateGameResponse createGame(CreateGameRequest request) throws DataAccessException{
-         var path = "/session";
+         var path = "/game";
          return this.makeRequest("POST", path, request, CreateGameResponse.class, request.getAuth());
      }
      public ResponseRecord joinGame(JoinGameRequest request)throws DataAccessException{
-         var path = "/session";
+         var path = "/game";
          return this.makeRequest("PUT", path, request, ResponseRecord.class, request.getAuth());
      }
 
@@ -60,7 +60,6 @@ public class ServerFacade {
         try {
             URL url = (new URI(servUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setDoOutput(true);
             http.setRequestMethod(method);
 
             if (auth != null){
@@ -68,6 +67,8 @@ public class ServerFacade {
             }
 
             if (!Objects.equals(method, "GET")){
+                //only use this if there is output to write
+                http.setDoOutput(true);
                 writeBody(request, http);
             }
 

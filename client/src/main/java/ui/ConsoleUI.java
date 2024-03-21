@@ -114,7 +114,7 @@ public class ConsoleUI {
             String gameName = scanner.next();
             //authorize?
             CreateGameResponse response = serverFacade.createGame(new CreateGameRequest(gameName, authToken));
-            return "Game" + gameName + "Created Successfully";
+            return "Game " + gameName + " Created Successfully";
         }
         catch(DataAccessException exception){
             return exception.getMessage();
@@ -128,7 +128,7 @@ public class ConsoleUI {
             out.print("Enter team color WHITE or BLACK: ");
             String color = scanner.next().toLowerCase();
             //authorize
-            ResponseRecord response = serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
+            serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
             DrawChessBoard.drawChessBoard();
             return "Succcessfully Joined Game " + gameID + "as " + color;
         }
@@ -144,7 +144,7 @@ public class ConsoleUI {
             out.print("Enter team color WHITE or BLACK: ");
             String color = scanner.next();
             //authorize
-            ResponseRecord response = serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
+            serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
             DrawChessBoard.drawChessBoard();
             return "Succcessfully Joined Game " + gameID + "as an Observer";
         }
@@ -159,6 +159,7 @@ public class ConsoleUI {
             ListGamesResponse response = serverFacade.listGames(new ListGamesRequest(authToken));
             for (GameData game: response.games()){
                 out.println("Game Name: " + game.gameName() + ", White: " + game.whiteUsername() + ", Black: " + game.blackUsername() + ", Game ID: " + game.gameID());
+                return "\n";
             }
         }
         catch (DataAccessException exception){

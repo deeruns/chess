@@ -16,7 +16,7 @@ public class JoinGameHandler extends ParentHandler {
         String authToken = request.headers("authorization");
         JoinGameService service = new JoinGameService(new SqlAuthDAO(), new SqlGameDAO(), new SqlUserDAO());
         JoinGameRequest joinGameRequest = serializeRequest(request.body());
-        String finalResponse = "";
+        String finalResponse = "{}";
         //errorHandling(request);
         try{
             if (joinGameRequest.playerColor() == null){
