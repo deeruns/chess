@@ -16,7 +16,7 @@ public class CreateGameService extends ParentService {
     }
     public GameData createGame(String authToken, String gameName)throws DataAccessException{
         if (gameName == null){
-            throw new DataAccessException("Error: bad request");
+            throw new DataAccessException("Error: Unauthorized");
         }
         authorizeUser(authDAO, authToken);
         GameData newGame = gameDAO.createGame(gameName);

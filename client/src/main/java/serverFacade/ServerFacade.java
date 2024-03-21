@@ -73,6 +73,7 @@ public class ServerFacade {
 
             //writeBody(request, http);
             http.connect();
+            // join game errors right here
             throwIfNotSuccessful(http);
             return readbody(http, responseClass);
 

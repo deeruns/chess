@@ -116,7 +116,7 @@ public class SqlGameDAO implements GameDAO{
                 }
             }
         } catch (SQLException exception) {
-            throw new DataAccessException("Error: bad request");
+            throw new DataAccessException("Error: Unauthorized");
         }
         return null;
     }

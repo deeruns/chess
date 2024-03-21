@@ -158,7 +158,7 @@ public class ConsoleUI {
             //authorize
             ListGamesResponse response = serverFacade.listGames(new ListGamesRequest(authToken));
             for (GameData game: response.games()){
-                return "Game Name: " + game.gameName() + ", White: " + game.whiteUsername() + ", Black: " + game.blackUsername() + ", Game ID: " + game.gameID();
+                out.println("Game Name: " + game.gameName() + ", White: " + game.whiteUsername() + ", Black: " + game.blackUsername() + ", Game ID: " + game.gameID());
             }
         }
         catch (DataAccessException exception){
