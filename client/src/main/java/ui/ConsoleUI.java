@@ -128,7 +128,7 @@ public class ConsoleUI {
             out.print("Enter team color WHITE or BLACK: ");
             String color = scanner.next().toLowerCase();
             //authorize
-            serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
+            serverFacade.joinGame(new JoinGameRequest(color.toUpperCase(), gameID, authToken));
             DrawChessBoard.drawChessBoard();
             //return "Succcessfully Joined Game " + gameID + "as " + color;
         }
@@ -160,13 +160,12 @@ public class ConsoleUI {
             ListGamesResponse response = serverFacade.listGames(new ListGamesRequest(authToken));
             for (GameData game: response.games()){
                 out.println("Game Name: " + game.gameName() + ", White: " + game.whiteUsername() + ", Black: " + game.blackUsername() + ", Game ID: " + game.gameID());
-                return "\n";
             }
         }
         catch (DataAccessException exception){
-            return exception.getMessage();
+            out.println(exception.getMessage());
         }
-        return "No Games";
+        return "";
     }
 
     private String clientLogin() throws DataAccessException {
