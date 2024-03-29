@@ -26,14 +26,12 @@ public class ServerFacadeTests {
         facade = new ServerFacade("http://localhost:"+ port);
     }
 
+
     @AfterAll
     static void stopServer() {
         server.stop();
     }
-//    @AfterAll
-//    static void clearDB() throws DataAccessException {
-//        facade.clear();
-//    }
+
     @BeforeAll
     public static void clear() throws DataAccessException {
         facade.clear();
