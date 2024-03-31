@@ -9,6 +9,7 @@ import response.CreateGameResponse;
 import response.ListGamesResponse;
 import response.ResponseRecord;
 import serverFacade.ServerFacade;
+import webSocketMessages.serverMessages.ServerMessage;
 
 import java.util.Scanner;
 import static java.lang.System.out;
@@ -19,6 +20,7 @@ public class ConsoleUI {
     private final ServerFacade serverFacade = new ServerFacade("http://localhost:8080");
     UserLoginStatus status = UserLoginStatus.SIGNEDOUT;
     Scanner scanner = new Scanner(System.in);
+    GamePlayUI gamePlayUI = new GamePlayUI();
     public String evalInput(String input){
         try{
             return switch (input){
@@ -129,6 +131,8 @@ public class ConsoleUI {
             String color = scanner.next().toLowerCase();
             //authorize
             serverFacade.joinGame(new JoinGameRequest(color.toUpperCase(), gameID, authToken));
+            //gameplayUI
+            //gamePlayUI.evalInput(scanner.next());
             DrawChessBoard.drawChessBoard();
             //return "Succcessfully Joined Game " + gameID + "as " + color;
         }
@@ -185,4 +189,10 @@ public class ConsoleUI {
         }
 
     }
+
+    private void notify(ServerMessage message){}
+
+    //observer board displayed as white
+    // make new UI for gameplay
+
 }

@@ -18,8 +18,15 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
 
+//call websocket and HTTP communicator
+
+//UNSTATic everything?
+
+//ServerMessageObserver passed in as constrictor parameter
+
+
 public class ServerFacade {
-    private final String servUrl;
+    private static String servUrl;
 
     public ServerFacade(String uRl) {
         servUrl = uRl;
@@ -53,7 +60,7 @@ public class ServerFacade {
          return this.makeRequest("PUT", path, request, ResponseRecord.class, request.getAuth());
      }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String auth) throws DataAccessException {
+    public static <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String auth) throws DataAccessException {
         try {
             URL url = (new URI(servUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -77,7 +84,7 @@ public class ServerFacade {
         }
     }
 
-    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException, DataAccessException {
+    private static void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException, DataAccessException {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
             try (InputStream respBody = http.getErrorStream()) {
@@ -90,11 +97,11 @@ public class ServerFacade {
         }
     }
 
-    private boolean isSuccessful(int status) {
+    private static boolean isSuccessful(int status) {
         return status / 100 == 2;
     }
 
-    private void writeBody(Object request, HttpURLConnection http) throws IOException {
+    private static void writeBody(Object request, HttpURLConnection http) throws IOException {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
             String requestData = new Gson().toJson(request);
@@ -104,7 +111,7 @@ public class ServerFacade {
         }
     }
 
-    private <T> T readbody(HttpURLConnection http, Class<T> responseClass) throws IOException {
+    private static <T> T readbody(HttpURLConnection http, Class<T> responseClass) throws IOException {
         T response = null;
         if (http.getContentLength() < 0) {
             try (InputStream respBody = http.getInputStream()) {
