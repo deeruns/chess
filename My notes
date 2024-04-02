@@ -55,3 +55,34 @@ isincheckmate
 //        }
 //        return false;
         //return kingValidMoves.isEmpty();
+
+
+
+
+        THIS MAKES A MOVE PRINTED (KIND OF)
+
+        public static void highlightPrinter(PrintStream out, ChessGame game, ChessPosition position, ChessPosition currPos, int i, int j){
+                ChessBoard board = game.getBoard();
+                Collection<ChessMove> validMoves = game.validMoves(position);
+                if (board.getPiece(position) != null){
+                    if (highlight) {
+                        for (ChessMove move : validMoves) {
+                            ChessPosition endPos = move.getEndPosition();
+                            if (currPos == endPos){
+                                if (!color) {
+                                    setBackgroundGreen(out);
+                                } else {
+                                    setBackgroundDarkGreen(out);
+                                }
+                                printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
+                            }
+                        }
+                    }
+                    else{
+                        printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
+                    }
+                }
+                else {
+                    printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
+                }
+            }

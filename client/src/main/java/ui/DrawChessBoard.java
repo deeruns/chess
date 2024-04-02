@@ -4,10 +4,7 @@ import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collection;
-
-import static java.lang.System.out;
 
 public class DrawChessBoard {
     private static final int NUM_OF_SQUARES = 8;
@@ -21,41 +18,40 @@ public class DrawChessBoard {
     private static final String QUEEN = " Q ";
     private static final String PAWN = " P ";
     private static  boolean color;
-    private static boolean highlight;
+    private static boolean highlight = false;
 
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         //ChessPiece[][] blackboard = new ChessGame().getBoard().getBoard();
         //ChessPiece[][] whiteBoard = upsideDownBoard(blackboard);
-        ChessBoard board = new ChessBoard();
-        board.resetBoard();
+        ChessPosition position = new ChessPosition(2,1);
+        ChessGame game = new ChessGame();
+//        ChessBoard board = new ChessBoard();
+//        board.resetBoard();
 
         out.print(EscapeSequences.ERASE_SCREEN);
+        highlightMoves();
         drawHeaders(out);
-        drawBlackBoard(out, board);
+        drawWhiteBoard(out, game, position);
         out.print(EscapeSequences.SET_TEXT_COLOR_GREEN);
         out.println("Successfully Joined Game");
-        ChessGame game = new ChessGame();
-        ChessPiece piece = board.getPiece(new ChessPosition(1,1));
-        out.println("" + piece.getTeamColor());
-        //Collection<ChessMove> moves = new ChessGame().validMoves(position);
-//        drawChessBoard();
     }
-    public static void drawChessBoard(ChessGame.TeamColor teamColor, ChessBoard gameBoard){
+    public static void drawChessBoard(ChessGame.TeamColor teamColor, ChessGame game, ChessPosition position){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        ChessBoard board = new ChessBoard();
+        ChessBoard board = game.getBoard();
         board.resetBoard();
+        //switch so it doesn't reset the board when I call this^^^
         out.print(EscapeSequences.ERASE_SCREEN);
         if (teamColor == ChessGame.TeamColor.BLACK){
             drawHeadersBlack(out);
-            drawBlackBoard(out, board);
+            drawBlackBoard(out, game, position);
             out.println();
             out.println("Successfully Joined Game");
         }
         else{
             //draw board from the white perspective for observers and white team color
             drawHeaders(out);
-            drawBlackBoard(out, board);
+            drawWhiteBoard(out, game, position);
             out.println();
             out.println("Successfully Joined Game");
         }
@@ -63,26 +59,27 @@ public class DrawChessBoard {
         //setBackgroundBlack(out);
     }
     //draw board
-    public static void drawWhiteBoard(PrintStream out, ChessBoard board){
+    public static void drawWhiteBoard(PrintStream out, ChessGame game, ChessPosition position){
         boolean initialColor = color;
         drawSideHeaders(out, 8);
-        drawRowsWhite(out, board);
+        drawRowsWhite(out, game, position);
         out.println();
         drawHeaders(out);
         color = initialColor;
     }
-    public static void drawBlackBoard(PrintStream out, ChessBoard board){
+    public static void drawBlackBoard(PrintStream out, ChessGame game, ChessPosition position){
         boolean initialColor = color;
         drawSideHeaders(out, 1);
-        drawRowsBlack(out, board);
+        drawRowsBlack(out, game, position);
         out.println();
         drawHeadersBlack(out);
         color = initialColor;
     }
 
-public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
+public static void  drawRowsBlack(PrintStream out, ChessGame game, ChessPosition position) {
     //drawHeaders(out);
     //print rows normal but cols backward so white is on top!?
+    ChessBoard board = game.getBoard();
     for(int i = 1; i < 9; i++){
         for (int j = 8; j > 0; j--){
             changeColorWhiteTeam(out);
@@ -104,14 +101,25 @@ public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
     setBackgroundDarkGrey(out);
     //out.println();
 }
-    public static void  drawRowsWhite(PrintStream out, ChessBoard board) {
+
+    public static void  drawRowsWhite(PrintStream out, ChessGame game, ChessPosition position) {
         //drawHeaders(out);
         //draw the rows backwards, but not the cols because the white needs to be displayed at the bottom
+        //color false = white
+        ChessBoard board = game.getBoard();
         for(int i = 8; i > 0; i--){
             for (int j = 1; j < 9; j++){
                 changeColorWhiteTeam(out);
+                ChessPosition currPos = new ChessPosition(i,j);
                 if (board.getPiece(new ChessPosition(i,j)) != null){
-                    printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
+                    if(board.getPiece(position) != null && currPos.equals(position)){
+                        out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+                        printPiece(out, board.getPiece(position).getPieceType(), board.getPiece(position).getTeamColor());
+                    }
+                    else{
+                        printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                    }
+//                    highlightPrinter(out, game, position, currPos, i, j);
                 }
                 else{
                     out.print(EMPTY);
@@ -130,6 +138,32 @@ public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
         //out.println();
     }
 
+    public static void highlightPrinter(PrintStream out, ChessGame game, ChessPosition position, ChessPosition currPos, int i, int j){
+        ChessBoard board = game.getBoard();
+        Collection<ChessMove> validMoves = game.validMoves(position);
+        if (board.getPiece(position) != null){
+            if (highlight) {
+
+                for (ChessMove move : validMoves) {
+                    ChessPosition endPos = move.getEndPosition();
+                    if (currPos == endPos){
+                        if (!color) {
+                            setBackgroundGreen(out);
+                        } else {
+                            setBackgroundDarkGreen(out);
+                        }
+                        printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
+                    }
+                }
+            }
+            else{
+                printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
+            }
+        }
+        else {
+            printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
+        }
+    }
 
     public static void drawHeaders(PrintStream out){
         setBackgroundGrey(out);
@@ -169,9 +203,12 @@ public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
         setBackgroundDarkGrey(out);
     }
 
-    public static ChessPosition highlightMoves(ChessPosition highlightPos){
-        highlight = true;
-
+    public static void highlightMoves(){
+        if (highlight) {
+            highlight = false;
+        } else {
+            highlight = true;
+        }
     }
 
     //set colors
@@ -190,6 +227,12 @@ public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
     private static void setBackgroundDarkGrey(PrintStream out) {
         out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
         out.print(EscapeSequences.SET_TEXT_COLOR_DARK_GREY);
+    }
+    private static void setBackgroundGreen(PrintStream out) {
+        out.print(EscapeSequences.SET_BG_COLOR_GREEN);
+    }
+    private static void setBackgroundDarkGreen(PrintStream out) {
+        out.print(EscapeSequences.SET_BG_COLOR_DARK_GREEN);
     }
 
     //print pieces
