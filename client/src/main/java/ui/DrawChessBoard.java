@@ -21,40 +21,41 @@ public class DrawChessBoard {
     private static final String QUEEN = " Q ";
     private static final String PAWN = " P ";
     private static  boolean color;
+    private static boolean highlight;
 
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         //ChessPiece[][] blackboard = new ChessGame().getBoard().getBoard();
         //ChessPiece[][] whiteBoard = upsideDownBoard(blackboard);
-        ChessBoard normalBoard = new ChessBoard();
-        normalBoard.resetBoard();
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
 
         out.print(EscapeSequences.ERASE_SCREEN);
         drawHeaders(out);
-        drawWhiteBoard(out, normalBoard);
+        drawBlackBoard(out, board);
         out.print(EscapeSequences.SET_TEXT_COLOR_GREEN);
         out.println("Successfully Joined Game");
         ChessGame game = new ChessGame();
-        ChessPiece piece = normalBoard.getPiece(new ChessPosition(1,1));
+        ChessPiece piece = board.getPiece(new ChessPosition(1,1));
         out.println("" + piece.getTeamColor());
         //Collection<ChessMove> moves = new ChessGame().validMoves(position);
 //        drawChessBoard();
     }
-    public static void drawChessBoard(ChessGame.TeamColor teamColor){
+    public static void drawChessBoard(ChessGame.TeamColor teamColor, ChessBoard gameBoard){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        ChessPiece[][] board = new ChessGame().getBoard().getBoard();
-        ChessPiece[][] blackBoard = upsideDownBoard(board);
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
         out.print(EscapeSequences.ERASE_SCREEN);
         if (teamColor == ChessGame.TeamColor.BLACK){
-            drawHeaders(out);
-            //drawWhiteBoard(out, board);
+            drawHeadersBlack(out);
+            drawBlackBoard(out, board);
             out.println();
             out.println("Successfully Joined Game");
         }
         else{
             //draw board from the white perspective for observers and white team color
-            drawHeadersBlack(out);
-            //drawBlackBoard(out, blackBoard);
+            drawHeaders(out);
+            drawBlackBoard(out, board);
             out.println();
             out.println("Successfully Joined Game");
         }
@@ -81,8 +82,9 @@ public class DrawChessBoard {
 
 public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
     //drawHeaders(out);
+    //print rows normal but cols backward so white is on top!?
     for(int i = 1; i < 9; i++){
-        for (int j = 1; j < 9; j++){
+        for (int j = 8; j > 0; j--){
             changeColorWhiteTeam(out);
             if (board.getPiece(new ChessPosition(i,j)) != null){
                 printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
@@ -91,10 +93,10 @@ public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
                 out.print(EMPTY);
             }
         }
-        drawSideHeaders(out, i+1);
+        drawSideHeaders(out, i);
         if (i < 8){
             out.println();
-            drawSideHeaders(out, i+2);
+            drawSideHeaders(out, i+1);
         }
         color = !color;
     }
@@ -104,6 +106,7 @@ public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
 }
     public static void  drawRowsWhite(PrintStream out, ChessBoard board) {
         //drawHeaders(out);
+        //draw the rows backwards, but not the cols because the white needs to be displayed at the bottom
         for(int i = 8; i > 0; i--){
             for (int j = 1; j < 9; j++){
                 changeColorWhiteTeam(out);
@@ -164,6 +167,11 @@ public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
         out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
         out.print(" " + (row) + " ");
         setBackgroundDarkGrey(out);
+    }
+
+    public static ChessPosition highlightMoves(ChessPosition highlightPos){
+        highlight = true;
+
     }
 
     //set colors
