@@ -114,6 +114,7 @@ public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
                     out.print(EMPTY);
                 }
             }
+
             drawSideHeaders(out, i);
             if (i > 1){
                 out.println();
