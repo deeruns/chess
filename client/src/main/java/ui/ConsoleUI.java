@@ -133,7 +133,8 @@ public class ConsoleUI {
             serverFacade.joinGame(new JoinGameRequest(color.toUpperCase(), gameID, authToken));
             //gameplayUI
             //gamePlayUI.evalInput(scanner.next());
-            DrawChessBoard.drawChessBoard();
+            //insert player color
+            //DrawChessBoard.drawChessBoard();
             //return "Succcessfully Joined Game " + gameID + "as " + color;
         }
         catch(DataAccessException exception){
@@ -150,7 +151,8 @@ public class ConsoleUI {
             String color = scanner.next();
             //authorize
             serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
-            DrawChessBoard.drawChessBoard();
+            //insert player color
+            //DrawChessBoard.drawChessBoard();
             return "Succcessfully Joined Game " + gameID + "as an Observer";
         }
         catch(DataAccessException exception){

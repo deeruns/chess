@@ -13,6 +13,7 @@ import java.util.Arrays;
 public class ChessBoard {
     public ChessPiece[][] boardDimension =  new ChessPiece[8][8];
     public ChessBoard() {
+
     }
 
     /**

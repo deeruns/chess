@@ -1,12 +1,13 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
+import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
+
+import static java.lang.System.out;
 
 public class DrawChessBoard {
     private static final int NUM_OF_SQUARES = 8;
@@ -22,23 +23,46 @@ public class DrawChessBoard {
     private static  boolean color;
 
     public static void main(String[] args) {
-        drawChessBoard();
+        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        //ChessPiece[][] blackboard = new ChessGame().getBoard().getBoard();
+        //ChessPiece[][] whiteBoard = upsideDownBoard(blackboard);
+        ChessBoard normalBoard = new ChessBoard();
+        normalBoard.resetBoard();
+
+        out.print(EscapeSequences.ERASE_SCREEN);
+        drawHeaders(out);
+        drawWhiteBoard(out, normalBoard);
+        out.print(EscapeSequences.SET_TEXT_COLOR_GREEN);
+        out.println("Successfully Joined Game");
+        ChessGame game = new ChessGame();
+        ChessPiece piece = normalBoard.getPiece(new ChessPosition(1,1));
+        out.println("" + piece.getTeamColor());
+        //Collection<ChessMove> moves = new ChessGame().validMoves(position);
+//        drawChessBoard();
     }
-    public static void drawChessBoard(){
+    public static void drawChessBoard(ChessGame.TeamColor teamColor){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         ChessPiece[][] board = new ChessGame().getBoard().getBoard();
         ChessPiece[][] blackBoard = upsideDownBoard(board);
         out.print(EscapeSequences.ERASE_SCREEN);
-        drawHeaders(out);
-        drawWhiteBoard(out, board);
-        out.println();
-        drawHeadersBlack(out);
-        drawBlackBoard(out, blackBoard);
-        out.println("Successfully Joined Game");
+        if (teamColor == ChessGame.TeamColor.BLACK){
+            drawHeaders(out);
+            //drawWhiteBoard(out, board);
+            out.println();
+            out.println("Successfully Joined Game");
+        }
+        else{
+            //draw board from the white perspective for observers and white team color
+            drawHeadersBlack(out);
+            //drawBlackBoard(out, blackBoard);
+            out.println();
+            out.println("Successfully Joined Game");
+        }
+
         //setBackgroundBlack(out);
     }
     //draw board
-    public static void drawWhiteBoard(PrintStream out, ChessPiece[][] board){
+    public static void drawWhiteBoard(PrintStream out, ChessBoard board){
         boolean initialColor = color;
         drawSideHeaders(out, 8);
         drawRowsWhite(out, board);
@@ -46,7 +70,7 @@ public class DrawChessBoard {
         drawHeaders(out);
         color = initialColor;
     }
-    public static void drawBlackBoard(PrintStream out, ChessPiece[][] board){
+    public static void drawBlackBoard(PrintStream out, ChessBoard board){
         boolean initialColor = color;
         drawSideHeaders(out, 1);
         drawRowsBlack(out, board);
@@ -55,20 +79,20 @@ public class DrawChessBoard {
         color = initialColor;
     }
 
-public static void  drawRowsBlack(PrintStream out, ChessPiece[][] board) {
+public static void  drawRowsBlack(PrintStream out, ChessBoard board) {
     //drawHeaders(out);
-    for(int i = 0; i < board.length; i++){
-        for (int j = 0; j < board.length; j++){
+    for(int i = 1; i < 9; i++){
+        for (int j = 1; j < 9; j++){
             changeColorWhiteTeam(out);
-            if (board[i][j] != null){
-                printPiece(out, board[i][j].getPieceType(), board[i][j].getTeamColor());
+            if (board.getPiece(new ChessPosition(i,j)) != null){
+                printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
             }
             else{
                 out.print(EMPTY);
             }
         }
         drawSideHeaders(out, i+1);
-        if (i < 7){
+        if (i < 8){
             out.println();
             drawSideHeaders(out, i+2);
         }
@@ -78,22 +102,22 @@ public static void  drawRowsBlack(PrintStream out, ChessPiece[][] board) {
     setBackgroundDarkGrey(out);
     //out.println();
 }
-    public static void  drawRowsWhite(PrintStream out, ChessPiece[][] board) {
+    public static void  drawRowsWhite(PrintStream out, ChessBoard board) {
         //drawHeaders(out);
-        for(int i = 0; i < board.length; i++){
-            for (int j = 0; j < board.length; j++){
+        for(int i = 8; i > 0; i--){
+            for (int j = 1; j < 9; j++){
                 changeColorWhiteTeam(out);
-                if (board[i][j] != null){
-                    printPiece(out, board[i][j].getPieceType(), board[i][j].getTeamColor());
+                if (board.getPiece(new ChessPosition(i,j)) != null){
+                    printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
                 }
                 else{
                     out.print(EMPTY);
                 }
             }
-            drawSideHeaders(out, 8 - i);
-            if (i < 7){
+            drawSideHeaders(out, i);
+            if (i > 1){
                 out.println();
-                drawSideHeaders(out, 7 - i);
+                drawSideHeaders(out, i-1);
             }
             color = !color;
         }
@@ -220,6 +244,8 @@ public static void  drawRowsBlack(PrintStream out, ChessPiece[][] board) {
 
         return upsideDown;
     }
+
+    //public static ChessBoard changeBoard
 
 
 }
