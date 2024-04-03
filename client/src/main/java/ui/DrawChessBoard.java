@@ -21,26 +21,26 @@ public class DrawChessBoard {
     private static boolean highlight = false;
 
     public static void main(String[] args) {
-        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        //ChessPiece[][] blackboard = new ChessGame().getBoard().getBoard();
-        //ChessPiece[][] whiteBoard = upsideDownBoard(blackboard);
-        ChessPosition position = new ChessPosition(2, 4);
-        ChessGame game = new ChessGame();
-//        ChessBoard board = new ChessBoard();
-//        board.resetBoard();
-
-        out.print(EscapeSequences.ERASE_SCREEN);
-        highlightMoves();
-        drawHeaders(out);
-        drawWhiteBoard(out, game, position);
-        out.print(EscapeSequences.SET_TEXT_COLOR_GREEN);
-        out.println("Successfully Joined Game");
+//        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+//        //ChessPiece[][] blackboard = new ChessGame().getBoard().getBoard();
+//        //ChessPiece[][] whiteBoard = upsideDownBoard(blackboard);
+//        ChessPosition position = new ChessPosition(2, 4);
+//        ChessGame game = new ChessGame();
+////        ChessBoard board = new ChessBoard();
+////        board.resetBoard();
+//
+//        out.print(EscapeSequences.ERASE_SCREEN);
+//        highlightMoves();
+//        drawHeaders(out);
+//        drawBlackBoard(out, game, position);
+//        out.print(EscapeSequences.SET_TEXT_COLOR_GREEN);
+//        out.println("Successfully Joined Game");
     }
 
     public static void drawChessBoard(ChessGame.TeamColor teamColor, ChessGame game, ChessPosition position) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         ChessBoard board = game.getBoard();
-        board.resetBoard();
+        //board.resetBoard();
         //switch so it doesn't reset the board when I call this^^^
         out.print(EscapeSequences.ERASE_SCREEN);
         if (teamColor == ChessGame.TeamColor.BLACK) {
@@ -85,9 +85,19 @@ public class DrawChessBoard {
         for (int i = 1; i < 9; i++) {
             for (int j = 8; j > 0; j--) {
                 changeColorWhiteTeam(out);
-                if (board.getPiece(new ChessPosition(i, j)) != null) {
-                    printPiece(out, board.getPiece(new ChessPosition(i, j)).getPieceType(), board.getPiece(new ChessPosition(i, j)).getTeamColor());
-                } else {
+                ChessPosition currPos = new ChessPosition(i, j);
+                highlightPrinter(out, game, position, currPos);
+                if (board.getPiece(currPos) != null) {
+                    if (board.getPiece(position) != null && currPos.equals(position)) {
+                        out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+                        printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                    }
+                    else {
+                        printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                    }
+
+                }
+                else {
                     out.print(EMPTY);
                 }
             }
@@ -143,15 +153,17 @@ public class DrawChessBoard {
     public static void highlightPrinter(PrintStream out, ChessGame game, ChessPosition position, ChessPosition currPos) {
         Collection<ChessMove> validMoves = game.validMoves(position);
         if (highlight) {
-            for (ChessMove move : validMoves) {
-                ChessPosition endPos = move.getEndPosition();
-                if (currPos.equals(endPos)) {
-                    if (!color) {
-                        setBackgroundDarkGreen(out);
-                        break;
-                    } else {
-                        setBackgroundGreen(out);
-                        break;
+            if(validMoves != null) {
+                for (ChessMove move : validMoves) {
+                    ChessPosition endPos = move.getEndPosition();
+                    if (currPos.equals(endPos)) {
+                        if (!color) {
+                            setBackgroundDarkGreen(out);
+                            break;
+                        } else {
+                            setBackgroundGreen(out);
+                            break;
+                        }
                     }
                 }
             }
