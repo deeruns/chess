@@ -65,6 +65,7 @@ public class ChessGame {
         HashSet<ChessMove> validMovesFinal = new HashSet<>();
 
         Iterator<ChessMove> validMovesIter = validMoves.iterator();
+        //ChessBoard cloneBoard = BoardCopy2(currentBoard);
         while(validMovesIter.hasNext()){
             //reset the board to the original
             ChessBoard cloneBoard = BoardCopy2(currentBoard);
@@ -79,9 +80,12 @@ public class ChessGame {
             if(!(isInCheck(currentPiece.getTeamColor()))){
                 validMovesFinal.add(move);
             }
-            //reset the board to the original
-            currentBoard = cloneBoard;
+            //reset the board to the original -- for some reason board clone is not working
+            //currentBoard = cloneBoard;
+            currentBoard.addPiece(start, currentPiece);
+            currentBoard.addPiece(end, null);
         }
+        //currentBoard = cloneBoard;
         return validMovesFinal;
     }
 
