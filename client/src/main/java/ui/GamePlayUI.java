@@ -89,7 +89,7 @@ public class GamePlayUI {
         String position2 = scanner.next();
         ChessPosition endPos = evalPosition(position2);
         if (cords.getColumn() == 9){
-            out.println("Invlaid input");
+            out.println("Invalid input");
             evalInput(var);
         }
         //draw chess Board after move
