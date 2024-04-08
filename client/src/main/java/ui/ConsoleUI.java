@@ -3,6 +3,8 @@ package ui;
 import Models.AuthTokenData;
 import Models.GameData;
 import ResponseException.ResponseException;
+import WebSocket.NotificationHandler;
+import WebSocket.WebSocketFacade;
 import dataAccess.DataAccessException;
 import requests.*;
 import response.CreateGameResponse;
@@ -15,12 +17,29 @@ import java.util.Scanner;
 import static java.lang.System.out;
 
 
-public class ConsoleUI {
+public class ConsoleUI implements NotificationHandler {
+    NotificationHandler notificationHandler;
     private String authToken = null;
     private final ServerFacade serverFacade = new ServerFacade("http://localhost:8080");
+    private final WebSocketFacade ws;
     UserLoginStatus status = UserLoginStatus.SIGNEDOUT;
     Scanner scanner = new Scanner(System.in);
     GamePlayUI gamePlayUI = new GamePlayUI();
+
+    public ConsoleUI() throws DataAccessException {
+        this.ws = new WebSocketFacade("http://localhost:8080", notificationHandler);
+    }
+
+    @Override
+    public void notify(ServerMessage message) {
+        switch (message.getServerMessageType()) {
+            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
+            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
+            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+        }
+    }
+
+
     public String evalInput(String input){
         try{
             return switch (input){

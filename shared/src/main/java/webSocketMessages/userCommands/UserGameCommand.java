@@ -13,12 +13,12 @@ import java.util.Objects;
  */
 public class UserGameCommand {
 
-    public UserGameCommand(String authToken, int gameID, CommandType type, ChessGame.TeamColor playerColor, ChessMove move) {
+    public UserGameCommand(String authToken) {
         this.authToken = authToken;
-        this.commandType = type;
-        this.gameID = gameID;
-        this.playerColor = playerColor;
-        this.move = move;
+//        this.commandType = type;
+//        this.gameID = gameID;
+//        this.playerColor = playerColor;
+//        this.move = move;
     }
 
     public enum CommandType {

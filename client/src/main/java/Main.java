@@ -1,4 +1,5 @@
 import chess.*;
+import dataAccess.DataAccessException;
 import ui.ConsoleUI;
 
 import java.util.Scanner;
@@ -7,7 +8,7 @@ import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DataAccessException {
         ConsoleUI console = new ConsoleUI();
         System.out.println("Welcome to Davin Thompson's Chess Server");
         Scanner scanner = new Scanner(System.in);
