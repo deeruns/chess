@@ -1,11 +1,16 @@
 package server.websocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
+import webSocketMessages.serverMessages.NotificationCommand;
 import webSocketMessages.userCommands.UserGameCommand;
 import webSocketMessages.serverMessages.ServerMessage;
+
+import javax.management.Notification;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
@@ -50,23 +55,21 @@ public class ConnectionManager {
         }
     }
 
+    private void sendMessage(int gameID, ServerMessage serverMessage, String authToken) throws IOException {
+        HashMap<String, Session> game = getGame(gameID);
+        Session session = game.get(authToken);
+        session.getRemote().sendString(new Gson().toJson(serverMessage));
+    }
 
+    public void broadcast(int gameID, ServerMessage message, String exceptThisAuthToken) throws IOException {
+        HashMap<String, Session> game = getGame(gameID);
 
-    public void broadcast(String excludePlayerName, UserGameCommand gameCommand) throws IOException {
-        var removeList = new ArrayList<Connection>();
-        for (var c : connections.values()) {
-            if (c.session.isOpen()) {
-                if (!c.playerName.equals(excludePlayerName)) {
-                    c.send(gameCommand.toString());
-                }
-            } else {
-                removeList.add(c);
+        for (Map.Entry<String, Session> entry : game.entrySet()) {
+            String authToken = entry.getKey();
+            Session session = entry.getValue();
+            if (!authToken.equals(exceptThisAuthToken)) {
+                session.getRemote().sendString(new Gson().toJson(message));
             }
-        }
-
-        // Clean up any connections that were left open.
-        for (var c : removeList) {
-            connections.remove(c.playerName);
         }
     }
 }

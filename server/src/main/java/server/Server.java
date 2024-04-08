@@ -1,14 +1,25 @@
 package server;
 
+import dataAccess.*;
 import handlers.*;
 import server.websocket.WebSocketHandler;
 import spark.*;
 
 public class Server {
+    UserDAO userDAO;
+    GameDAO gameDAO;
+    AuthDAO authDAO;
     private final WebSocketHandler webSocketHandler;
     //add websocket?
-    public Server() {
-        this.webSocketHandler = new WebSocketHandler();
+    public Server(){
+        try {
+            this.userDAO = new SqlUserDAO();
+            this.authDAO = new SqlAuthDAO();
+            this.gameDAO = new SqlGameDAO();
+            this.webSocketHandler = new WebSocketHandler();
+        } catch (DataAccessException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     public static void main(String[] args) {
