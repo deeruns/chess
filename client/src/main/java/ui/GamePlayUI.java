@@ -1,42 +1,86 @@
 package ui;
 
-import ResponseException.ResponseException;
+import WebSocket.NotificationHandler;
+import WebSocket.WebSocketFacade;
 import chess.*;
 import dataAccess.DataAccessException;
+import webSocketMessages.serverMessages.ServerMessage;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Scanner;
 
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
 import static java.lang.System.out;
+import static ui.EscapeSequences.*;
 
-public class GamePlayUI {
+public class GamePlayUI implements NotificationHandler {
+    private final WebSocketFacade ws;
     Scanner scanner = new Scanner(System.in);
     ChessGame.TeamColor teamColor;
     ChessGame game;
+    boolean observing = false;
+    int gameID;
     ChessBoard board;
     String authToken;
     ChessPosition cords;
 
-    public GamePlayUI(String auth, ChessGame gameChess) {
+    public GamePlayUI(WebSocketFacade ws, String auth, ChessGame gameChess) {
+        this.ws = ws;
         game = gameChess;
         board = game.getBoard();
         board.resetBoard();
         authToken = auth;
+
     }
 
+    public void setTeamColor(ChessGame.TeamColor color) {
+        teamColor = color;
+    }
 
-    public void evalInput(String var) {
-        out.println(printMenu(var));
+    public void setGameID(int gID) {
+        gameID = gID;
+    }
+
+    public void setObserve(boolean bool) {
+        observing = bool;
+    }
+
+    public void joinGamePlay(ChessGame.TeamColor color) throws DataAccessException {
+        //DrawChessBoard drawChessBoard = new DrawChessBoard();
+        this.teamColor = color;
+        if (Objects.equals(WHITE, color)) {
+            ws.joinPlayer(authToken,gameID, teamColor);
+            //draw board
+            DrawChessBoard.drawChessBoard(teamColor, game, null);
+            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as WHITE" + SET_TEXT_COLOR_WHITE);
+        }
+        else if (Objects.equals(BLACK, color)) {
+            ws.joinPlayer(authToken ,gameID, teamColor);
+            //draw board
+            DrawChessBoard.drawChessBoard(teamColor, game, null);
+            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as BLACK" + SET_TEXT_COLOR_WHITE);
+        }
+        else {
+            ws.joinObserver(authToken,gameID);
+            //draw board as white?
+            DrawChessBoard.drawChessBoard(WHITE, game, null);
+            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully observing game" + SET_TEXT_COLOR_WHITE);
+        }
+    }
+
+    public void evalInput() {
+        out.println(printMenu());
         String input = scanner.nextLine();
         try {
             switch (input) {
-                case "1" -> GamePlayHelp(var);
-                case "2" -> redrawChessBoard(var);
+                case "1" -> GamePlayHelp();
+                case "2" -> redrawChessBoard();
                 case "3" -> leave();
-                case "4" -> makeMove(var);
-                case "5" -> resign(var);
-                case "6" -> highlightMoves(var);
+                case "4" -> makeMove();
+                case "5" -> resign();
+                case "6" -> highlightMoves();
                 default -> out.println("not very cash money, your input is invalid brah");
             };
         } catch (Exception exception) {
@@ -44,7 +88,7 @@ public class GamePlayUI {
         }
     }
 
-    private String printMenu(String var) {
+    private String printMenu() {
         return """
                 Enter the number of the action you want to take
                 1. Help
@@ -56,26 +100,34 @@ public class GamePlayUI {
                 """;
     }
 
-    private void highlightMoves(String var) {
-        out.println("Enter the position\n" + "of the piece you would like to highlight: ");
-        String position = scanner.next();
-        cords = evalPosition(position);
-        if (cords.getColumn() == 9){
-            out.println("Invlaid input");
-            evalInput(var);
+    private void highlightMoves() {
+        if (game.isInCheck(teamColor)){
+            ChessPosition king = game.FindKingPiece(teamColor);
+            DrawChessBoard.drawChessBoard(teamColor, game, king);
+            System.out.println("Bruh Moment: You are in check and must move the King!");
+            evalInput();
         }
-        DrawChessBoard.highlightMoves();
-        //how do I pass in these parameters?
-        DrawChessBoard.drawChessBoard(teamColor, game, cords);
-        DrawChessBoard.highlightMoves();
-        scanner.next();
-        //out.println(printMenu());
-        //call highlight moves with cords
-        //draw chess board highlighted
-        //return printMenu();
-        evalInput(var);
+        else {
+            out.println("Enter the position\n" + "of the piece you would like to highlight: ");
+            String position = scanner.next();
+            cords = evalPosition(position);
+            if (cords.getColumn() == 9) {
+                out.println("Invlaid input");
+                evalInput();
+            }
+            DrawChessBoard.highlightMoves();
+            //how do I pass in these parameters?
+            DrawChessBoard.drawChessBoard(teamColor, game, cords);
+            DrawChessBoard.highlightMoves();
+            scanner.next();
+            //out.println(printMenu());
+            //call highlight moves with cords
+            //draw chess board highlighted
+            //return printMenu();
+            evalInput();
+        }
     }
-    private void makeMove(String var) throws InvalidMoveException {
+    private void makeMove() throws InvalidMoveException, DataAccessException {
         //draw chessboard before move
         DrawChessBoard.drawChessBoard(teamColor, game, cords);
         out.println("Enter the position\n" + "of the piece you would like to move: ");
@@ -83,22 +135,31 @@ public class GamePlayUI {
         ChessPosition startPos = evalPosition(position);
         if (cords.getColumn() == 9){
             out.println("Invlaid input");
-            evalInput(var);
+            evalInput();
         }
         out.println("Enter the position\n" + "you would like to move the piece to: ");
         String position2 = scanner.next();
         ChessPosition endPos = evalPosition(position2);
         if (cords.getColumn() == 9){
             out.println("Invalid input");
-            evalInput(var);
+            evalInput();
         }
         //draw chess Board after move
         DrawChessBoard.drawChessBoard(teamColor, game, cords);
         makeMoveHelper(teamColor, game, startPos, endPos);
-        evalInput(var);
+        DrawChessBoard.drawChessBoard(teamColor, game, null);
+        System.out.println(SET_TEXT_COLOR_RED + "DONT MOVE UNTIL OPPONENT HAS GONE" + SET_TEXT_COLOR_WHITE);
+
+        //ws.makeMove(authToken);
+        if (isIncheckMate()) {
+            System.out.println(SET_TEXT_COLOR_RED + "GAME OVER" + SET_TEXT_COLOR_WHITE);
+        }
+        else {
+            evalInput();
+        }
     }
 
-    private void makeMoveHelper(ChessGame.TeamColor teamColor, ChessGame game, ChessPosition startPos, ChessPosition endPos) throws InvalidMoveException {
+    private void makeMoveHelper(ChessGame.TeamColor teamColor, ChessGame game, ChessPosition startPos, ChessPosition endPos) throws InvalidMoveException, DataAccessException {
         //make move
         ChessMove finalMove;
         Collection<ChessMove> validMoves = game.validMoves(startPos);
@@ -118,10 +179,13 @@ public class GamePlayUI {
                     finalMove = new ChessMove(startPos, endPos, null);
                 }
                 game.makeMove(finalMove);
+                ws.makeMove(authToken, gameID, finalMove);
+
             }
             else{
                 out.println("Invalid Move");
             }
+
             //implement promotion piece
             //implement checkmate, stalemate...etc
         }
@@ -147,7 +211,7 @@ public class GamePlayUI {
         };
     }
 
-    private void resign(String var) {
+    private void resign() throws DataAccessException {
         //make them lose the game
         switch (teamColor.name()) {
             case "BLACK":
@@ -157,21 +221,22 @@ public class GamePlayUI {
                 System.out.println("BLACK WINS");
                 break;
         }
+        ws.resign(authToken, gameID);
         //DELETE GAME??
-        evalInput(var);
+        //evalInput();
     }
 
-    private void leave() {
-        //delete game??
+    private void leave() throws DataAccessException {
+        ws.leave(authToken, gameID);
     }
 
-    private void redrawChessBoard(String var) {
+    private void redrawChessBoard() {
         //print according to the team they are on
         DrawChessBoard.drawChessBoard(teamColor, game, cords );
-        evalInput(var);
+        evalInput();
     }
 
-    private void GamePlayHelp(String var) {
+    private void GamePlayHelp() {
         out.println("""
                 Enter the number of the action you want to take.
                 Enter 1 for help
@@ -181,7 +246,7 @@ public class GamePlayUI {
                 Enter 5 resign from the game
                 Enter 6 to highlight the possible moves for a piece
                 """);
-        evalInput(var);
+        evalInput();
     }
 
 
@@ -219,5 +284,30 @@ public class GamePlayUI {
             case "h" -> "8";
             default -> "9";
         };
+    }
+
+    public boolean isIncheckMate() {
+        if (Objects.equals(teamColor, BLACK)) {
+            if (game.isInStalemate(WHITE) || game.isInCheckmate(WHITE)) {
+                return true;
+            }
+        }
+        else {
+            if (game.isInStalemate(BLACK) || game.isInCheckmate(BLACK)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    @Override
+    public void notify(ServerMessage notification) {
+        DrawChessBoard.drawChessBoard(teamColor, game, null);
+        System.out.println("\n");
+        switch (notification.getServerMessageType()) {
+            case LOAD_GAME -> DrawChessBoard.drawChessBoard(teamColor, game, null);
+            case ERROR -> System.out.println(SET_TEXT_COLOR_RED + "error"); //get actual error
+            case NOTIFICATION -> System.out.println(SET_TEXT_COLOR_MAGENTA + notification.getServerMessageType());
+            default -> System.out.println("error: in notify");
+        }
     }
 };

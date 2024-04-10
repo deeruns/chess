@@ -4,6 +4,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Connection {
     public String message;

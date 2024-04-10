@@ -5,13 +5,16 @@ import Models.GameData;
 import ResponseException.ResponseException;
 import WebSocket.NotificationHandler;
 import WebSocket.WebSocketFacade;
-import dataAccess.DataAccessException;
+import chess.ChessGame;
+import dataAccess.*;
 import requests.*;
 import response.CreateGameResponse;
 import response.ListGamesResponse;
 import response.ResponseRecord;
 import serverFacade.ServerFacade;
 import webSocketMessages.serverMessages.ServerMessage;
+import webSocketMessages.serverMessages.NotificationCommand;
+
 
 import java.util.Scanner;
 import static java.lang.System.out;
@@ -20,24 +23,35 @@ import static java.lang.System.out;
 public class ConsoleUI implements NotificationHandler {
     NotificationHandler notificationHandler;
     private String authToken = null;
+    //make a chessgame variable and reset the board there?
     private final ServerFacade serverFacade = new ServerFacade("http://localhost:8080");
     private final WebSocketFacade ws;
     UserLoginStatus status = UserLoginStatus.SIGNEDOUT;
     Scanner scanner = new Scanner(System.in);
-    GamePlayUI gamePlayUI = new GamePlayUI();
+    GamePlayUI gamePlayUI;
+    ChessGame chessGame;
+    ChessGame.TeamColor teamColor;
+    AuthDAO authDAO;
+    UserDAO userDAO;
+    GameDAO gameDAO;
+
 
     public ConsoleUI() throws DataAccessException {
         this.ws = new WebSocketFacade("http://localhost:8080", notificationHandler);
+        //should this be called to reset the board here?
+        chessGame.getBoard().resetBoard();
+        this.gamePlayUI = new GamePlayUI(ws,authToken, chessGame);
+        this.gameDAO = new SqlGameDAO();
     }
 
-    @Override
-    public void notify(ServerMessage message) {
-        switch (message.getServerMessageType()) {
-            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
-            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
-            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
-        }
-    }
+//    @Override
+//    public void notify(ServerMessage message) {
+//        switch (message.getServerMessageType()) {
+//            case NOTIFICATION -> displayNotification(((NotificationCommand) message).getMessage());
+//            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
+//            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+//        }
+//    }
 
 
     public String evalInput(String input){
@@ -150,29 +164,67 @@ public class ConsoleUI implements NotificationHandler {
             String color = scanner.next().toLowerCase();
             //authorize
             serverFacade.joinGame(new JoinGameRequest(color.toUpperCase(), gameID, authToken));
+            //get game
+            GameData gameData = gameDAO.getGame(gameID);
+            chessGame = gameData.game();
+            gamePlayUI = new GamePlayUI(ws,authToken, chessGame);
+            gamePlayUI.setGameID(gameID);
             //gameplayUI
-            //gamePlayUI.evalInput(scanner.next());
+            //gamePlayUI.evalInput("1");
             //insert player color
             //DrawChessBoard.drawChessBoard();
             //return "Succcessfully Joined Game " + gameID + "as " + color;
+            if (color.equals("white")){
+                gamePlayUI.setObserve(false);
+                teamColor = ChessGame.TeamColor.WHITE;
+                gamePlayUI.setTeamColor(teamColor);
+                gamePlayUI.joinGamePlay(teamColor);
+                gamePlayUI.evalInput();
+            }
+            else if (color.equals("black")){
+                gamePlayUI.setObserve(false);
+                teamColor = ChessGame.TeamColor.BLACK;
+                gamePlayUI.setTeamColor(teamColor);
+                gamePlayUI.joinGamePlay(teamColor);
+                gamePlayUI.evalInput();
+            }
+//            else{
+//                //observer
+//                gamePlayUI.setObserve(true);
+//                teamColor = null;
+//                gamePlayUI.setTeamColor(teamColor);
+//                gamePlayUI.joinGamePlay(teamColor);
+//            }
+            //ws.joinPlayer(authToken, gameID, teamColor);
         }
         catch(DataAccessException exception){
             return exception.getMessage();
         }
-        return "Succcessfully Joined Game";
+        return "";
     }
 
     private String clientObserveGame() throws DataAccessException {
         try{
             out.print("Enter GameID: ");
             int gameID = Integer.parseInt(scanner.next());
-            out.print("Enter team color WHITE or BLACK: ");
-            String color = scanner.next();
+            teamColor = null;
+            //out.print("Enter team color WHITE or BLACK: ");
+            //String color = scanner.next();
             //authorize
-            serverFacade.joinGame(new JoinGameRequest(color, gameID, authToken));
+            serverFacade.joinGame(new JoinGameRequest("", gameID, authToken));
+            GameData gameData = gameDAO.getGame(gameID);
+            chessGame = gameData.game();
+            gamePlayUI = new GamePlayUI(ws,authToken, chessGame);
+            gamePlayUI.setGameID(gameID);
+            gamePlayUI.setObserve(true);
+            gamePlayUI.setTeamColor(teamColor);
+            gamePlayUI.joinGamePlay(teamColor);
+            gamePlayUI.evalInput();
+            //ws.joinObserver(authToken, gameID);
             //insert player color
-            //DrawChessBoard.drawChessBoard();
-            return "Succcessfully Joined Game " + gameID + "as an Observer";
+            //DrawChessBoard.drawChessBoard(teamColor, chessGame, null);
+            //scanner.next();
+            return "";
         }
         catch(DataAccessException exception){
             return exception.getMessage();
@@ -211,7 +263,12 @@ public class ConsoleUI implements NotificationHandler {
 
     }
 
-    private void notify(ServerMessage message){}
+    @Override
+    public void notify(ServerMessage notification) {
+
+    }
+
+    //private void notify(ServerMessage message){}
 
     //observer board displayed as white
     // make new UI for gameplay
