@@ -4,7 +4,6 @@ import Models.GameData;
 import chess.ChessGame;
 
 import java.util.*;
-import java.sql.Array;
 
 public class MemoryGameDAO implements GameDAO{
 //    private int countID = 1;
@@ -35,7 +34,7 @@ public class MemoryGameDAO implements GameDAO{
         return null;
     }
     @Override
-    public GameData createGame(String gameName) throws DataAccessException{
+    public GameData createGame(String gameName) throws DataAccessException {
         //game already exists
         if (getGameName(gameName) != null){
             throw new DataAccessException("Error: bad request");
@@ -53,7 +52,7 @@ public class MemoryGameDAO implements GameDAO{
 
     }
     @Override
-    public void addUser(int gameID, String username, String teamColor) throws DataAccessException{
+    public void addUser(int gameID, String username, String teamColor) throws DataAccessException {
         GameData game = getGame(gameID);
         //if trying to join a game that doesn't exist
         if (game == null){
@@ -75,14 +74,14 @@ public class MemoryGameDAO implements GameDAO{
         }
     }
 //    @Override
-//    public void deleteGame(int gameID) throws DataAccessException{
+//    public void deleteGame(int gameID) throws DataAccess.DataAccessException{
 //        if (!gameDataHash.containsKey(gameID)){
-//            throw new DataAccessException("Error: bad request");
+//            throw new DataAccess.DataAccessException("Error: bad request");
 //        }
 //        gameDataHash.remove(gameID);
 //    }
     @Override
-    public void clear() throws DataAccessException{
+    public void clear() throws DataAccessException {
         gameDataHash.clear();
     }
 

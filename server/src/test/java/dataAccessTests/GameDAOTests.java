@@ -24,7 +24,7 @@ public class GameDAOTests {
     GameData gameTwo = new GameData(2,null,null,"game2", new ChessGame());
     GameData gameThree = new GameData(3,null,null,"game3", new ChessGame());
     @BeforeEach
-    public void setup() throws DataAccessException{
+    public void setup() throws DataAccessException {
         gameDAO.clear();
     }
 

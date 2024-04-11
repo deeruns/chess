@@ -1,12 +1,7 @@
 package handlers;
 
-import com.google.gson.Gson;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryUserDAO;
+import DataAccess.DataAccessException;
 import dataAccess.SqlAuthDAO;
-import org.eclipse.jetty.http.MetaData;
-import requests.RegisterRequest;
 import service.LogoutService;
 import spark.Response;
 import spark.Request;

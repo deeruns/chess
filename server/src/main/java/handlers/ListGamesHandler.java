@@ -3,7 +3,6 @@ package handlers;
 import Models.GameData;
 import com.google.gson.Gson;
 import dataAccess.*;
-import response.CreateGameResponse;
 import response.ListGamesResponse;
 import service.ListGamesService;
 import spark.Request;
@@ -26,7 +25,7 @@ public class ListGamesHandler extends ParentHandler {
         }
         return finalResponse;
     }
-    private String deserializeResponse(ListGamesResponse listGamesResponse) throws DataAccessException{
+    private String deserializeResponse(ListGamesResponse listGamesResponse) throws DataAccessException {
         try{
             Gson gson = new Gson();
             return gson.toJson(listGamesResponse);

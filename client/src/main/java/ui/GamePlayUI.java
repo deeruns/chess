@@ -1,10 +1,8 @@
 package ui;
 
-import WebSocket.NotificationHandler;
+import DataAccess.DataAccessException;
 import WebSocket.WebSocketFacade;
 import chess.*;
-import dataAccess.DataAccessException;
-import webSocketMessages.serverMessages.ServerMessage;
 
 import java.util.Collection;
 import java.util.Objects;

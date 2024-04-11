@@ -1,10 +1,10 @@
 package dataAccessTests;
 
+import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 import Models.GameData;
 import Models.UserData;
 import chess.ChessGame;
-import dataAccess.DataAccessException;
 import dataAccess.SqlAuthDAO;
 import dataAccess.SqlGameDAO;
 import dataAccess.SqlUserDAO;
@@ -12,10 +12,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.ClearService;
-import service.CreateGameService;
-import service.JoinGameService;
-import service.RegisterService;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

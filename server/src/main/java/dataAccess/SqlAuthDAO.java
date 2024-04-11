@@ -1,17 +1,11 @@
 package dataAccess;
 
 import Models.AuthTokenData;
-import chess.ChessGame;
-import com.google.gson.Gson;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
-
 public class SqlAuthDAO implements AuthDAO{
-    public SqlAuthDAO() throws DataAccessException{
+    public SqlAuthDAO() throws DataAccessException {
         DatabaseManager.configureDatabase(createStatements);
     }
     @Override

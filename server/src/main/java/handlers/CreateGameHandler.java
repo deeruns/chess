@@ -1,13 +1,10 @@
 package handlers;
 
-import Models.AuthTokenData;
 import Models.GameData;
 import com.google.gson.Gson;
 import dataAccess.*;
 import requests.CreateGameRequest;
-import requests.LoginRequest;
 import response.CreateGameResponse;
-import response.ResponseRecord;
 import service.CreateGameService;
 import spark.Response;
 import spark.Request;
@@ -34,7 +31,7 @@ public class CreateGameHandler extends ParentHandler{
         return createGameRequest;
     }
 
-    private String deserializeResponse(CreateGameResponse createGameResponse) throws DataAccessException{
+    private String deserializeResponse(CreateGameResponse createGameResponse) throws DataAccessException {
         try{
             Gson gson = new Gson();
             return gson.toJson(createGameResponse);

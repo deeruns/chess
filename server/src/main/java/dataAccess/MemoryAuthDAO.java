@@ -1,15 +1,14 @@
 package dataAccess;
 
 import Models.AuthTokenData;
-import Models.UserData;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO {
     private static HashMap<String, AuthTokenData> currAuth = new HashMap<>();
     @Override
-    public AuthTokenData getUser(String authToken) throws DataAccessException{
+    public AuthTokenData getUser(String authToken) throws DataAccessException {
         if(!currAuth.containsKey(authToken)){
             throw new DataAccessException("Error: Unauthorized");
         }
@@ -37,7 +36,7 @@ public class MemoryAuthDAO implements AuthDAO {
     public void deleteAuth(String authToken){
         currAuth.remove(authToken);
     }
-    public void clear() throws DataAccessException{
+    public void clear() throws DataAccessException {
         currAuth.clear();
     }
 

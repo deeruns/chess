@@ -1,9 +1,7 @@
 package service;
 
-import Models.AuthTokenData;
+import DataAccess.DataAccessException;
 import dataAccess.AuthDAO;
-import dataAccess.DataAccessException;
-import dataAccess.UserDAO;
 
 public class LogoutService extends ParentService{
     private final AuthDAO authDAO;

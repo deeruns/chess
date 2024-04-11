@@ -1,10 +1,9 @@
 package service;
 
+import DataAccess.DataAccessException;
 import Models.GameData;
 import dataAccess.AuthDAO;
-import dataAccess.DataAccessException;
 import dataAccess.GameDAO;
-import dataAccess.UserDAO;
 
 public class CreateGameService extends ParentService {
     private final AuthDAO authDAO;
@@ -14,7 +13,7 @@ public class CreateGameService extends ParentService {
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
     }
-    public GameData createGame(String authToken, String gameName)throws DataAccessException{
+    public GameData createGame(String authToken, String gameName)throws DataAccessException {
         if (gameName == null){
             throw new DataAccessException("Error: bad request");
         }

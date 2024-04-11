@@ -6,8 +6,6 @@ import Models.UserData;
 import dataAccess.*;
 import org.junit.jupiter.api.*;
 import service.*;
-import service.ListGamesService;
-import handlers.ParentHandler;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,7 +60,7 @@ public class RegisterTest {
     }
     @Test
     @DisplayName("Failed Register: Name Taken")
-    public void RegisterNameTaken() throws DataAccessException{
+    public void RegisterNameTaken() throws DataAccessException {
         String expectedOutput = "Error: already taken";
         //Assertions.assertDoesNotThrow(() -> registerService.registerUser(userData.username(), userData.password(), userData.email()));
         DataAccessException exception = assertThrows(DataAccessException.class, ()->registerService.registerUser(userData.username(), userData.password(), userData.email()));

@@ -2,7 +2,6 @@ package ui;
 
 import Models.AuthTokenData;
 import Models.GameData;
-import ResponseException.ResponseException;
 import WebSocket.NotificationHandler;
 import WebSocket.WebSocketFacade;
 import chess.ChessGame;
@@ -11,20 +10,17 @@ import dataAccess.*;
 import requests.*;
 import response.CreateGameResponse;
 import response.ListGamesResponse;
-import response.ResponseRecord;
 import serverFacade.ServerFacade;
 import webSocketMessages.serverMessages.ErrorCommand;
 import webSocketMessages.serverMessages.LoadGameCommand;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.serverMessages.NotificationCommand;
-import webSocketMessages.userCommands.UserGameCommand;
 
 
 import java.util.Scanner;
 import static java.lang.System.out;
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
-import static webSocketMessages.serverMessages.ServerMessage.ServerMessageType.*;
 
 
 public class ConsoleUI implements NotificationHandler {
@@ -158,7 +154,7 @@ public class ConsoleUI implements NotificationHandler {
 
     }
 
-    private String clientLogout() throws DataAccessException{
+    private String clientLogout() throws DataAccessException {
         try{
             //authorize
             serverFacade.logout(new LogoutRequest(authToken));
@@ -265,7 +261,7 @@ public class ConsoleUI implements NotificationHandler {
         }
     }
 
-    private String clientListGame() throws DataAccessException{
+    private String clientListGame() throws DataAccessException {
         try{
             //authorize
             ListGamesResponse response = serverFacade.listGames(new ListGamesRequest(authToken));

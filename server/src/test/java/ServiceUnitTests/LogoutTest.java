@@ -6,7 +6,6 @@ import Models.UserData;
 import dataAccess.*;
 import org.junit.jupiter.api.*;
 import service.*;
-import service.ListGamesService;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -54,7 +53,7 @@ public class LogoutTest {
     }
     @Test
     @DisplayName("Unauthorized Logout")
-    public void LogoutUserUnauthorized() throws DataAccessException{
+    public void LogoutUserUnauthorized() throws DataAccessException {
         String expectedOutput = "Error: Unauthorized";
         String wrongAuth = "TinaYouFatLard";
         DataAccessException exception = assertThrows(DataAccessException.class, ()-> logoutService.logoutUser(wrongAuth));

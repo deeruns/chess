@@ -4,14 +4,9 @@ import Models.AuthTokenData;
 import com.google.gson.Gson;
 import dataAccess.*;
 import requests.LoginRequest;
-import requests.RegisterRequest;
-import response.ResponseRecord;
 import service.LoginService;
-import service.RegisterService;
 import spark.Request;
 import spark.Response;
-
-import java.util.Objects;
 
 public class LoginHandler extends ParentHandler {
     public Object reqHandle(Request request, Response response) throws Exception{

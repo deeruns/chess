@@ -1,13 +1,11 @@
 package service;
 
+import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 import Models.GameData;
-import chess.ChessGame;
 import dataAccess.AuthDAO;
-import dataAccess.DataAccessException;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
-import requests.JoinGameRequest;
 
 public class JoinGameService extends ParentService{
     private final AuthDAO authDAO;
@@ -29,21 +27,21 @@ public class JoinGameService extends ParentService{
         String username = authData.username();
 //        if(teamColor == "WHITE"){
 //            if(!(gameData.whiteUsername() == null)){
-//                throw new DataAccessException("Error: already taken");
+//                throw new DataAccess.DataAccessException("Error: already taken");
 //            }
 //            gameDAO.addWhiteUser(gameID, username);
 //
 //        }
 //        if(teamColor == "BLACK"){
 //            if(!(gameData.blackUsername() == null)){
-//                throw new DataAccessException("Error: already taken");
+//                throw new DataAccess.DataAccessException("Error: already taken");
 //            }
 //            gameDAO.addBlackUser(gameID, username);
 //            gameData.blackUsername() = username;
 //        }
         gameDAO.addUser(gameID, username, teamColor);
     }
-    public void spectatorJoin(int gameID, String authToken) throws DataAccessException{
+    public void spectatorJoin(int gameID, String authToken) throws DataAccessException {
         authorizeUser(authDAO, authToken);
         gameDAO.getGame(gameID);
     }

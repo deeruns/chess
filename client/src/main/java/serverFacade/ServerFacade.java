@@ -1,9 +1,9 @@
 package serverFacade;
 
+import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 import ResponseException.ResponseException;
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
 import requests.*;
 import response.CreateGameResponse;
 import response.ListGamesResponse;

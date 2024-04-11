@@ -1,8 +1,8 @@
 package server.websocket;
 
+import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 import Models.GameData;
-import Models.UserData;
 import chess.*;
 import com.google.gson.Gson;
 import dataAccess.*;
@@ -20,12 +20,10 @@ import webSocketMessages.userCommands.*;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Timer;
 
 import static chess.ChessGame.Status.OVER;
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
-import static java.lang.System.out;
 
 
 @WebSocket
@@ -38,13 +36,9 @@ public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
 
     public WebSocketHandler() throws DataAccessException {
-        try {
-            this.userDAO = new SqlUserDAO();
-            this.authDAO = new SqlAuthDAO();
-            this.gameDAO = new SqlGameDAO();
-        } catch (DataAccessException exception) {
-            throw new RuntimeException(exception);
-        }
+        this.userDAO = new SqlUserDAO();
+        this.authDAO = new SqlAuthDAO();
+        this.gameDAO = new SqlGameDAO();
     }
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {

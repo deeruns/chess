@@ -1,7 +1,6 @@
 package dataAccess;
 
 import Models.AuthTokenData;
-import Models.UserData;
 
 public interface AuthDAO {
     public AuthTokenData getUser(String authToken) throws DataAccessException;

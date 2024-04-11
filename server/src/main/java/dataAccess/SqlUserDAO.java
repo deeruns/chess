@@ -1,14 +1,12 @@
 package dataAccess;
 
 import Models.UserData;
-import com.google.gson.Gson;
 
 import java.sql.SQLException;
-import static java.sql.Types.NULL;
 
 public class SqlUserDAO implements UserDAO{
 
-    public SqlUserDAO() throws DataAccessException{
+    public SqlUserDAO() throws DataAccessException {
         DatabaseManager.configureDatabase(createStatements);
     }
     @Override

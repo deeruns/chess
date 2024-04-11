@@ -1,7 +1,6 @@
 package clientTests;
 
-import Models.AuthTokenData;
-import dataAccess.DataAccessException;
+import DataAccess.DataAccessException;
 import dataAccess.SqlGameDAO;
 import org.junit.jupiter.api.*;
 import requests.*;
@@ -53,7 +52,7 @@ public class ServerFacadeTests {
     @DisplayName("Fail Register")
     void registerFail() throws Exception {
         RegisterRequest request = new RegisterRequest("napoleon", "dynamite", "asdfiauifh");
-        //DataAccessException exception = Assertions.assertThrows(facade.register(request));
+        //DataAccess.DataAccessException exception = Assertions.assertThrows(facade.register(request));
         DataAccessException exception = assertThrows(DataAccessException.class, () -> {
             facade.register(request);
         });
@@ -71,7 +70,7 @@ public class ServerFacadeTests {
     @DisplayName("Fail Login")
     void loginFail() throws Exception {
         LoginRequest request = new LoginRequest("wronguser", "bruh");
-        //DataAccessException exception = Assertions.assertThrows(facade.register(request));
+        //DataAccess.DataAccessException exception = Assertions.assertThrows(facade.register(request));
         DataAccessException exception = assertThrows(DataAccessException.class, () -> {
             facade.login(request);
         });

@@ -1,7 +1,6 @@
 package dataAccess;
 
 import Models.GameData;
-import Models.UserData;
 import chess.ChessGame;
 import com.google.gson.Gson;
 
@@ -10,11 +9,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 public class SqlGameDAO implements GameDAO{
     //add database and tables if they don't exist
-    public SqlGameDAO() throws DataAccessException{
+    public SqlGameDAO() throws DataAccessException {
         DatabaseManager.configureDatabase(createStatements);
     }
     @Override

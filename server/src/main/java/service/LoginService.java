@@ -1,12 +1,10 @@
 package service;
 
+import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 import Models.UserData;
 import dataAccess.AuthDAO;
-import dataAccess.DataAccessException;
 import dataAccess.UserDAO;
-import org.eclipse.jetty.server.Authentication;
-import requests.LoginRequest;
 
 import java.util.Objects;
 import java.util.UUID;
