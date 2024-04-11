@@ -1,5 +1,6 @@
 package ServiceUnitTests;
 
+import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 import Models.GameData;
 import Models.UserData;

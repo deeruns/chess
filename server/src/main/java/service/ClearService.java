@@ -1,6 +1,7 @@
 package service;
 
 
+import DataAccess.DataAccessException;
 import dataAccess.*;
 
 //import data from models

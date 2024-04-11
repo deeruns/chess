@@ -1,5 +1,6 @@
 package handlers;
 
+import DataAccess.DataAccessException;
 import Models.GameData;
 import com.google.gson.Gson;
 import dataAccess.*;

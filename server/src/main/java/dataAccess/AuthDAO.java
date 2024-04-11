@@ -1,9 +1,10 @@
 package dataAccess;
 
+import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 
 public interface AuthDAO {
-    public AuthTokenData getUser(String authToken) throws DataAccessException;
+    public AuthTokenData getUser(String authToken) throws DataAccessException, DataAccessException;
     public void oneAuthTokenPerPlayer(AuthTokenData authData) throws DataAccessException;
     public void createMemory(AuthTokenData authData) throws DataAccessException;
     public void deleteAuth(String authToken) throws DataAccessException;
