@@ -4,10 +4,10 @@ import chess.ChessGame;
 import chess.ChessMove;
 
 public class ResignCommand extends UserGameCommand{
-    int gameID;
+    public int gameID;
     public static final UserGameCommand.CommandType type = CommandType.RESIGN;
     public ResignCommand(String authToken, int gameID){
-        super(authToken);
+        super(authToken, CommandType.RESIGN);
         this.gameID = gameID;
     }
 }

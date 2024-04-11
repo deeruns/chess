@@ -13,9 +13,9 @@ import java.util.Objects;
  */
 public class UserGameCommand {
 
-    public UserGameCommand(String authToken) {
+    public UserGameCommand(String authToken, CommandType type) {
         this.authToken = authToken;
-//        this.commandType = type;
+        this.commandType = type;
 //        this.gameID = gameID;
 //        this.playerColor = playerColor;
 //        this.move = move;
@@ -32,9 +32,9 @@ public class UserGameCommand {
     protected CommandType commandType;
 
     private final String authToken;
-    private int gameID;
-    private ChessGame.TeamColor playerColor;
-    private ChessMove move;
+    //private int gameID;
+//    private ChessGame.TeamColor teamColor;
+//    private ChessMove move;
 
     public String getAuthString() {
         return authToken;
@@ -44,17 +44,17 @@ public class UserGameCommand {
         return this.commandType;
     }
 
-    public int getGameID() {
-        return gameID;
-    }
-
-    public ChessGame.TeamColor getTeamColor() {
-        return playerColor;
-    }
-
-    public ChessMove getMove() {
-        return move;
-    }
+//    public int getGameID() {
+//        return gameID;
+//    }
+//
+//    public ChessGame.TeamColor getTeamColor() {
+//        return teamColor;
+//    }
+//
+//    public ChessMove getMove() {
+//        return move;
+//    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,13 +1,14 @@
 package webSocketMessages.serverMessages;
 
+import chess.ChessGame;
 import webSocketMessages.userCommands.UserGameCommand;
 
 public class LoadGameCommand extends ServerMessage{
-    String message;
+    ChessGame game;
     public static final ServerMessage.ServerMessageType type = ServerMessage.ServerMessageType.LOAD_GAME;
 
-    public LoadGameCommand(ServerMessageType type, String message){
+    public LoadGameCommand(ServerMessageType type, ChessGame game){
         super(type);
-        this.message = message;
+        this.game = game;
     }
 }

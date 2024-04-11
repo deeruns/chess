@@ -2,6 +2,7 @@ package server.websocket;
 
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
+import webSocketMessages.serverMessages.ErrorCommand;
 import webSocketMessages.serverMessages.NotificationCommand;
 import webSocketMessages.userCommands.UserGameCommand;
 import webSocketMessages.serverMessages.ServerMessage;
@@ -17,6 +18,8 @@ public class ConnectionManager {
     public static HashMap<Integer, HashMap<String, Session>> gameSessions = new HashMap<>();
 
     public void add(int gameID, String auth, Session session) {
+        //add game if not in the hashmap
+        gameSessions.computeIfAbsent(gameID, k -> new HashMap<String, Session>());
         gameSessions.get(gameID).put(auth, session);
     }
 
@@ -72,4 +75,15 @@ public class ConnectionManager {
             }
         }
     }
+
+    public void broadcastLoadToAll(int gameID, ServerMessage message, String exceptThisAuthToken) throws IOException {
+        HashMap<String, Session> game = getGame(gameID);
+
+        for (Map.Entry<String, Session> entry : game.entrySet()) {
+            String authToken = entry.getKey();
+            Session session = entry.getValue();
+            session.getRemote().sendString(new Gson().toJson(message));
+        }
+    }
+
 }

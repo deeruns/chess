@@ -34,13 +34,14 @@ public class ConsoleUI implements NotificationHandler {
     AuthDAO authDAO;
     UserDAO userDAO;
     GameDAO gameDAO;
+    int CreateGameID;
 
 
     public ConsoleUI() throws DataAccessException {
         this.ws = new WebSocketFacade("http://localhost:8080", notificationHandler);
         //should this be called to reset the board here?
-        chessGame.getBoard().resetBoard();
-        this.gamePlayUI = new GamePlayUI(ws,authToken, chessGame);
+        //chessGame.getBoard().resetBoard();
+        //this.gamePlayUI = new GamePlayUI(ws ,authToken, chessGame);
         this.gameDAO = new SqlGameDAO();
     }
 
@@ -149,6 +150,8 @@ public class ConsoleUI implements NotificationHandler {
             String gameName = scanner.next();
             //authorize?
             CreateGameResponse response = serverFacade.createGame(new CreateGameRequest(gameName, authToken));
+            GameData gameData = gameDAO.getGame(response.gameID());
+            gameData.game().getBoard().resetBoard();
             return "Game " + gameName + " Created Successfully";
         }
         catch(DataAccessException exception){
