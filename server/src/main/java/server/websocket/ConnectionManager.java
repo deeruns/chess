@@ -70,20 +70,20 @@ public class ConnectionManager {
         for (Map.Entry<String, Session> entry : game.entrySet()) {
             String authToken = entry.getKey();
             Session session = entry.getValue();
-            if (!authToken.equals(exceptThisAuthToken)) {
-                    session.getRemote().sendString(new Gson().toJson(message));
-                }
-//            if (session.isOpen()) {
-//                if (!authToken.equals(exceptThisAuthToken)) {
+//            if (!authToken.equals(exceptThisAuthToken)) {
 //                    session.getRemote().sendString(new Gson().toJson(message));
 //                }
-//            }
-//            else{
-//                removeList.add(session);
-//            }
-//        }
-//        for(var c : removeList){
-//            removeSession(c);
+            if (session.isOpen()) {
+                if (!authToken.equals(exceptThisAuthToken)) {
+                    session.getRemote().sendString(new Gson().toJson(message));
+                }
+            }
+            else{
+                removeList.add(session);
+            }
+        }
+        for(var c : removeList){
+            removeSession(c);
         }
     }
 
@@ -93,16 +93,16 @@ public class ConnectionManager {
         for (Map.Entry<String, Session> entry : game.entrySet()) {
             String authToken = entry.getKey();
             Session session = entry.getValue();
-            session.getRemote().sendString(new Gson().toJson(message));
-//            if(session.isOpen()){
-//                session.getRemote().sendString(new Gson().toJson(message));
-//            }
-//            else {
-//                removeList.add(session);
-//            }
-//        }
-//        for(var c : removeList){
-//            removeSession(c);
+            //session.getRemote().sendString(new Gson().toJson(message));
+            if(session.isOpen()){
+                session.getRemote().sendString(new Gson().toJson(message));
+            }
+            else {
+                removeList.add(session);
+            }
+        }
+        for(var c : removeList){
+            removeSession(c);
         }
     }
 
@@ -112,11 +112,19 @@ public class ConnectionManager {
         for (Map.Entry<String, Session> entry : game.entrySet()) {
             String authToken = entry.getKey();
             Session session = entry.getValue();
-            if (authToken.equals(exceptThisAuthToken)) {
-                session.getRemote().sendString(new Gson().toJson(message));
+            if (session.isOpen()) {
+                if (authToken.equals(exceptThisAuthToken)) {
+                    session.getRemote().sendString(new Gson().toJson(message));
+                }
+            }
+            else{
+                removeList.add(session);
             }
         }
+        for(var c : removeList){
+            removeSession(c);
+        }
     }
-
-
 }
+
+

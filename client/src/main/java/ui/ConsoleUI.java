@@ -22,8 +22,8 @@ import webSocketMessages.userCommands.UserGameCommand;
 
 import java.util.Scanner;
 import static java.lang.System.out;
-import static ui.EscapeSequences.SET_TEXT_COLOR_MAGENTA;
-import static ui.EscapeSequences.SET_TEXT_COLOR_RED;
+import static ui.EscapeSequences.*;
+import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
 import static webSocketMessages.serverMessages.ServerMessage.ServerMessageType.*;
 
 
@@ -210,6 +210,7 @@ public class ConsoleUI implements NotificationHandler {
                 teamColor = ChessGame.TeamColor.WHITE;
                 gamePlayUI.setTeamColor(teamColor);
                 gamePlayUI.joinGamePlay(teamColor);
+                System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as WHITE" + SET_TEXT_COLOR_WHITE);
                 gamePlayUI.evalInput();
             }
             else if (color.equals("black")){
@@ -217,6 +218,7 @@ public class ConsoleUI implements NotificationHandler {
                 teamColor = ChessGame.TeamColor.BLACK;
                 gamePlayUI.setTeamColor(teamColor);
                 gamePlayUI.joinGamePlay(teamColor);
+                System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as BLACK" + SET_TEXT_COLOR_WHITE);
                 gamePlayUI.evalInput();
             }
 //            else{
@@ -250,6 +252,7 @@ public class ConsoleUI implements NotificationHandler {
             gamePlayUI.setObserve(true);
             gamePlayUI.setTeamColor(teamColor);
             gamePlayUI.joinGamePlay(teamColor);
+            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully observing game" + SET_TEXT_COLOR_WHITE);
             gamePlayUI.evalInput();
             //ws.joinObserver(authToken, gameID);
             //insert player color

@@ -49,12 +49,13 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+        String authToken = command.getAuthString();
         switch (command.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(message, session);
             case JOIN_OBSERVER -> joinObserver(message, session);
             case MAKE_MOVE -> makeMove(message, session);
             case LEAVE -> leaveGame(message, session);
-            case RESIGN -> resignGame(message, session);
+            case RESIGN -> resignGame(message, session, authToken);
         }
     }
 
@@ -115,8 +116,8 @@ public class WebSocketHandler {
             GameData gameData = gameDAO.getGame(command.gameID);
             game = gameData.game();
             LoadGameCommand loadGameCommand = new LoadGameCommand(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-            //session.getRemote().sendString(new Gson().toJson(loadGameCommand));
-            connections.broadcastToMe(command.gameID, loadGameCommand, command.getAuthString());
+            session.getRemote().sendString(new Gson().toJson(loadGameCommand));
+            //connections.broadcastToMe(command.gameID, loadGameCommand, command.getAuthString());
             var messageString = String.format("%s has joined the game as an observer", username);
             var notification = new NotificationCommand(ServerMessage.ServerMessageType.NOTIFICATION, messageString);
             connections.broadcast(command.gameID, notification, command.getAuthString());
@@ -184,12 +185,21 @@ public class WebSocketHandler {
             sendError(exception, session);
         }
     }
-    private void resignGame(String message, Session session) throws IOException {
+    private void resignGame(String message, Session session, String authToken) throws IOException {
         try{
             ResignCommand command = new Gson().fromJson(message, ResignCommand.class);
+            GameData gameData = gameDAO.getGame(command.gameID);
+            if(gameData.game().state == OVER){
+                throw new DataAccessException("Game is already over");
+            }
+            if((gameData.whiteUsername() == null) && (gameData.blackUsername() == null) || teamColor == null){
+                throw new DataAccessException("Observer can't resign");
+            }
+
             AuthTokenData authData = authDAO.getUser(command.getAuthString());
             String username = authData.username();
             game.state = OVER;
+            resignError(command.gameID);
             connections.remove(command.gameID, command.getAuthString(), session);
             var messageString = String.format("%s has left the game", username);
             var notification = new NotificationCommand(ServerMessage.ServerMessageType.NOTIFICATION, messageString);

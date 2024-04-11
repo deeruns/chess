@@ -6,8 +6,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
-import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
-import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
+import static ui.EscapeSequences.*;
 
 public class DrawChessBoard {
     private static final int NUM_OF_SQUARES = 8;
@@ -58,6 +57,8 @@ public class DrawChessBoard {
             out.println();
 //            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game" + SET_TEXT_COLOR_WHITE);
         }
+        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_TEXT_COLOR_WHITE);
 
         //setBackgroundBlack(out);
     }
@@ -237,7 +238,7 @@ public class DrawChessBoard {
         out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
     }
     private static void setBackgroundBlack(PrintStream out) {
-        out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        out.print(SET_BG_COLOR_BLACK);
         out.print(EscapeSequences.SET_TEXT_COLOR_BLACK);
     }
     private static void setBackgroundGrey(PrintStream out) {

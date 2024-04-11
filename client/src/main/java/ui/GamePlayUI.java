@@ -59,18 +59,22 @@ public class GamePlayUI {
             ws.joinPlayer(authToken,gameID, teamColor);
             //draw board
             //DrawChessBoard.drawChessBoard(teamColor, game, null);
-            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as WHITE" + SET_TEXT_COLOR_WHITE);
+            //evalInput();
+            //System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as WHITE" + SET_TEXT_COLOR_WHITE);
         }
         else if (Objects.equals(BLACK, color)) {
             ws.joinPlayer(authToken ,gameID, teamColor);
             //draw board
             //DrawChessBoard.drawChessBoard(teamColor, game, null);
-            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as BLACK" + SET_TEXT_COLOR_WHITE);
+            //evalInput();
+//            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as BLACK" + SET_TEXT_COLOR_WHITE);
         }
         else {
             ws.joinObserver(authToken,gameID);
             //draw board as white?
+            //ws.joinObserver(authToken, gameID);
             //DrawChessBoard.drawChessBoard(WHITE, game, null);
+            //evalInput();
             System.out.println(SET_TEXT_COLOR_GREEN + "Successfully observing game" + SET_TEXT_COLOR_WHITE);
         }
     }
@@ -113,7 +117,7 @@ public class GamePlayUI {
             evalInput();
         }
         else {
-            out.println("Enter the position\n" + "of the piece you would like to highlight: ");
+            out.println("Enter the position of the piece you would like to highlight: ");
             String position = scanner.next();
             cords = evalPosition(position);
             if (cords.getColumn() == 9) {
@@ -135,14 +139,14 @@ public class GamePlayUI {
     private void makeMove() throws InvalidMoveException, DataAccessException {
         //draw chessboard before move
         DrawChessBoard.drawChessBoard(teamColor, game, cords);
-        out.println("Enter the position\n" + "of the piece you would like to move: ");
+        out.println("Enter the position of the piece you would like to move: ");
         String position = scanner.next();
         ChessPosition startPos = evalPosition(position);
 //        if (cords.getColumn() == 9){
 //            out.println("Invlaid input");
 //            evalInput();
 //        }
-        out.println("Enter the position\n" + "you would like to move the piece to: ");
+        out.println("Enter the position you would like to move the piece to: ");
         String position2 = scanner.next();
         ChessPosition endPos = evalPosition(position2);
 //        if (cords.getColumn() == 9){
