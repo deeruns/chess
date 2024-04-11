@@ -6,6 +6,9 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
+import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
+import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
+
 public class DrawChessBoard {
     private static final int NUM_OF_SQUARES = 8;
     private static final int SQUARE_SIZE = 3;
@@ -47,13 +50,13 @@ public class DrawChessBoard {
             drawHeadersBlack(out);
             drawBlackBoard(out, game, position);
             out.println();
-            out.println("Successfully Joined Game");
+            //out.println("Successfully Joined Game");
         } else {
             //draw board from the white perspective for observers and white team color
             drawHeaders(out);
             drawWhiteBoard(out, game, position);
             out.println();
-            out.println("Successfully Joined Game");
+//            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game" + SET_TEXT_COLOR_WHITE);
         }
 
         //setBackgroundBlack(out);
@@ -88,9 +91,14 @@ public class DrawChessBoard {
                 ChessPosition currPos = new ChessPosition(i, j);
                 highlightPrinter(out, game, position, currPos);
                 if (board.getPiece(currPos) != null) {
-                    if (board.getPiece(position) != null && currPos.equals(position)) {
-                        out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
-                        printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                    if (position != null) {
+                        if (currPos.equals(position)) {
+                            out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+                            printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                        }
+                        else {
+                            printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                        }
                     }
                     else {
                         printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
@@ -124,9 +132,14 @@ public class DrawChessBoard {
                 ChessPosition currPos = new ChessPosition(i, j);
                 highlightPrinter(out, game, position, currPos);
                 if (board.getPiece(currPos) != null) {
-                    if (board.getPiece(position) != null && currPos.equals(position)) {
-                        out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
-                        printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                    if(position != null) {
+                        if (currPos.equals(position)) {
+                            out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+                            printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                        }
+                        else {
+                            printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                        }
                     }
                     else {
                         printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
@@ -151,8 +164,9 @@ public class DrawChessBoard {
     }
 
     public static void highlightPrinter(PrintStream out, ChessGame game, ChessPosition position, ChessPosition currPos) {
-        Collection<ChessMove> validMoves = game.validMoves(position);
+        //Collection<ChessMove> validMoves = game.validMoves(position);
         if (highlight) {
+            Collection<ChessMove> validMoves = game.validMoves(position);
             if(validMoves != null) {
                 for (ChessMove move : validMoves) {
                     ChessPosition endPos = move.getEndPosition();

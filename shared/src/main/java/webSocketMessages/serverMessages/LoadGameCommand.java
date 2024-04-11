@@ -11,4 +11,8 @@ public class LoadGameCommand extends ServerMessage{
         super(type);
         this.game = game;
     }
+
+    public ChessGame getGame() {
+        return game;
+    }
 }

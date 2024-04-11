@@ -14,12 +14,18 @@ public class ChessGame {
     ChessBoard currentBoard;
     TeamColor playerTurn;
     ChessPiece[][] boardClone;
+    public Status state;
+    public enum Status {
+        PLAYING,
+        OVER
+    }
     //If i am referencing the board by indexing, I need to do -1 to get intp 0,7 format. but if get.row is called it isn't necessary?
 
     public ChessGame() {
         this.playerTurn = TeamColor.WHITE;
         currentBoard = new ChessBoard();
         currentBoard.resetBoard();
+        state = Status.PLAYING;
     }
 
     /**

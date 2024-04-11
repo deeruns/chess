@@ -6,18 +6,25 @@ import ResponseException.ResponseException;
 import WebSocket.NotificationHandler;
 import WebSocket.WebSocketFacade;
 import chess.ChessGame;
+import com.google.gson.Gson;
 import dataAccess.*;
 import requests.*;
 import response.CreateGameResponse;
 import response.ListGamesResponse;
 import response.ResponseRecord;
 import serverFacade.ServerFacade;
+import webSocketMessages.serverMessages.ErrorCommand;
+import webSocketMessages.serverMessages.LoadGameCommand;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.serverMessages.NotificationCommand;
+import webSocketMessages.userCommands.UserGameCommand;
 
 
 import java.util.Scanner;
 import static java.lang.System.out;
+import static ui.EscapeSequences.SET_TEXT_COLOR_MAGENTA;
+import static ui.EscapeSequences.SET_TEXT_COLOR_RED;
+import static webSocketMessages.serverMessages.ServerMessage.ServerMessageType.*;
 
 
 public class ConsoleUI implements NotificationHandler {
@@ -38,21 +45,42 @@ public class ConsoleUI implements NotificationHandler {
 
 
     public ConsoleUI() throws DataAccessException {
-        this.ws = new WebSocketFacade("http://localhost:8080", notificationHandler);
+
+        this.ws = new WebSocketFacade("http://localhost:8080", this);
         //should this be called to reset the board here?
         //chessGame.getBoard().resetBoard();
         //this.gamePlayUI = new GamePlayUI(ws ,authToken, chessGame);
         this.gameDAO = new SqlGameDAO();
     }
 
-//    @Override
-//    public void notify(ServerMessage message) {
-//        switch (message.getServerMessageType()) {
-//            case NOTIFICATION -> displayNotification(((NotificationCommand) message).getMessage());
-//            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
-//            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
-//        }
-//    }
+    @Override
+    public void notify(String notification, ServerMessage.ServerMessageType type) {
+       // DrawChessBoard.drawChessBoard(teamColor, null);
+
+        System.out.println("\n");
+        switch (type) {
+            case LOAD_GAME: {
+                LoadGameCommand message = new Gson().fromJson(notification, LoadGameCommand.class);
+                DrawChessBoard.drawChessBoard(teamColor, message.getGame(), null);
+                break;
+            }
+            case ERROR: {
+                ErrorCommand errorCommand = new Gson().fromJson(notification, ErrorCommand.class);
+                String errorMessage = errorCommand.getErrorMessage();
+                System.out.println(SET_TEXT_COLOR_RED + errorMessage); //get actual error
+                break;
+            }
+            case NOTIFICATION:{
+                NotificationCommand notificationCommand = new Gson().fromJson(notification, NotificationCommand.class);
+                System.out.println(SET_TEXT_COLOR_MAGENTA + notificationCommand.getMessage());
+                break;
+            }
+            default: {
+                System.out.println("error: in notify");
+                break;
+            }
+        }
+    }
 
 
     public String evalInput(String input){
@@ -266,10 +294,10 @@ public class ConsoleUI implements NotificationHandler {
 
     }
 
-    @Override
-    public void notify(ServerMessage notification) {
-
-    }
+//    @Override
+//    public void notify(ServerMessage notification) {
+//
+//    }
 
     //private void notify(ServerMessage message){}
 

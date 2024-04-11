@@ -9,13 +9,15 @@ import webSocketMessages.serverMessages.ServerMessage;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Scanner;
+import server.websocket.WebSocketHandler;
+import server.websocket.ConnectionManager;
 
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 import static java.lang.System.out;
 import static ui.EscapeSequences.*;
 
-public class GamePlayUI implements NotificationHandler {
+public class GamePlayUI {
     private final WebSocketFacade ws;
     Scanner scanner = new Scanner(System.in);
     ChessGame.TeamColor teamColor;
@@ -25,6 +27,9 @@ public class GamePlayUI implements NotificationHandler {
     ChessBoard board;
     String authToken;
     ChessPosition cords;
+    WebSocketHandler wsHandler;
+    ConnectionManager gameSessions;
+
 
     public GamePlayUI(WebSocketFacade ws, String auth, ChessGame gameChess) {
         this.ws = ws;
@@ -53,19 +58,19 @@ public class GamePlayUI implements NotificationHandler {
         if (Objects.equals(WHITE, color)) {
             ws.joinPlayer(authToken,gameID, teamColor);
             //draw board
-            DrawChessBoard.drawChessBoard(teamColor, game, null);
+            //DrawChessBoard.drawChessBoard(teamColor, game, null);
             System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as WHITE" + SET_TEXT_COLOR_WHITE);
         }
         else if (Objects.equals(BLACK, color)) {
             ws.joinPlayer(authToken ,gameID, teamColor);
             //draw board
-            DrawChessBoard.drawChessBoard(teamColor, game, null);
+            //DrawChessBoard.drawChessBoard(teamColor, game, null);
             System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as BLACK" + SET_TEXT_COLOR_WHITE);
         }
         else {
             ws.joinObserver(authToken,gameID);
             //draw board as white?
-            DrawChessBoard.drawChessBoard(WHITE, game, null);
+            //DrawChessBoard.drawChessBoard(WHITE, game, null);
             System.out.println(SET_TEXT_COLOR_GREEN + "Successfully observing game" + SET_TEXT_COLOR_WHITE);
         }
     }
@@ -133,34 +138,50 @@ public class GamePlayUI implements NotificationHandler {
         out.println("Enter the position\n" + "of the piece you would like to move: ");
         String position = scanner.next();
         ChessPosition startPos = evalPosition(position);
-        if (cords.getColumn() == 9){
-            out.println("Invlaid input");
-            evalInput();
-        }
+//        if (cords.getColumn() == 9){
+//            out.println("Invlaid input");
+//            evalInput();
+//        }
         out.println("Enter the position\n" + "you would like to move the piece to: ");
         String position2 = scanner.next();
         ChessPosition endPos = evalPosition(position2);
-        if (cords.getColumn() == 9){
-            out.println("Invalid input");
-            evalInput();
-        }
+//        if (cords.getColumn() == 9){
+//            out.println("Invalid input");
+//            evalInput();
+//        }
         //draw chess Board after move
-        DrawChessBoard.drawChessBoard(teamColor, game, cords);
-        makeMoveHelper(teamColor, game, startPos, endPos);
-        DrawChessBoard.drawChessBoard(teamColor, game, null);
-        System.out.println(SET_TEXT_COLOR_RED + "DONT MOVE UNTIL OPPONENT HAS GONE" + SET_TEXT_COLOR_WHITE);
-
-        //ws.makeMove(authToken);
-        if (isIncheckMate()) {
-            System.out.println(SET_TEXT_COLOR_RED + "GAME OVER" + SET_TEXT_COLOR_WHITE);
+        //PROMOTION PIECE
+        ChessMove move;
+        if ((board.getPiece(endPos).getPieceType() == ChessPiece.PieceType.PAWN)
+                && (endPos.getRow() == 1 || endPos.getRow() == 8)) {
+            //promoPiece
+            out.println(promotionMenu());
+            String promoInput = scanner.next();
+            ChessPiece.PieceType realPiece = getPromoPiece(promoInput);
+            move = new ChessMove(startPos, endPos, realPiece);
         }
         else {
-            evalInput();
+            move = new ChessMove(startPos, endPos, null);
         }
+        //CALL WEBSOCKET
+        DrawChessBoard.drawChessBoard(teamColor, game, cords);
+        ws.makeMove(authToken, gameID, move);
+        //makeMoveHelper(teamColor, game, startPos, endPos); MOVE TO WS!?
+        DrawChessBoard.drawChessBoard(teamColor, game, null);
+        System.out.println(SET_TEXT_COLOR_RED + "DONT MOVE UNTIL OPPONENT HAS GONE" + SET_TEXT_COLOR_WHITE);
+        //ws.makeMove(authToken);
+//        if (isIncheckMate()) {
+//            System.out.println(SET_TEXT_COLOR_RED + "GAME OVER" + SET_TEXT_COLOR_WHITE);
+//        }
+//        else {
+//            evalInput();
+//        }
+        evalInput();
     }
 
     private void makeMoveHelper(ChessGame.TeamColor teamColor, ChessGame game, ChessPosition startPos, ChessPosition endPos) throws InvalidMoveException, DataAccessException {
         //make move
+        wsHandler = new WebSocketHandler();
         ChessMove finalMove;
         Collection<ChessMove> validMoves = game.validMoves(startPos);
         for (ChessMove move : validMoves) {
@@ -286,28 +307,16 @@ public class GamePlayUI implements NotificationHandler {
         };
     }
 
-    public boolean isIncheckMate() {
-        if (Objects.equals(teamColor, BLACK)) {
-            if (game.isInStalemate(WHITE) || game.isInCheckmate(WHITE)) {
-                return true;
-            }
-        }
-        else {
-            if (game.isInStalemate(BLACK) || game.isInCheckmate(BLACK)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    @Override
-    public void notify(ServerMessage notification) {
-        DrawChessBoard.drawChessBoard(teamColor, game, null);
-        System.out.println("\n");
-        switch (notification.getServerMessageType()) {
-            case LOAD_GAME -> DrawChessBoard.drawChessBoard(teamColor, game, null);
-            case ERROR -> System.out.println(SET_TEXT_COLOR_RED + "error"); //get actual error
-            case NOTIFICATION -> System.out.println(SET_TEXT_COLOR_MAGENTA + notification.getServerMessageType());
-            default -> System.out.println("error: in notify");
-        }
-    }
+
+//    @Override
+//    public void notify(ServerMessage notification) {
+//        DrawChessBoard.drawChessBoard(teamColor, game, null);
+//        System.out.println("\n");
+//        switch (notification.getServerMessageType()) {
+//            case LOAD_GAME -> DrawChessBoard.drawChessBoard(teamColor, game, null);
+//            case ERROR -> System.out.println(SET_TEXT_COLOR_RED + "error"); //get actual error
+//            case NOTIFICATION -> System.out.println(SET_TEXT_COLOR_MAGENTA + notification.getServerMessageType());
+//            default -> System.out.println("error: in notify");
+//        }
+//    }
 };

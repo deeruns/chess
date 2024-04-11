@@ -66,24 +66,57 @@ public class ConnectionManager {
 
     public void broadcast(int gameID, ServerMessage message, String exceptThisAuthToken) throws IOException {
         HashMap<String, Session> game = getGame(gameID);
-
+        var removeList = new ArrayList<Session>();
         for (Map.Entry<String, Session> entry : game.entrySet()) {
             String authToken = entry.getKey();
             Session session = entry.getValue();
             if (!authToken.equals(exceptThisAuthToken)) {
-                session.getRemote().sendString(new Gson().toJson(message));
-            }
+                    session.getRemote().sendString(new Gson().toJson(message));
+                }
+//            if (session.isOpen()) {
+//                if (!authToken.equals(exceptThisAuthToken)) {
+//                    session.getRemote().sendString(new Gson().toJson(message));
+//                }
+//            }
+//            else{
+//                removeList.add(session);
+//            }
+//        }
+//        for(var c : removeList){
+//            removeSession(c);
         }
     }
 
     public void broadcastLoadToAll(int gameID, ServerMessage message, String exceptThisAuthToken) throws IOException {
         HashMap<String, Session> game = getGame(gameID);
-
+        var removeList = new ArrayList<Session>();
         for (Map.Entry<String, Session> entry : game.entrySet()) {
             String authToken = entry.getKey();
             Session session = entry.getValue();
             session.getRemote().sendString(new Gson().toJson(message));
+//            if(session.isOpen()){
+//                session.getRemote().sendString(new Gson().toJson(message));
+//            }
+//            else {
+//                removeList.add(session);
+//            }
+//        }
+//        for(var c : removeList){
+//            removeSession(c);
         }
     }
+
+    public void broadcastToMe(int gameID, ServerMessage message, String exceptThisAuthToken) throws IOException {
+        HashMap<String, Session> game = getGame(gameID);
+        var removeList = new ArrayList<Session>();
+        for (Map.Entry<String, Session> entry : game.entrySet()) {
+            String authToken = entry.getKey();
+            Session session = entry.getValue();
+            if (authToken.equals(exceptThisAuthToken)) {
+                session.getRemote().sendString(new Gson().toJson(message));
+            }
+        }
+    }
+
 
 }
