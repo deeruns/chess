@@ -1,6 +1,6 @@
 package dataAccessTests;
 
-import DataAccess.DataAccessException;
+import dataAccess.DataAccessException;
 import Models.AuthTokenData;
 import Models.GameData;
 import Models.UserData;

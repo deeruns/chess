@@ -1,6 +1,5 @@
 package dataAccess;
 
-import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 
 public interface AuthDAO {

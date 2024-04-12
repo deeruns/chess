@@ -1,6 +1,6 @@
 package handlers;
 
-import DataAccess.DataAccessException;
+import dataAccess.DataAccessException;
 import com.google.gson.Gson;
 import response.ResponseRecord;
 import spark.Response;

@@ -1,6 +1,6 @@
 package server;
 
-import DataAccess.DataAccessException;
+import dataAccess.DataAccessException;
 import dataAccess.*;
 import handlers.*;
 import server.websocket.WebSocketHandler;

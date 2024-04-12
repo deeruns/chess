@@ -1,6 +1,6 @@
 package clientTests;
 
-import DataAccess.DataAccessException;
+import dataAccess.DataAccessException;
 import dataAccess.SqlGameDAO;
 import org.junit.jupiter.api.*;
 import requests.*;

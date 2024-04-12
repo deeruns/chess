@@ -1,5 +1,6 @@
 package ui;
 
+import dataAccess.DataAccessException;
 import Models.AuthTokenData;
 import Models.GameData;
 import WebSocket.NotificationHandler;

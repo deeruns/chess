@@ -1,6 +1,6 @@
 package server.websocket;
 
-import DataAccess.DataAccessException;
+import dataAccess.DataAccessException;
 import Models.AuthTokenData;
 import Models.GameData;
 import chess.*;
@@ -28,17 +28,17 @@ import static chess.ChessGame.TeamColor.WHITE;
 
 @WebSocket
 public class WebSocketHandler {
-    UserDAO userDAO;
-    GameDAO gameDAO;
-    AuthDAO authDAO;
+    UserDAO userDAO = new SqlUserDAO();
+    GameDAO gameDAO = new SqlGameDAO();
+    AuthDAO authDAO = new SqlAuthDAO();
     ChessGame.TeamColor teamColor;
     ChessGame game;
     private final ConnectionManager connections = new ConnectionManager();
 
     public WebSocketHandler() throws DataAccessException {
-        this.userDAO = new SqlUserDAO();
-        this.authDAO = new SqlAuthDAO();
-        this.gameDAO = new SqlGameDAO();
+//        this.userDAO = new SqlUserDAO();
+//        this.authDAO = new SqlAuthDAO();
+//        this.gameDAO = new SqlGameDAO();
     }
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
@@ -66,7 +66,8 @@ public class WebSocketHandler {
             game = gameData.game();
             isGameFull(gameData, username);
             LoadGameCommand loadGameCommand = new LoadGameCommand(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-            session.getRemote().sendString(new Gson().toJson(loadGameCommand));
+            //session.getRemote().sendString(new Gson().toJson(loadGameCommand));
+            connections.broadcastToMe(command.gameID, loadGameCommand, command.getAuthString());
             var messageString = String.format("%s has joined the game as %s", username, command.playerColor);
             var notification = new NotificationCommand(ServerMessage.ServerMessageType.NOTIFICATION, messageString);
             connections.broadcast(command.gameID, notification, command.getAuthString());
@@ -110,8 +111,8 @@ public class WebSocketHandler {
             GameData gameData = gameDAO.getGame(command.gameID);
             game = gameData.game();
             LoadGameCommand loadGameCommand = new LoadGameCommand(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-            session.getRemote().sendString(new Gson().toJson(loadGameCommand));
-            //connections.broadcastToMe(command.gameID, loadGameCommand, command.getAuthString());
+            //session.getRemote().sendString(new Gson().toJson(loadGameCommand));
+            connections.broadcastToMe(command.gameID, loadGameCommand, command.getAuthString());
             var messageString = String.format("%s has joined the game as an observer", username);
             var notification = new NotificationCommand(ServerMessage.ServerMessageType.NOTIFICATION, messageString);
             connections.broadcast(command.gameID, notification, command.getAuthString());
@@ -120,18 +121,26 @@ public class WebSocketHandler {
             sendError(exception, session);
         }
     }
+
+    private void setColorMove(String username, GameData gameData){
+        if(Objects.equals(gameData.blackUsername(), username)){
+            teamColor = BLACK;
+        }
+        if(Objects.equals(gameData.whiteUsername(), username)){
+            teamColor = WHITE;
+        }
+    }
     private void makeMove(String message, Session session) throws IOException {
         try{
             MakeMoveCommand command = new Gson().fromJson(message, MakeMoveCommand.class);
             //broadcast that player made a move
-
             ChessMove move = command.move;
             ChessPosition startPos = move.getStartPosition();
             ChessPosition endPos = move.getEndPosition();
             AuthTokenData authData = authDAO.getUser(command.getAuthString());
             String username = authData.username();
-
             GameData gameData = gameDAO.getGame(command.gameID);
+            setColorMove(username, gameData);
             resignError(command.gameID);
             isIncheckMate();
             moveCorrectColor(startPos);
@@ -159,9 +168,15 @@ public class WebSocketHandler {
     }
 
     private void moveCorrectColor(ChessPosition startPos) throws DataAccessException {
+        if (game.state == OVER){
+            throw new DataAccessException("Game is over");
+        }
         ChessPiece piece = game.getBoard().getPiece(startPos);
         if (piece.getTeamColor() != teamColor){
             throw new DataAccessException("Opponents Piece Was Selected");
+        }
+        if (teamColor == null){
+            throw new DataAccessException("Observer can't move piece");
         }
     }
 
@@ -209,6 +224,9 @@ public class WebSocketHandler {
         //wsHandler = new WebSocketHandler();
         ChessMove finalMove;
         Collection<ChessMove> validMoves = game.validMoves(startPos);
+        if (validMoves.isEmpty()){
+            throw new DataAccessException("No Valid Moves");
+        }
         for (ChessMove move : validMoves) {
             ChessPosition validMove = move.getEndPosition();
             if (validMove.equals(endPos)) {

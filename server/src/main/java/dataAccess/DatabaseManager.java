@@ -1,6 +1,5 @@
 package dataAccess;
 
-import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 import chess.ChessGame;
 

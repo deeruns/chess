@@ -1,6 +1,6 @@
 package ui;
 
-import DataAccess.DataAccessException;
+import dataAccess.DataAccessException;
 import WebSocket.WebSocketFacade;
 import chess.*;
 
@@ -73,13 +73,15 @@ public class GamePlayUI {
             //ws.joinObserver(authToken, gameID);
             //DrawChessBoard.drawChessBoard(WHITE, game, null);
             //evalInput();
-            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully observing game" + SET_TEXT_COLOR_WHITE);
+            //System.out.println(SET_TEXT_COLOR_GREEN + "Successfully observing game" + SET_TEXT_COLOR_WHITE);
         }
     }
 
     public void evalInput() {
-        out.println(printMenu());
-        String input = scanner.nextLine();
+        //out.println(printMenu());
+        printMenu();
+        out.println(">>>");
+        String input = scanner.next();
         try {
             switch (input) {
                 case "1" -> GamePlayHelp();
@@ -95,8 +97,8 @@ public class GamePlayUI {
         }
     }
 
-    private String printMenu() {
-        return """
+    private void printMenu() {
+        out.println("""
                 Enter the number of the action you want to take
                 1. Help
                 2. Redraw Chess Board
@@ -104,13 +106,14 @@ public class GamePlayUI {
                 4. Make a Move
                 5. Resign
                 6. Highlight Possible Moves
-                """;
+                """);
     }
 
     private void highlightMoves() {
         if (game.isInCheck(teamColor)){
             ChessPosition king = game.FindKingPiece(teamColor);
             DrawChessBoard.drawChessBoard(teamColor, game, king);
+            scanner.next();
             System.out.println("Bruh Moment: You are in check and must move the King!");
             evalInput();
         }
@@ -126,12 +129,13 @@ public class GamePlayUI {
             //how do I pass in these parameters?
             DrawChessBoard.drawChessBoard(teamColor, game, cords);
             DrawChessBoard.highlightMoves();
-            scanner.next();
+            evalInput();
+            //scanner.next();
             //out.println(printMenu());
             //call highlight moves with cords
             //draw chess board highlighted
             //return printMenu();
-            evalInput();
+            //evalInput();
         }
     }
     private void makeMove() throws InvalidMoveException, DataAccessException {
@@ -154,7 +158,7 @@ public class GamePlayUI {
         //draw chess Board after move
         //PROMOTION PIECE
         ChessMove move;
-        if ((board.getPiece(endPos).getPieceType() == ChessPiece.PieceType.PAWN)
+        if ((board.getPiece(startPos).getPieceType() == ChessPiece.PieceType.PAWN)
                 && (endPos.getRow() == 1 || endPos.getRow() == 8)) {
             //promoPiece
             out.println(promotionMenu());
@@ -162,6 +166,7 @@ public class GamePlayUI {
             ChessPiece.PieceType realPiece = getPromoPiece(promoInput);
             move = new ChessMove(startPos, endPos, realPiece);
         }
+
         else {
             move = new ChessMove(startPos, endPos, null);
         }
@@ -279,7 +284,7 @@ public class GamePlayUI {
         String chars = null;
         for (char c : input.toCharArray()) {
             if (Character.isDigit(c)) {
-                numTwoPos = Integer.valueOf(c);
+                numTwoPos = Character.getNumericValue(c);
             } else {
                 chars = String.valueOf(c);
             }
@@ -289,7 +294,7 @@ public class GamePlayUI {
         if(numOnePos == 9){
             return new ChessPosition(9,9);
         }
-        ChessPosition pos = new ChessPosition(numOnePos, numTwoPos);
+        ChessPosition pos = new ChessPosition(numTwoPos, numOnePos);
         //chess position of two integers (x,y) or (row, col)
         return pos;
     }

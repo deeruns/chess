@@ -1,6 +1,6 @@
 package service;
 
-import DataAccess.DataAccessException;
+import dataAccess.DataAccessException;
 import Models.GameData;
 import dataAccess.AuthDAO;
 import dataAccess.GameDAO;
