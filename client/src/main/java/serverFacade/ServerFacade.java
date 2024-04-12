@@ -1,6 +1,6 @@
 package serverFacade;
 
-import dataAccess.DataAccessException;
+import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 import ResponseException.ResponseException;
 import com.google.gson.Gson;

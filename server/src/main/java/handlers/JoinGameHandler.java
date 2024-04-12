@@ -1,6 +1,6 @@
 package handlers;
 
-import dataAccess.DataAccessException;
+import DataAccess.DataAccessException;
 import com.google.gson.Gson;
 import dataAccess.*;
 import requests.JoinGameRequest;

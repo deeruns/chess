@@ -1,9 +1,9 @@
 package ui;
 
-import dataAccess.DataAccessException;
+import DataAccess.DataAccessException;
 import WebSocket.WebSocketFacade;
 import chess.*;
-import server.websocket.ConnectionManager;
+//import server.websocket.ConnectionManager;
 
 import java.util.Collection;
 import java.util.Objects;

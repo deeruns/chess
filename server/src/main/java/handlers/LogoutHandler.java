@@ -1,6 +1,6 @@
 package handlers;
 
-import dataAccess.DataAccessException;
+import DataAccess.DataAccessException;
 import dataAccess.SqlAuthDAO;
 import service.LogoutService;
 import spark.Response;

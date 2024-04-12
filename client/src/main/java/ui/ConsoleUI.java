@@ -1,13 +1,12 @@
 package ui;
 
-import dataAccess.DataAccessException;
+import DataAccess.DataAccessException;
 import Models.AuthTokenData;
 import Models.GameData;
 import WebSocket.NotificationHandler;
 import WebSocket.WebSocketFacade;
 import chess.ChessGame;
 import com.google.gson.Gson;
-import dataAccess.*;
 import requests.*;
 import response.CreateGameResponse;
 import response.ListGamesResponse;
@@ -18,7 +17,10 @@ import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.serverMessages.NotificationCommand;
 
 
+import java.util.Objects;
 import java.util.Scanner;
+
+//import static clientTests.ServerFacadeTests.server;
 import static java.lang.System.out;
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
@@ -35,7 +37,8 @@ public class ConsoleUI implements NotificationHandler {
     GamePlayUI gamePlayUI;
     ChessGame chessGame;
     ChessGame.TeamColor teamColor;
-    GameDAO gameDAO;
+    //GameDAO gameDAO;
+
     //int CreateGameID;
 
 
@@ -45,7 +48,7 @@ public class ConsoleUI implements NotificationHandler {
         //should this be called to reset the board here?
         //chessGame.getBoard().resetBoard();
         //this.gamePlayUI = new GamePlayUI(ws ,authToken, chessGame);
-        this.gameDAO = new SqlGameDAO();
+        //this.gameDAO = new SqlGameDAO();
     }
 
     @Override
@@ -173,8 +176,10 @@ public class ConsoleUI implements NotificationHandler {
             String gameName = scanner.next();
             //authorize?
             CreateGameResponse response = serverFacade.createGame(new CreateGameRequest(gameName, authToken));
-            GameData gameData = gameDAO.getGame(response.gameID());
-            gameData.game().getBoard().resetBoard();
+            getGame(response.gameID());
+            resetnewboard(response.gameID());
+            //GameData gameData = gameDAO.getGame(response.gameID());
+            //gameData.game().getBoard().resetBoard();
             return "Game " + gameName + " Created Successfully";
         }
         catch(DataAccessException exception){
@@ -191,8 +196,9 @@ public class ConsoleUI implements NotificationHandler {
             //authorize
             serverFacade.joinGame(new JoinGameRequest(color.toUpperCase(), gameID, authToken));
             //get game
-            GameData gameData = gameDAO.getGame(gameID);
-            chessGame = gameData.game();
+            //GameData gameData = gameDAO.getGame(gameID);
+            //chessGame = gameData.game();
+            getGame(gameID);
             gamePlayUI = new GamePlayUI(ws,authToken, chessGame);
             gamePlayUI.setGameID(gameID);
             //gameplayUI
@@ -240,8 +246,9 @@ public class ConsoleUI implements NotificationHandler {
             //String color = scanner.next();
             //authorize
             serverFacade.joinGame(new JoinGameRequest("", gameID, authToken));
-            GameData gameData = gameDAO.getGame(gameID);
-            chessGame = gameData.game();
+            getGame(gameID);
+            //GameData gameData = gameDAO.getGame(gameID);
+            //chessGame = gameData.game();
             gamePlayUI = new GamePlayUI(ws,authToken, chessGame);
             gamePlayUI.setGameID(gameID);
             gamePlayUI.setObserve(true);
@@ -290,6 +297,29 @@ public class ConsoleUI implements NotificationHandler {
             return exception.getMessage();
         }
 
+    }
+    ChessGame getGame(int gameID) throws DataAccessException {
+        ListGamesRequest req = new ListGamesRequest(authToken);
+        ListGamesResponse response = serverFacade.listGames(req);
+        for (GameData gameData : response.games()) {
+            if (Objects.equals(gameData.gameID(), gameID)) {
+                chessGame = gameData.game();
+                return chessGame;
+            }
+        }
+        return null;
+    }
+    void resetnewboard(int gameID) throws DataAccessException {
+        ListGamesRequest req = new ListGamesRequest(authToken);
+        ListGamesResponse response = serverFacade.listGames(req);
+        for (GameData gameData : response.games()) {
+            if (Objects.equals(gameData.gameID(), gameID)) {
+                gameData.game().getBoard().resetBoard();
+                chessGame = gameData.game();
+
+            }
+        }
+        //return null;
     }
 
 //    @Override

@@ -1,6 +1,6 @@
 package dataAccessTests;
 
-import dataAccess.DataAccessException;
+import DataAccess.DataAccessException;
 import Models.GameData;
 import Models.UserData;
 import chess.ChessGame;

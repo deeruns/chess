@@ -1,6 +1,6 @@
 package service;
 
-import dataAccess.DataAccessException;
+import DataAccess.DataAccessException;
 import dataAccess.AuthDAO;
 
 public class LogoutService extends ParentService{

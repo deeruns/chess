@@ -1,6 +1,6 @@
 package WebSocket;
 
-import dataAccess.DataAccessException;
+import DataAccess.DataAccessException;
 import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
