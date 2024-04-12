@@ -17,7 +17,7 @@ public class JoinGameHandler extends ParentHandler {
         String finalResponse = "{}";
         //errorHandling(request);
         try{
-            if (joinGameRequest.playerColor() == null){
+            if (joinGameRequest.playerColor()  == null){
                 service.spectatorJoin(joinGameRequest.gameID(), authToken);
             }
             service.joinGame(joinGameRequest.playerColor(), joinGameRequest.gameID(), authToken);

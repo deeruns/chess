@@ -24,4 +24,11 @@ public final class JoinGameRequest {
     }
 
 
+    public String playerColor() {
+        return playerColor;
+    }
+
+    public int gameID() {
+        return gameID;
+    }
 }
