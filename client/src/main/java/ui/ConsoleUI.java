@@ -25,7 +25,7 @@ import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
 
 
 public class ConsoleUI implements NotificationHandler {
-    NotificationHandler notificationHandler;
+    //NotificationHandler notificationHandler;
     private String authToken = null;
     //make a chessgame variable and reset the board there?
     private final ServerFacade serverFacade = new ServerFacade("http://localhost:8080");
@@ -35,10 +35,8 @@ public class ConsoleUI implements NotificationHandler {
     GamePlayUI gamePlayUI;
     ChessGame chessGame;
     ChessGame.TeamColor teamColor;
-    AuthDAO authDAO;
-    UserDAO userDAO;
     GameDAO gameDAO;
-    int CreateGameID;
+    //int CreateGameID;
 
 
     public ConsoleUI() throws DataAccessException {

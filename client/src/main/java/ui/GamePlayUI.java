@@ -3,12 +3,11 @@ package ui;
 import dataAccess.DataAccessException;
 import WebSocket.WebSocketFacade;
 import chess.*;
+import server.websocket.ConnectionManager;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Scanner;
-import server.websocket.WebSocketHandler;
-import server.websocket.ConnectionManager;
 
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
@@ -25,8 +24,8 @@ public class GamePlayUI {
     ChessBoard board;
     String authToken;
     ChessPosition cords;
-    WebSocketHandler wsHandler;
-    ConnectionManager gameSessions;
+    //WebSocketHandler wsHandler;
+    //ConnectionManager gameSessions;
 
 
     public GamePlayUI(WebSocketFacade ws, String auth, ChessGame gameChess) {
@@ -188,7 +187,7 @@ public class GamePlayUI {
 
     private void makeMoveHelper(ChessGame.TeamColor teamColor, ChessGame game, ChessPosition startPos, ChessPosition endPos) throws InvalidMoveException, DataAccessException {
         //make move
-        wsHandler = new WebSocketHandler();
+        //wsHandler = new WebSocketHandler();
         ChessMove finalMove;
         Collection<ChessMove> validMoves = game.validMoves(startPos);
         for (ChessMove move : validMoves) {
