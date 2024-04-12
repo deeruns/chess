@@ -166,15 +166,6 @@ public class SqlGameDAO implements GameDAO{
         }
     }
 
-    public void addWhiteUser(int gameID, String username) throws DataAccessException {
-        var statement = "UPDATE game SET whiteUsername = ? WHERE gameID = ?";
-        DatabaseManager.executeUpdate(statement, username, gameID);
-    }
-    public void addBlackUser(int gameID, String username) throws DataAccessException {
-        var statement = "UPDATE game SET blackUsername = ? WHERE gameID = ?";
-        DatabaseManager.executeUpdate(statement, username, gameID);
-    }
-
 
     @Override
     public void clear() throws DataAccessException {

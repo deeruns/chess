@@ -12,15 +12,7 @@ public class CreateGameRequest {
     public String getAuth() {
         return auth;
     }
-
-    public void setAuth(String auth) {
-        this.auth = auth;
-    }
     public String getGameName() {
         return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
     }
 }

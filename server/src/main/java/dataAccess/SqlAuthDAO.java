@@ -33,24 +33,6 @@ public class SqlAuthDAO implements AuthDAO{
     }
 
     @Override
-    public void oneAuthTokenPerPlayer(AuthTokenData authData) throws DataAccessException {
-        try(var conn = DatabaseManager.getConnection()){
-            var statement = "SELECT * FROM authTokenTable WHERE authToken = ?";
-            try(var prepStatememt = conn.prepareStatement(statement)){
-                prepStatememt.setString(1, authData.authToken());
-                try(var rs = prepStatememt.executeQuery()){
-                    if(rs.next()){
-                        deleteAuth(authData.authToken());
-                    }
-                }
-            }
-        }
-        catch (SQLException exception) {
-            throw new DataAccessException("Data Access Exception");
-        }
-    }
-
-    @Override
     public void createMemory(AuthTokenData authData) throws DataAccessException {
         //put auth into database
         var statement = "INSERT INTO authTokenTable (authToken, username) VALUES (?,?)";

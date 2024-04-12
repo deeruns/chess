@@ -12,13 +12,4 @@ public class JoinPlayerCommand extends UserGameCommand {
         this.playerColor = teamColor;
     }
 
-//        public int getGameID() {
-//        return gameID;
-//    }
-//
-//    public ChessGame.TeamColor getTeamColor() {
-//        return teamColor;
-//    }
-
-
 }

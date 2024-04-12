@@ -26,9 +26,6 @@ public class ConnectionManager {
     public void remove(int gameID, String auth, Session session) {
         gameSessions.get(gameID).remove(auth, session);
     }
-    public void addGame(int gameID, String auth, Session session) {
-        gameSessions.get(gameID).put(auth, session);
-    }
 
     public HashMap<String, Session> getGame(int gameID){
         for (Integer game : gameSessions.keySet()){
@@ -38,30 +35,14 @@ public class ConnectionManager {
         }
         return null;
     }
-    public int getGameID(String auth) {
-        for (Integer gameID : gameSessions.keySet()){
-            for (String authToken : gameSessions.get(gameID).keySet()){
-                if (authToken.equals(auth)){
-                    return gameID;
-                }
-            }
-        }
-        return 0;
-    }
     public void removeSession(Session session){
-        for (Integer ID : gameSessions.keySet()){
-            for (String authToken : gameSessions.get(ID).keySet()){
-                if (gameSessions.get(ID).get(authToken).equals(session)){
-                    gameSessions.get(ID).remove(authToken, session);
+        for (Integer id : gameSessions.keySet()){
+            for (String authToken : gameSessions.get(id).keySet()){
+                if (gameSessions.get(id).get(authToken).equals(session)){
+                    gameSessions.get(id).remove(authToken, session);
                 }
             }
         }
-    }
-
-    private void sendMessage(int gameID, ServerMessage serverMessage, String authToken) throws IOException {
-        HashMap<String, Session> game = getGame(gameID);
-        Session session = game.get(authToken);
-        session.getRemote().sendString(new Gson().toJson(serverMessage));
     }
 
     public void broadcast(int gameID, ServerMessage message, String exceptThisAuthToken) throws IOException {

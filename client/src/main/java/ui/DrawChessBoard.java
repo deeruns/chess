@@ -5,6 +5,7 @@ import chess.*;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Objects;
 
 import static ui.EscapeSequences.*;
 
@@ -63,31 +64,34 @@ public class DrawChessBoard {
         color = initialColor;
     }
 
+    public static void drawRowsOrganizer(PrintStream out, ChessGame game, ChessPosition position, ChessBoard board, int i, int j){
+        changeColorWhiteTeam(out);
+        ChessPosition currPos = new ChessPosition(i, j);
+        highlightPrinter(out, game, position, currPos);
+        if (board.getPiece(currPos) != null) {
+            if(position != null) {
+                if (currPos.equals(position)) {
+                    out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+                    printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                }
+                else {
+                    printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+                }
+            }
+            else {
+                printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
+            }
+
+        }
+        else {
+            out.print(EMPTY);
+        }
+    }
     public static void drawRowsBlack(PrintStream out, ChessGame game, ChessPosition position) {
         ChessBoard board = game.getBoard();
         for (int i = 1; i < 9; i++) {
             for (int j = 8; j > 0; j--) {
-                changeColorWhiteTeam(out);
-                ChessPosition currPos = new ChessPosition(i, j);
-                highlightPrinter(out, game, position, currPos);
-                if (board.getPiece(currPos) != null) {
-                    if (position != null) {
-                        if (currPos.equals(position)) {
-                            out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
-                            printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
-                        }
-                        else {
-                            printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
-                        }
-                    }
-                    else {
-                        printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
-                    }
-
-                }
-                else {
-                    out.print(EMPTY);
-                }
+                drawRowsOrganizer(out, game, position, board,i,j);
             }
             drawSideHeaders(out, i);
             if (i < 8) {
@@ -102,35 +106,11 @@ public class DrawChessBoard {
     }
 
     public static void drawRowsWhite(PrintStream out, ChessGame game, ChessPosition position) {
-        //drawHeaders(out);
-        //draw the rows backwards, but not the cols because the white needs to be displayed at the bottom
-        //color false = white
         ChessBoard board = game.getBoard();
         for (int i = 8; i > 0; i--) {
             for (int j = 1; j < 9; j++) {
-                changeColorWhiteTeam(out);
-                ChessPosition currPos = new ChessPosition(i, j);
-                highlightPrinter(out, game, position, currPos);
-                if (board.getPiece(currPos) != null) {
-                    if(position != null) {
-                        if (currPos.equals(position)) {
-                            out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
-                            printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
-                        }
-                        else {
-                            printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
-                        }
-                    }
-                    else {
-                        printPiece(out, board.getPiece(currPos).getPieceType(), board.getPiece(currPos).getTeamColor());
-                    }
-
-                }
-                else {
-                    out.print(EMPTY);
-                }
+                drawRowsOrganizer(out, game, position, board,i,j);
             }
-
             drawSideHeaders(out, i);
             if (i > 1) {
                 out.println();
@@ -273,28 +253,5 @@ public class DrawChessBoard {
         }
     }
 
-    private static void changeColorBlackTeam(PrintStream out){
-        setBackgroundBlack(out);
-        if (color == true) {
-            //print white square
-            setBackgroundWhite(out);
-            color = false;
-        } else {
-            color = true;
-        }
-    }
-    public static ChessPiece[][] upsideDownBoard(ChessPiece[][] array) {
-        int rows = array.length;
-        int cols = array[0].length;
-        ChessPiece[][] upsideDown = new ChessPiece[rows][cols];
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                upsideDown[i][j] = array[rows - 1 - i][cols - 1 - j];
-            }
-        }
-
-        return upsideDown;
-    }
 }
 

@@ -5,7 +5,6 @@ import WebSocket.WebSocketFacade;
 import chess.*;
 //import server.websocket.ConnectionManager;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -68,7 +67,7 @@ public class GamePlayUI {
         String input = scanner.next();
         try {
             switch (input) {
-                case "1" -> GamePlayHelp();
+                case "1" -> gamePlayHelp();
                 case "2" -> redrawChessBoard();
                 case "3" -> leave();
                 case "4" -> makeMove();
@@ -95,7 +94,7 @@ public class GamePlayUI {
 
     private void highlightMoves() {
         if (game.isInCheck(teamColor)){
-            ChessPosition king = game.FindKingPiece(teamColor);
+            ChessPosition king = game.findKingPiece(teamColor);
             DrawChessBoard.drawChessBoard(teamColor, game, king);
             scanner.next();
             System.out.println("Bruh Moment: You are in check and must move the King!");
@@ -190,7 +189,7 @@ public class GamePlayUI {
         evalInput();
     }
 
-    private void GamePlayHelp() {
+    private void gamePlayHelp() {
         out.println("""
                 Enter the number of the action you want to take.
                 Enter 1 for help

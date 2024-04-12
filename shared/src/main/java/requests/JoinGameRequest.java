@@ -23,17 +23,5 @@ public final class JoinGameRequest {
         this.auth = auth;
     }
 
-    public String playerColor() {
-        return playerColor;
-    }
-
-    public int gameID() {
-        return gameID;
-    }
-
-    public String auth() {
-        return auth;
-    }
-
 
 }

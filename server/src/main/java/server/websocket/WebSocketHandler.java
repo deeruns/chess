@@ -81,11 +81,6 @@ public class WebSocketHandler {
         }
     }
 
-    private void joinRealGame(int gameID) throws DataAccessException {
-        if (connections.getGame(gameID) == null){
-            throw new DataAccessException("Game Doesn't Exist");
-        }
-    }
 
     private void joinObserver(String message, Session session) throws IOException {
         try{

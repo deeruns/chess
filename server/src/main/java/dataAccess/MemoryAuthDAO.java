@@ -15,16 +15,7 @@ public class MemoryAuthDAO implements AuthDAO {
         }
         return currAuth.get(authToken);
     }
-    @Override
-    public void oneAuthTokenPerPlayer(AuthTokenData authData){
-        String username = authData.username();
-        for (Map.Entry<String, AuthTokenData> entry : currAuth.entrySet()) {
-            AuthTokenData authTokenData = entry.getValue();
-            if (authTokenData.username().equals(username)) {
-                currAuth.remove(authData.authToken());
-            }
-        }
-    }
+
     @Override
     public void createMemory(AuthTokenData authData) throws DataAccessException {
         if (currAuth.containsKey(authData.authToken())){

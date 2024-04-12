@@ -74,7 +74,7 @@ public class ChessGame {
         //ChessBoard cloneBoard = BoardCopy2(currentBoard);
         while(validMovesIter.hasNext()){
             //reset the board to the original
-            ChessBoard cloneBoard = BoardCopy2(currentBoard);
+            ChessBoard cloneBoard = boardCopy2(currentBoard);
             ChessMove move = validMovesIter.next();
             ChessPosition end = move.getEndPosition();
             ChessPosition start = move.getStartPosition();
@@ -148,11 +148,11 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         //make a clone of the board
-        BoardCopy(currentBoard);
+        boardCopy(currentBoard);
         //all possible moves of the other team
         Collection<ChessMove> opponentPieceMoves = opponentPieceMoves(teamColor);
         //find the position of the king and get its validMoves
-        ChessPosition kingLocation = FindKingPiece(teamColor);
+        ChessPosition kingLocation = findKingPiece(teamColor);
         if (kingLocation == null){
             return false;
         }
@@ -166,7 +166,7 @@ public class ChessGame {
         return false;
     }
 
-    public ChessPosition FindKingPiece(TeamColor teamColor){
+    public ChessPosition findKingPiece(TeamColor teamColor){
         //find the position of the king and get its validMoves
         for (int col = 1; col > 0 && col <= 8; col++){
             for(int row = 1; row > 0 && row <= 8;row++){
@@ -205,7 +205,7 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         //compare opponent moves to kingmoves and if any match up, then remove that move
-        ChessPosition kingLocation = FindKingPiece(teamColor);
+        ChessPosition kingLocation = findKingPiece(teamColor);
         if (!isInCheck(teamColor)){
             //can't be in checkmate if it isn't in check
             return false;
@@ -227,7 +227,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        ChessPosition kingLocation = FindKingPiece(teamColor);
+        ChessPosition kingLocation = findKingPiece(teamColor);
         if (!isInCheck(teamColor)){
             // if the king can't make a valid move
             if (validMoves(kingLocation).isEmpty()){
@@ -258,7 +258,7 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return currentBoard;
     }
-    private void BoardCopy(ChessBoard board){
+    private void boardCopy(ChessBoard board){
         boardClone = new ChessPiece[8][8];
         for (int col = 0; col <= 7; col++){
 
@@ -269,7 +269,7 @@ public class ChessGame {
         }
     }
 
-    private ChessBoard BoardCopy2(ChessBoard board){
+    private ChessBoard boardCopy2(ChessBoard board){
         ChessBoard cloneBoard = new ChessBoard();
         for (int col = 1; col <= 8; col++){
             for (int row = 1; row <= 8; row++){
