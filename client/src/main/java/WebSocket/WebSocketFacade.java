@@ -95,13 +95,4 @@ public class WebSocketFacade extends Endpoint {
     }
 
 
-    private void sendMessage(String authToken, int gameID, UserGameCommand.CommandType type, ChessGame.TeamColor playerColor, ChessMove move) throws DataAccessException {
-        try {
-            var action = new UserGameCommand(authToken, type);
-            this.session.getBasicRemote().sendText(new Gson().toJson(action));
-        } catch (IOException ex) {
-            throw new DataAccessException(ex.getMessage());
-        }
-    }
-
 };

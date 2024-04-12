@@ -19,11 +19,6 @@ public final class JoinGameRequest {
         return auth;
     }
 
-    public void setAuth(String auth) {
-        this.auth = auth;
-    }
-
-
     public String playerColor() {
         return playerColor;
     }

@@ -29,9 +29,6 @@ public class UserGameCommand {
     protected CommandType commandType;
 
     private final String authToken;
-    //private int gameID;
-//    private ChessGame.TeamColor teamColor;
-//    private ChessMove move;
 
     public String getAuthString() {
         return authToken;
