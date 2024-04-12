@@ -17,4 +17,7 @@ public class LoginRequest {
         this.password = password;
     }
 
+    public String getPassword() {
+        return password;
+    }
 }
