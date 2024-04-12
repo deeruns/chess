@@ -24,8 +24,6 @@ public class GamePlayUI {
     ChessBoard board;
     String authToken;
     ChessPosition cords;
-    //WebSocketHandler wsHandler;
-    //ConnectionManager gameSessions;
 
 
     public GamePlayUI(WebSocketFacade ws, String auth, ChessGame gameChess) {
@@ -54,25 +52,12 @@ public class GamePlayUI {
         this.teamColor = color;
         if (Objects.equals(WHITE, color)) {
             ws.joinPlayer(authToken,gameID, teamColor);
-            //draw board
-            //DrawChessBoard.drawChessBoard(teamColor, game, null);
-            //evalInput();
-            //System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as WHITE" + SET_TEXT_COLOR_WHITE);
         }
         else if (Objects.equals(BLACK, color)) {
             ws.joinPlayer(authToken ,gameID, teamColor);
-            //draw board
-            //DrawChessBoard.drawChessBoard(teamColor, game, null);
-            //evalInput();
-//            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as BLACK" + SET_TEXT_COLOR_WHITE);
         }
         else {
             ws.joinObserver(authToken,gameID);
-            //draw board as white?
-            //ws.joinObserver(authToken, gameID);
-            //DrawChessBoard.drawChessBoard(WHITE, game, null);
-            //evalInput();
-            //System.out.println(SET_TEXT_COLOR_GREEN + "Successfully observing game" + SET_TEXT_COLOR_WHITE);
         }
     }
 
@@ -125,41 +110,24 @@ public class GamePlayUI {
                 evalInput();
             }
             DrawChessBoard.highlightMoves();
-            //how do I pass in these parameters?
             DrawChessBoard.drawChessBoard(teamColor, game, cords);
             DrawChessBoard.highlightMoves();
             evalInput();
-            //scanner.next();
-            //out.println(printMenu());
-            //call highlight moves with cords
-            //draw chess board highlighted
-            //return printMenu();
-            //evalInput();
         }
     }
     private void makeMove() throws InvalidMoveException, DataAccessException {
-        //draw chessboard before move
         DrawChessBoard.drawChessBoard(teamColor, game, cords);
         out.println("Enter the position of the piece you would like to move: ");
         String position = scanner.next();
         ChessPosition startPos = evalPosition(position);
-//        if (cords.getColumn() == 9){
-//            out.println("Invlaid input");
-//            evalInput();
-//        }
         out.println("Enter the position you would like to move the piece to: ");
         String position2 = scanner.next();
         ChessPosition endPos = evalPosition(position2);
-//        if (cords.getColumn() == 9){
-//            out.println("Invalid input");
-//            evalInput();
-//        }
-        //draw chess Board after move
         //PROMOTION PIECE
         ChessMove move;
+
         if ((board.getPiece(startPos).getPieceType() == ChessPiece.PieceType.PAWN)
                 && (endPos.getRow() == 1 || endPos.getRow() == 8)) {
-            //promoPiece
             out.println(promotionMenu());
             String promoInput = scanner.next();
             ChessPiece.PieceType realPiece = getPromoPiece(promoInput);
@@ -172,51 +140,12 @@ public class GamePlayUI {
         //CALL WEBSOCKET
         DrawChessBoard.drawChessBoard(teamColor, game, cords);
         ws.makeMove(authToken, gameID, move);
-        //makeMoveHelper(teamColor, game, startPos, endPos); MOVE TO WS!?
         DrawChessBoard.drawChessBoard(teamColor, game, null);
         System.out.println(SET_TEXT_COLOR_RED + "DONT MOVE UNTIL OPPONENT HAS GONE" + SET_TEXT_COLOR_WHITE);
-        //ws.makeMove(authToken);
-//        if (isIncheckMate()) {
-//            System.out.println(SET_TEXT_COLOR_RED + "GAME OVER" + SET_TEXT_COLOR_WHITE);
-//        }
-//        else {
-//            evalInput();
-//        }
         evalInput();
     }
 
-    private void makeMoveHelper(ChessGame.TeamColor teamColor, ChessGame game, ChessPosition startPos, ChessPosition endPos) throws InvalidMoveException, DataAccessException {
-        //make move
-        //wsHandler = new WebSocketHandler();
-        ChessMove finalMove;
-        Collection<ChessMove> validMoves = game.validMoves(startPos);
-        for (ChessMove move : validMoves) {
-            ChessPosition validMove = move.getEndPosition();
-            if (validMove.equals(endPos)) {
-                //move can be made
-                if ((board.getPiece(endPos).getPieceType() == ChessPiece.PieceType.PAWN)
-                        && (endPos.getRow() == 1 || endPos.getRow() == 8)) {
-                    //promoPiece
-                    out.println(promotionMenu());
-                    String promoInput = scanner.next();
-                    ChessPiece.PieceType realPiece = getPromoPiece(promoInput);
-                    finalMove = new ChessMove(startPos, endPos, realPiece);
-                }
-                else{
-                    finalMove = new ChessMove(startPos, endPos, null);
-                }
-                game.makeMove(finalMove);
-                ws.makeMove(authToken, gameID, finalMove);
 
-            }
-            else{
-                out.println("Invalid Move");
-            }
-
-            //implement promotion piece
-            //implement checkmate, stalemate...etc
-        }
-    }
 
     private String promotionMenu() {
         return """
@@ -249,8 +178,6 @@ public class GamePlayUI {
                 break;
         }
         ws.resign(authToken, gameID);
-        //DELETE GAME??
-        //evalInput();
     }
 
     private void leave() throws DataAccessException {
@@ -278,7 +205,6 @@ public class GamePlayUI {
 
 
     private ChessPosition evalPosition(String input) {
-        //make sure this initialization isn't passed in and it is changed when going through the loop to an actual coordinate number
         int numTwoPos = 0;
         String chars = null;
         for (char c : input.toCharArray()) {
@@ -294,13 +220,11 @@ public class GamePlayUI {
             return new ChessPosition(9,9);
         }
         ChessPosition pos = new ChessPosition(numTwoPos, numOnePos);
-        //chess position of two integers (x,y) or (row, col)
         return pos;
     }
 
     private String evalNumPos(String input){
         return switch (input) {
-            //may need to change these to indexing numbers? -1
             case "a" -> "1";
             case "b" -> "2";
             case "c" -> "3";
@@ -312,17 +236,4 @@ public class GamePlayUI {
             default -> "9";
         };
     }
-
-
-//    @Override
-//    public void notify(ServerMessage notification) {
-//        DrawChessBoard.drawChessBoard(teamColor, game, null);
-//        System.out.println("\n");
-//        switch (notification.getServerMessageType()) {
-//            case LOAD_GAME -> DrawChessBoard.drawChessBoard(teamColor, game, null);
-//            case ERROR -> System.out.println(SET_TEXT_COLOR_RED + "error"); //get actual error
-//            case NOTIFICATION -> System.out.println(SET_TEXT_COLOR_MAGENTA + notification.getServerMessageType());
-//            default -> System.out.println("error: in notify");
-//        }
-//    }
 };

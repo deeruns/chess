@@ -23,44 +23,25 @@ public class DrawChessBoard {
     private static boolean highlight = false;
 
     public static void main(String[] args) {
-//        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-//        //ChessPiece[][] blackboard = new ChessGame().getBoard().getBoard();
-//        //ChessPiece[][] whiteBoard = upsideDownBoard(blackboard);
-//        ChessPosition position = new ChessPosition(2, 4);
-//        ChessGame game = new ChessGame();
-////        ChessBoard board = new ChessBoard();
-////        board.resetBoard();
-//
-//        out.print(EscapeSequences.ERASE_SCREEN);
-//        highlightMoves();
-//        drawHeaders(out);
-//        drawBlackBoard(out, game, position);
-//        out.print(EscapeSequences.SET_TEXT_COLOR_GREEN);
-//        out.println("Successfully Joined Game");
     }
 
     public static void drawChessBoard(ChessGame.TeamColor teamColor, ChessGame game, ChessPosition position) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        ChessBoard board = game.getBoard();
-        //board.resetBoard();
-        //switch so it doesn't reset the board when I call this^^^
+        //ChessBoard board = game.getBoard();
         out.print(EscapeSequences.ERASE_SCREEN);
         if (teamColor == ChessGame.TeamColor.BLACK) {
             drawHeadersBlack(out);
             drawBlackBoard(out, game, position);
             out.println();
-            //out.println("Successfully Joined Game");
         } else {
             //draw board from the white perspective for observers and white team color
             drawHeaders(out);
             drawWhiteBoard(out, game, position);
             out.println();
-//            System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game" + SET_TEXT_COLOR_WHITE);
         }
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
 
-        //setBackgroundBlack(out);
     }
 
     //draw board
@@ -83,8 +64,6 @@ public class DrawChessBoard {
     }
 
     public static void drawRowsBlack(PrintStream out, ChessGame game, ChessPosition position) {
-        //drawHeaders(out);
-        //print rows normal but cols backward so white is on top!?
         ChessBoard board = game.getBoard();
         for (int i = 1; i < 9; i++) {
             for (int j = 8; j > 0; j--) {
@@ -317,9 +296,5 @@ public class DrawChessBoard {
 
         return upsideDown;
     }
-
-    //public static ChessBoard changeBoard
-
-
 }
 

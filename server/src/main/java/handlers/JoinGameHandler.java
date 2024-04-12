@@ -33,21 +33,5 @@ public class JoinGameHandler extends ParentHandler {
         JoinGameRequest joinGameRequest = (JoinGameRequest) gson.fromJson(request, JoinGameRequest.class);
         return joinGameRequest;
     }
-//    private void errorHandling(Request request) throws DataAccess.DataAccessException{
-//        JsonObject json = JsonParser.parseString(request.body()).getAsJsonObject();
-//        if (!json.has("gameID") && json.get("gameID").isJsonNull()) {
-//            throw new DataAccess.DataAccessException("Error: bad request");
-//        }
-//    }
-//    private void errorHandling(Request request) throws DataAccess.DataAccessException {
-//        JsonObject json = JsonParser.parseString(request.body()).getAsJsonObject();
-//        if (!json.has("gameID")) {
-//            throw new DataAccess.DataAccessException("Error: bad request");
-//        }
-//        // Check if the value associated with the key "gameID" is null
-//        if (json.get("gameID").isJsonNull()) {
-//            throw new DataAccess.DataAccessException("Error: bad request");
-//        }
-//    }
 
 }

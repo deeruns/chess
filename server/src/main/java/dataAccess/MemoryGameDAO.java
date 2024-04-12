@@ -74,13 +74,6 @@ public class MemoryGameDAO implements GameDAO{
             gameDataHash.replace(gameID, newGame);
         }
     }
-//    @Override
-//    public void deleteGame(int gameID) throws DataAccess.DataAccessException{
-//        if (!gameDataHash.containsKey(gameID)){
-//            throw new DataAccess.DataAccessException("Error: bad request");
-//        }
-//        gameDataHash.remove(gameID);
-//    }
     @Override
     public void clear() throws DataAccessException {
         gameDataHash.clear();

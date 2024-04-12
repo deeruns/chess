@@ -37,14 +37,6 @@ public class WebSocketFacade extends Endpoint {
                 public void onMessage(String message) {
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
                     notificationHandler.notify(message, notification.getServerMessageType());
-//                    try {
-//                        Gson gson = new Gson();
-//                        ServerMessage message =
-//                                gson.fromJson(message, ServerMessage.class);
-//                        observer.notify(message);
-//                    } catch(Exception ex) {
-//                        observer.notify(new ErrorMessage(ex.getMessage()));
-//                    }
 
                 }
             });
@@ -111,22 +103,5 @@ public class WebSocketFacade extends Endpoint {
             throw new DataAccessException(ex.getMessage());
         }
     }
-//    @OnWebSocketMessage
-//    public void onMessage(Session session, String msg) throws Exception {
-//        GameCommand command = readJson(msg, UserGameCommand.class);
-//
-//        var conn = getConnection(command.authToken, session);
-//        if (conn != null) {
-//            switch (command.commandType) {
-//                case JOIN_PLAYER -> join(conn, msg);
-//                case JOIN_OBSERVER -> observe(conn, msg);
-//                case MAKE_MOVE -> move(conn, msg));
-//                case LEAVE -> leave(conn, msg);
-//                case RESIGN -> resign(conn, msg);
-//            }
-//        } else {
-//            Connection.sendError(session.getRemote(), "unknown user");
-//        }
-//    }
 
 };

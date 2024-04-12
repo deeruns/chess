@@ -96,7 +96,6 @@ public class DatabaseManager {
             }
         } catch (SQLException exception) {
             throw new DataAccessException(String.format("unable to update database: %s, %s", statement, exception.getMessage()));
-            //throw new DataAccess.DataAccessException("Error: already taken");
         }
     }
     static void configureDatabase(String[] createStatements) throws DataAccessException {

@@ -86,3 +86,39 @@ isincheckmate
                     printPiece(out, board.getPiece(new ChessPosition(i,j)).getPieceType(), board.getPiece(new ChessPosition(i,j)).getTeamColor());
                 }
             }
+
+
+
+
+
+           MAYBE ADD BACK UNDER MAKE MOVE IN GAMEUI
+
+
+           private void makeMoveHelper(ChessGame.TeamColor teamColor, ChessGame game, ChessPosition startPos, ChessPosition endPos) throws InvalidMoveException, DataAccessException {
+                   ChessMove finalMove;
+                   Collection<ChessMove> validMoves = game.validMoves(startPos);
+                   for (ChessMove move : validMoves) {
+                       ChessPosition validMove = move.getEndPosition();
+                       if (validMove.equals(endPos)) {
+                           //move can be made
+
+                           if ((board.getPiece(endPos).getPieceType() == ChessPiece.PieceType.PAWN)
+                                   && (endPos.getRow() == 1 || endPos.getRow() == 8)) {
+                               //promoPiece
+                               out.println(promotionMenu());
+                               String promoInput = scanner.next();
+                               ChessPiece.PieceType realPiece = getPromoPiece(promoInput);
+                               finalMove = new ChessMove(startPos, endPos, realPiece);
+                           }
+                           else{
+                               finalMove = new ChessMove(startPos, endPos, null);
+                           }
+                           game.makeMove(finalMove);
+                           ws.makeMove(authToken, gameID, finalMove);
+
+                       }
+                       else{
+                           out.println("Invalid Move");
+                       }
+                   }
+               }

@@ -70,9 +70,6 @@ public class ConnectionManager {
         for (Map.Entry<String, Session> entry : game.entrySet()) {
             String authToken = entry.getKey();
             Session session = entry.getValue();
-//            if (!authToken.equals(exceptThisAuthToken)) {
-//                    session.getRemote().sendString(new Gson().toJson(message));
-//                }
             if (session.isOpen()) {
                 if (!authToken.equals(exceptThisAuthToken)) {
                     session.getRemote().sendString(new Gson().toJson(message));

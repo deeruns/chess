@@ -28,7 +28,6 @@ import static chess.ChessGame.TeamColor.WHITE;
 
 @WebSocket
 public class WebSocketHandler {
-    UserDAO userDAO = new SqlUserDAO();
     GameDAO gameDAO = new SqlGameDAO();
     AuthDAO authDAO = new SqlAuthDAO();
     ChessGame.TeamColor teamColor;
@@ -36,9 +35,6 @@ public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
 
     public WebSocketHandler() throws DataAccessException {
-//        this.userDAO = new SqlUserDAO();
-//        this.authDAO = new SqlAuthDAO();
-//        this.gameDAO = new SqlGameDAO();
     }
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
@@ -66,7 +62,6 @@ public class WebSocketHandler {
             game = gameData.game();
             isGameFull(gameData, username);
             LoadGameCommand loadGameCommand = new LoadGameCommand(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-            //session.getRemote().sendString(new Gson().toJson(loadGameCommand));
             connections.broadcastToMe(command.gameID, loadGameCommand, command.getAuthString());
             var messageString = String.format("%s has joined the game as %s", username, command.playerColor);
             var notification = new NotificationCommand(ServerMessage.ServerMessageType.NOTIFICATION, messageString);
@@ -78,13 +73,6 @@ public class WebSocketHandler {
     }
 
     private void isGameFull(GameData gameData, String username) throws DataAccessException {
-        //if player name is in game and team matches then don't error
-//        if((Objects.equals(gameData.whiteUsername(), username)) && (teamColor == WHITE)){
-//            return true;
-//        }
-//        if((Objects.equals(gameData.blackUsername(), username)) && (teamColor == BLACK)){
-//            return true;
-//        }
         if ((!Objects.equals(gameData.blackUsername(), username)) && (teamColor == BLACK)){
             throw new DataAccessException("Player Color Already Taken");
         }
@@ -102,16 +90,12 @@ public class WebSocketHandler {
     private void joinObserver(String message, Session session) throws IOException {
         try{
             JoinObserverCommand command = new Gson().fromJson(message, JoinObserverCommand.class);
-            //add player to gameSessions map
-            //joinRealGame(command.gameID);
             connections.add(command.gameID, command.getAuthString(), session);
-            //broadcast that player has joined game
             AuthTokenData authData = authDAO.getUser(command.getAuthString());
             String username = authData.username();
             GameData gameData = gameDAO.getGame(command.gameID);
             game = gameData.game();
             LoadGameCommand loadGameCommand = new LoadGameCommand(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-            //session.getRemote().sendString(new Gson().toJson(loadGameCommand));
             connections.broadcastToMe(command.gameID, loadGameCommand, command.getAuthString());
             var messageString = String.format("%s has joined the game as an observer", username);
             var notification = new NotificationCommand(ServerMessage.ServerMessageType.NOTIFICATION, messageString);
@@ -133,7 +117,6 @@ public class WebSocketHandler {
     private void makeMove(String message, Session session) throws IOException {
         try{
             MakeMoveCommand command = new Gson().fromJson(message, MakeMoveCommand.class);
-            //broadcast that player made a move
             ChessMove move = command.move;
             ChessPosition startPos = move.getStartPosition();
             ChessPosition endPos = move.getEndPosition();
@@ -147,20 +130,12 @@ public class WebSocketHandler {
             //MAKE MOVE
             makeMoveHelper(teamColor, game, startPos, endPos, session);
             LoadGameCommand loadGameCommand = new LoadGameCommand(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-            //session.getRemote().sendString(new Gson().toJson(loadGameCommand));
-            //connections.broadcast(command.gameID, loadGameCommand, command.getAuthString());
             //BROADCAST LOAD MESSAGE TO ALL PLAYERS INCLUDING SELF
             connections.broadcastLoadToAll(command.gameID, loadGameCommand, command.getAuthString());
             var messageString = String.format("%s has moved a piece from %s to %s", username, startPos, endPos);
             var notification = new NotificationCommand(ServerMessage.ServerMessageType.NOTIFICATION, messageString);
             //BROADCAST NOTIFICATION TO ALL PLAYERS EXCEPT SELF
             connections.broadcast(command.gameID, notification, command.getAuthString());
-            //connections.broadcastLoadToAll(command.gameID, notification, command.getAuthString());
-
-            //LOAD command after Notification?
-            //connections.broadcastLoadToAll(command.gameID, loadGameCommand, command.getAuthString());
-
-            //ADD stuff for finishing the game?
         }
         catch(Exception exception){
             sendError(exception, session);
@@ -220,8 +195,6 @@ public class WebSocketHandler {
     }
 
     private void makeMoveHelper(ChessGame.TeamColor teamColor, ChessGame game, ChessPosition startPos, ChessPosition endPos, Session session) throws InvalidMoveException, DataAccessException, IOException {
-        //make move
-        //wsHandler = new WebSocketHandler();
         ChessMove finalMove;
         Collection<ChessMove> validMoves = game.validMoves(startPos);
         if (validMoves.isEmpty()){
@@ -230,18 +203,14 @@ public class WebSocketHandler {
         for (ChessMove move : validMoves) {
             ChessPosition validMove = move.getEndPosition();
             if (validMove.equals(endPos)) {
-                //move can be made
                 finalMove = new ChessMove(startPos, endPos, null);
                 game.makeMove(finalMove);
-                break; //the move is made, so end the loop because the valid move was found and made
-                //ws.makeMove(authToken, gameID, finalMove);
+                break;
             }
             else{
                 throw new DataAccessException("invalid move");
-                //sendError(new Exception("invalid move"), session);
             }
 
-            //implement checkmate, stalemate...etc
         }
     }
 

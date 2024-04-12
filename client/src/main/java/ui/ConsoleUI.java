@@ -37,23 +37,15 @@ public class ConsoleUI implements NotificationHandler {
     GamePlayUI gamePlayUI;
     ChessGame chessGame;
     ChessGame.TeamColor teamColor;
-    //GameDAO gameDAO;
-
-    //int CreateGameID;
 
 
     public ConsoleUI() throws DataAccessException {
 
         this.ws = new WebSocketFacade("http://localhost:8080", this);
-        //should this be called to reset the board here?
-        //chessGame.getBoard().resetBoard();
-        //this.gamePlayUI = new GamePlayUI(ws ,authToken, chessGame);
-        //this.gameDAO = new SqlGameDAO();
     }
 
     @Override
     public void notify(String notification, ServerMessage.ServerMessageType type) {
-       // DrawChessBoard.drawChessBoard(teamColor, null);
 
         System.out.println("\n");
         switch (type) {
@@ -174,12 +166,9 @@ public class ConsoleUI implements NotificationHandler {
         try{
             out.print("Enter Game name: ");
             String gameName = scanner.next();
-            //authorize?
             CreateGameResponse response = serverFacade.createGame(new CreateGameRequest(gameName, authToken));
             getGame(response.gameID());
             resetnewboard(response.gameID());
-            //GameData gameData = gameDAO.getGame(response.gameID());
-            //gameData.game().getBoard().resetBoard();
             return "Game " + gameName + " Created Successfully";
         }
         catch(DataAccessException exception){
@@ -193,19 +182,11 @@ public class ConsoleUI implements NotificationHandler {
             int gameID = Integer.parseInt(scanner.next());
             out.print("Enter team color WHITE or BLACK: ");
             String color = scanner.next().toLowerCase();
-            //authorize
+
             serverFacade.joinGame(new JoinGameRequest(color.toUpperCase(), gameID, authToken));
-            //get game
-            //GameData gameData = gameDAO.getGame(gameID);
-            //chessGame = gameData.game();
             getGame(gameID);
             gamePlayUI = new GamePlayUI(ws,authToken, chessGame);
             gamePlayUI.setGameID(gameID);
-            //gameplayUI
-            //gamePlayUI.evalInput("1");
-            //insert player color
-            //DrawChessBoard.drawChessBoard();
-            //return "Succcessfully Joined Game " + gameID + "as " + color;
             if (color.equals("white")){
                 gamePlayUI.setObserve(false);
                 teamColor = ChessGame.TeamColor.WHITE;
@@ -222,14 +203,6 @@ public class ConsoleUI implements NotificationHandler {
                 System.out.println(SET_TEXT_COLOR_GREEN + "Successfully joined game as BLACK" + SET_TEXT_COLOR_WHITE);
                 gamePlayUI.evalInput();
             }
-//            else{
-//                //observer
-//                gamePlayUI.setObserve(true);
-//                teamColor = null;
-//                gamePlayUI.setTeamColor(teamColor);
-//                gamePlayUI.joinGamePlay(teamColor);
-//            }
-            //ws.joinPlayer(authToken, gameID, teamColor);
         }
         catch(DataAccessException exception){
             return exception.getMessage();
@@ -242,13 +215,8 @@ public class ConsoleUI implements NotificationHandler {
             out.print("Enter GameID: ");
             int gameID = Integer.parseInt(scanner.next());
             teamColor = null;
-            //out.print("Enter team color WHITE or BLACK: ");
-            //String color = scanner.next();
-            //authorize
             serverFacade.joinGame(new JoinGameRequest("", gameID, authToken));
             getGame(gameID);
-            //GameData gameData = gameDAO.getGame(gameID);
-            //chessGame = gameData.game();
             gamePlayUI = new GamePlayUI(ws,authToken, chessGame);
             gamePlayUI.setGameID(gameID);
             gamePlayUI.setObserve(true);
@@ -256,10 +224,6 @@ public class ConsoleUI implements NotificationHandler {
             gamePlayUI.joinGamePlay(teamColor);
             System.out.println(SET_TEXT_COLOR_GREEN + "Successfully observing game" + SET_TEXT_COLOR_WHITE);
             gamePlayUI.evalInput();
-            //ws.joinObserver(authToken, gameID);
-            //insert player color
-            //DrawChessBoard.drawChessBoard(teamColor, chessGame, null);
-            //scanner.next();
             return "";
         }
         catch(DataAccessException exception){
@@ -290,7 +254,6 @@ public class ConsoleUI implements NotificationHandler {
             AuthTokenData authTokenData = serverFacade.login( new LoginRequest(username, password));
             authToken = authTokenData.authToken();
             status = UserLoginStatus.SIGNEDIN;
-            //System.out.println(clientHelp());
             return "Welcome " + username;
         }
         catch(DataAccessException exception){
@@ -319,17 +282,7 @@ public class ConsoleUI implements NotificationHandler {
 
             }
         }
-        //return null;
     }
 
-//    @Override
-//    public void notify(ServerMessage notification) {
-//
-//    }
-
-    //private void notify(ServerMessage message){}
-
-    //observer board displayed as white
-    // make new UI for gameplay
 
 }
